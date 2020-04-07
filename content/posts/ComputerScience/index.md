@@ -3,8 +3,8 @@ path: "/computer-science"
 cover: "./computer-science.jpg"
 title: "Computer Science"
 published: true
-tags: ["something"]
-date: "2018-10-15"
+tags: []
+date: "2020-04-07"
 ---
 
 # Bit manipulation
@@ -51,12 +51,246 @@ The state is 1s complement.
 ```
 If something is a power of 2 then it will only have 1 bit set.
 
-## 1s and 2s complement
+
+
+
+
+# 1s and 2s complement
 In 1s complement, we negate all of the bits (the first bit is the sign bit). However this still leaves us with 2 numbers for 0. In 2s complement we negate all of the bits and add one, meaning that we only have one zero.
 
 Bit manipulation is the act of algorithmically manipulating bits or other pieces of data shorter than a word.
 
-# Processes and Threads
+
+
+
+
+
+
+
+
+
+
+
+# Concurrency
+
+## Threads
+A thread is a fundamental uinit of execution within an application: A running application consists of at least one thread. Each thread has its own stack and runs independently from the application’s other threads. By default, threads share their resources, such as file handles or memory. Problems can occur when access to shared resources is not properly controlled. Data corruption is a common side effect of having two threads simultaneously write data to the same block of memory, for example. On most systems, threads are created and managed by the operating system: These are called native threads or kernel-level threads. 
+
+Because the number of threads that can be executed at any given instant is limited by the number of cores in the computer, the operating system rapidly switches from thread to thread,  giving each thread a small window of time to run. This is known as preemptive threading, because the operating system can suspend a thread’s execution at any point to let another thread run. (A cooperative model requires a thread to explicitly take some action to suspend its own execution and let other threads run.) Suspending one thread so another can start to run is referred to as a context switch.
+
+### System vs User
+A system thread is created and managed by the system. The first (main) thread of an application is a system thread, and the application often exits when the first thread terminates.
+
+ User threads are explicitly created by the application to do tasks that cannot or should not be done by the main thread. 
+
+Applications that dispay user interfaces usually call their main thread the event thread. User threads often communicate data back to the event thread by queueing events for it to process. This allows the event thread to receive data without stopping and waiting or wasting resources by repeatedly polling.
+
+### Monitors and Semaphores
+Applications must use thread synchronisation mechanism to control threads' interaction with shared resources. Two constructs are monitors and semaphores.
+
+A monitor is a set of routines protected by a mutual exclusion lock. A thread cannot execute any of the routines in the monitor until it acquires the lock, which means that only one thread at a time can execute within the monitor; all other threads must wait for the currently executing thread to give up control of the lock.  A thread can suspend itself in the monitor and wait for an event to occur, in which case another thread is given the chance to enter the monitor. 
+
+A semaphore is a simpler construct: just a lock that protects a shared resource. Before using a shared resource, the thread is supposed to acquire the lock. Any other thread that tries to acquire the lock to use the resource is blocked until the lock is released by the thread that owns it, at which point one of the waiting threads (if any) acquires the lock and is unblocked. This is the most basic kind of semaphore, a mutual exclusion, or mutex, semaphore. Other semaphore types include 
+ counting semaphores (which let a maximum of n threads access a resource at any given time) and event semaphores (which notify one or all waiting threads that an event has occurred).
+
+ Monitors and semaphores can be used to achieve similar goals, but monitors are simpler to use because they handle all details of lock acquisition and release. When using semaphores, each thread must be careful to release every lock it acquires, including under conditions in which it terminates unexpectedly; otherwise, no other thread that needs the shared resource can proceed. In addition, every routine that accesses the shared resource must explicitly acquire a lock before using the resource, something that can be accidentally omitted when coding. Monitors automatically acquire and release the necessary locks. 
+
+ In java, the synchronised keyword creates a monitor
+
+## Busy Waiting
+Busy waiting is avoided by using a monitor or a semaphore, depending on what’s available to the programmer. The waiting thread simply sleeps (suspends itself temporarily) until the other thread notifies it that it’s done. In Java, any shared object can be used as a notification mechanism:
+
+```java
+Object theLock = new Object();
+    synchronized(theLock)
+
+    {
+        Thread task = new TheTask(theLock);
+        task.start();
+        try {
+            theLock.wait();
+        } catch (InterruptedException e) {        
+            // .... do something if interrupted    
+        }
+    }
+
+    class TheTask extends Thread {
+        private Object theLock;
+
+        public TheTask(Object theLock) {
+            this.theLock = theLock;
+        }
+
+        public void run() {
+            synchronized (theLock) {            
+                //.... do the task            
+                theLock.notify();
+            }
+        }
+    }
+```
+
+## Concurrency Problems
+
+### Producer/Consumer
+**Problem:** Write a Producer thread and a Consumer thread that share a fixedsize buffer and an index to access the buffer. The Producer should place numbers into the buffer, and the Consumer should remove the numbers. The order in which the numbers are added or removed is not important.
+```java
+public static void main(String[] args) {
+	IntBuffer buffer = new IntBuffer();
+	Thread producer = new ProducerThread(buffer);
+	producer.start();
+	Thread consumer = new ConsumerThread(buffer);
+	consumer.start();
+}
+
+public static class ProducerThread extends Thread {
+	private IntBuffer buffer;
+
+	public ProducerThread(IntBuffer buffer) {
+		this.buffer = buffer;
+	}
+
+	@Override
+	public void run() {
+		Random r = new Random();
+		while(true) {
+			int num = r.nextInt();
+			buffer.add(num);
+			System.out.println("Produced " + num);
+		}
+	}
+}
+
+public static class ConsumerThread extends Thread {
+	private IntBuffer buffer;
+
+	public ConsumerThread(IntBuffer buffer) {
+		this.buffer = buffer;
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Consumed: " + buffer.remove());
+		}
+	}
+}
+
+public static class IntBuffer {
+	private int index;
+	private int[] buffer = new int[8];
+
+	public synchronized void add(int num) {
+		while(index == buffer.length - 1) {
+			try {
+				System.out.println("Waiting for buffer to empty...");
+				wait();
+				System.out.println("Add thread woke up!");
+			} catch(InterruptedException e) {}
+		}
+		buffer[index++] = num;
+		System.out.println("Notifying from add method that threads that they can now take the lock!");
+		notifyAll();
+	}
+
+	public synchronized int remove() {
+		while(index == 0) {
+			try {
+				System.out.println("Waiting for buffer to be filled...");
+				wait();
+				System.out.println("Remove thread woke up!");
+			}
+			catch(InterruptedException e) {}
+		}
+
+		int ret = buffer[--index];
+		notifyAll();
+
+		System.out.println("Notifying from remove method that threads that they can now take the lock!");
+		return ret;
+	}
+}
+```
+
+### The Dining Philosophers
+Deadlocks occur when locks (forks) are acquired in different orders. philospher 1 will try to get fork 1 then fork 2, but philosopher 2 will try to get fork 2 first and then fork. This is true of every philosopher except the last, which will try to get fork n-1 first and then fork 0. Reversing the order of acquisition for this philospher means that all philosophers acquire forks in the same order from a global perspective: lower number first.
+```java
+public class DiningPhilosophers {    // Each "fork" is just an Object we synchronize on
+    private Object[] forks;
+    private Philosopher[] philosophers;    // Prepare the forks and philosophers
+
+    private DiningPhilosophers(int num) {
+        forks = new Object[num];
+        philosophers = new Philosopher[num];
+        for (int i = 0; i < num; ++i) {
+            forks[i] = new Object();
+            int fork1 = i;
+            int fork2 = (i + 1) % num;
+            if (i == 0) {
+                philosophers[i] = new Philosopher(i, fork2, fork1);
+            } else {
+                philosophers[i] = new Philosopher(i, fork1, fork2);
+            }
+        }
+    }    // Start the eating process
+
+    public void startEating() throws InterruptedException {
+        for (int i = 0; i < philosophers.length; ++i) {
+            philosophers[i].start();
+        }
+        // Suspend the main thread until the first philosopher
+        // stops eating, which will never happen -- this keeps
+        // the simulation running indefinitely
+        philosophers[0].join();
+    }
+
+    // Each philosopher runs in its own thread.
+    private class Philosopher extends Thread {
+        private int id;
+        private int fork1;
+        private int fork2;
+
+        Philosopher(int id, int fork1, int fork2) {
+            this.id = id;
+            this.fork1 = fork1;
+            this.fork2 = fork2;
+        }
+
+        public void run() {
+            status("Ready to eat using forks " + fork1 + " and " + fork2);
+            while (true) {
+                status("Picking up fork " + fork1);
+                synchronized (forks[fork1]) {
+                    status("Picking up fork " + fork2);
+                    synchronized (forks[fork2]) {
+                        status("Eating");
+                    }
+                }
+            }
+        }
+
+        private void status(String msg) {
+            System.out.println("Philosopher " + id + ": " + msg);
+        }
+    }
+
+    // Entry point for simulation
+    public static void main(String[] args) {
+        try {
+            DiningPhilosophers d = new DiningPhilosophers(5);
+            d.startEating();
+        } catch (InterruptedException e) {
+        }
+    }
+}
+```
+
+## Processes and Threads
 Processes are the abstraction of running programs: A binary image, virtualized memory, various kernel resources, an associated security context, and so on.   
 Threads are the unit of execution in a process: A virtualized processor, a stack, and program state. A process contains one or more threads.
 
@@ -74,7 +308,7 @@ The benefits of multithreading are:
 The costss are:
 - increased complexity, need mutexes to manage concurrency. 
 
-## C++ threads
+### C++ threads
 Two forms of concurrent programming models:
 - multiprocessing: process 1 and process 2 communicate by interprocess - queues, messages, files, etc.
 - multithreading: threads communicate through shared memory.
@@ -514,38 +748,27 @@ int main() {
 ```
 You can try lock a unique lock. `try_lock()` will try to lock and return if it immediately can't. `try_lock_for(time)` will try and wait for `time` to get the lock. If it can't it will return.
 
-# LRU Cache
-Least Recently Used.  
 
-When you do a get, it moves that item to the front of the list.
 
-It is a key value store.
 
-It is a bounded container - need to specify size at the start.
 
-For the size - can call getMemoryClass() in andoird, then divide by some multiple of 8.
 
-Need to specify size of cache, size of bit map to place in the cache. If your objects aren't uniform in size, multiple objects could get evicted to make space for the new bit map.
 
-An LRU needs a tag, a value, and an LRU counter per block.
 
-Each blocks counter is initialised to a different value:
-| Block Contents | Counter |
-|----------------|---------|
-| A              | 0       |
-| B              | 1       |
-| C              | 2       |
-| D              | 3       |
 
-When we access a block:
-- if the counter is 3, do nothing
-- else set this counter to 3, and decrement every counter value lower than the original value.
 
-If we need to insert into a block we insert into the 0 counter block.
 
-To summarize: LRU order tracked via keys in a linked list. As a key is used, it is popped to the front of the list. When linked list capacity reached, get the key at the end of the list, remove the key from map and from the linked list
 
-# Cache
+
+
+
+
+
+
+
+
+
+# Caching 
 Memory is:
 - main memory; billion 32 bit words, RAM
 - Register file: in CPU
@@ -568,6 +791,9 @@ The machine can take advantage of the fact that most data lives togehter if you 
 - Hard Disk: Heap Space
 
 Building a high performance multicore app is harder - need to keep cache well populated for all cores.
+
+
+
 
 # Floating Point Numbers
 Number with decimal is stored as floating point. Broken down into:
@@ -613,6 +839,42 @@ Exponent = 7+127 = 134 = 10000110
 Side note: double and floats will always have accuracy issues with numbers which can't be represented by a binary fraction, e.g. 0.1. If we want accuracy in Java then we should use a BigDecimal as this is stored as an integer and a scale value such that we have `unscaled x 10`<sup>scale</sup>. You construct a BigDecimal using a string.  
 
 To work out the mantissa, minus 1 from the mantissa, and then divide by 2. if the number is 1. something then add 1 to that slot in the mantissa, else add 0. Keep dividing by 2 and adding a 1 or a zero until you fill all 23 bits.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Unicode
 ASCII is able to represent every character using a number between 32 and 127. This could conveniently be stored in 7 bits. Codes below 32 were used for control characters. Anything bigger than 127 became a free for all of different companies and countries.
@@ -720,6 +982,10 @@ If you save something as Japanese Shift-JIS encoding, then resave it as UTF-8, y
 
 The ingenious thing about UTF-8 is that it's binary compatible with ASCII, which is the de-facto baseline for all encodings. All characters available in the ASCII encoding only take up a single byte in UTF-8 and they're the exact same bytes as are used in ASCII. In other words, ASCII maps 1:1 unto UTF-8. Any character not in ASCII takes up two or more bytes in UTF-8. For most programming languages that expect to parse ASCII, this means you can include UTF-8 text directly in your program.
 
+
+
+
+
 # Endian
 In its most common usage, endianness indicates the ordering of bytes within a multi-byte number. A big-endian ordering places the most significant byte first and the least significant byte last, while a little-endian ordering does the opposite.
 
@@ -754,6 +1020,38 @@ Watch video
 Why would a 32 bit system be more performant than a 64 bit system?
 
 
+# Threading
+Threads in Java have their own stack but they share the same heap, so we can share data between them - in that sense when using the observer pattern an object doesn't have a "thread" or a "heap", they will be changed by the thread executing that code.
+
+
+## How to determine memory usage of an object?
+Add amout of memory used by each instance variable to the overhead associated with each object. Typically 16 byte. The overhead includes a reference to the class, garabage collection info, and sync info.   
+The object will usually be padded to be a multiple of 8.
+- A reference to an object is typically 8 bytes.  
+A nested non-static class requires an extra 8 bytes for a reference to the enclosing instance.
+
+## Size of array
+Implemeent5ed as objects, with overhead for length.
+For a primitive type:
+- 24 bytes for header info (16 bytes overhead, 4 bytes for length, 4 bytes for padding) + memory used to store values, e.g. for int then it's + 4N
+For objects:
+- Same but 8N for 8 bytes for reference.
+
+## Memory for strings
+- Aliasing is common
+- Space needed for the characters is accounted for seperately because a char array is often shared among strings.
+
+
+
+
+
+
+
+
+
+
+
+
 # Hexadecimal
 
 **Conversion**: The number 1234<sub>16</sub> is equivalent to   
@@ -781,7 +1079,52 @@ Why would a 32 bit system be more performant than a 64 bit system?
 | 1110   | E   |
 | 1111   | F   |
 
-## Terminology
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Little Notes
 Nibble? 4 bits    
 Byte? 8 bits, smallest addressable data item on many CPUs.
 
@@ -919,228 +1262,45 @@ What are machine data types?
 All data in computers based on digital electronics is represented as bits (alternatives 0 and 1) on the lowest level. The smallest addressable unit of data is usually a group of bits called a byte (usually an octet, which is 8 bits). The unit processed by machine code instructions is called a word (as of 2011, typically 32 or 64 bits). Most instructions interpret the word as a binary number, such that a 32-bit word can represent unsigned integer values from 0 to {\displaystyle 2^{32}-1}2^{{32}}-1 or signed integer values from {\displaystyle -2^{31}}-2^{{31}} to {\displaystyle 2^{31}-1}2^{{31}}-1. Because of two's complement, the machine language and machine doesn't need to distinguish between these unsigned and signed data types for the most part.
 
 
-# Concurrency
 
-## Threads
-A thread is a fundamental uinit of execution within an application: A running application consists of at least one thread. Each thread has its own stack and runs independently from the application’s other threads. By default, threads share their resources, such as file handles or memory. Problems can occur when access to shared resources is not properly controlled. Data corruption is a common side effect of having two threads simultaneously write data to the same block of memory, for example. On most systems, threads are created and managed by the operating system: These are called native threads or kernel-level threads. 
 
-Because the number of threads that can be executed at any given instant is limited by the number of cores in the computer, the operating system rapidly switches from thread to thread,  giving each thread a small window of time to run. This is known as preemptive threading, because the operating system can suspend a thread’s execution at any point to let another thread run. (A cooperative model requires a thread to explicitly take some action to suspend its own execution and let other threads run.) Suspending one thread so another can start to run is referred to as a context switch.
 
-### System vs User
-A system thread is created and managed by the system. The first (main) thread of an application is a system thread, and the application often exits when the first thread terminates.
 
- User threads are explicitly created by the application to do tasks that cannot or should not be done by the main thread. 
 
-Applications that dispay user interfaces usually call their main thread the event thread. User threads often communicate data back to the event thread by queueing events for it to process. This allows the event thread to receive data without stopping and waiting or wasting resources by repeatedly polling.
 
-### Monitors and Semaphores
-Applications must use thread synchronisation mechanism to control threads' interaction with shared resources. Two constructs are monitors and semaphores.
 
-A monitor is a set of routines protected by a mutual exclusion lock. A thread cannot execute any of the routines in the monitor until it acquires the lock, which means that only one thread at a time can execute within the monitor; all other threads must wait for the currently executing thread to give up control of the lock.  A thread can suspend itself in the monitor and wait for an event to occur, in which case another thread is given the chance to enter the monitor. 
 
-A semaphore is a simpler construct: just a lock that protects a shared resource. Before using a shared resource, the thread is supposed to acquire the lock. Any other thread that tries to acquire the lock to use the resource is blocked until the lock is released by the thread that owns it, at which point one of the waiting threads (if any) acquires the lock and is unblocked. This is the most basic kind of semaphore, a mutual exclusion, or mutex, semaphore. Other semaphore types include 
- counting semaphores (which let a maximum of n threads access a resource at any given time) and event semaphores (which notify one or all waiting threads that an event has occurred).
 
- Monitors and semaphores can be used to achieve similar goals, but monitors are simpler to use because they handle all details of lock acquisition and release. When using semaphores, each thread must be careful to release every lock it acquires, including under conditions in which it terminates unexpectedly; otherwise, no other thread that needs the shared resource can proceed. In addition, every routine that accesses the shared resource must explicitly acquire a lock before using the resource, something that can be accidentally omitted when coding. Monitors automatically acquire and release the necessary locks. 
 
- In java, the synchronised keyword creates a monitor
 
-## Busy Waiting
-Busy waiting is avoided by using a monitor or a semaphore, depending on what’s available to the programmer. The waiting thread simply sleeps (suspends itself temporarily) until the other thread notifies it that it’s done. In Java, any shared object can be used as a notification mechanism:
 
-```java
-Object theLock = new Object();
-    synchronized(theLock)
 
-    {
-        Thread task = new TheTask(theLock);
-        task.start();
-        try {
-            theLock.wait();
-        } catch (InterruptedException e) {        
-            // .... do something if interrupted    
-        }
-    }
 
-    class TheTask extends Thread {
-        private Object theLock;
 
-        public TheTask(Object theLock) {
-            this.theLock = theLock;
-        }
 
-        public void run() {
-            synchronized (theLock) {            
-                //.... do the task            
-                theLock.notify();
-            }
-        }
-    }
-```
 
-## Concurrency Problems
 
-### Producer/Consumer
-**Problem:** Write a Producer thread and a Consumer thread that share a fixedsize buffer and an index to access the buffer. The Producer should place numbers into the buffer, and the Consumer should remove the numbers. The order in which the numbers are added or removed is not important.
-```java
-public static void main(String[] args) {
-	IntBuffer buffer = new IntBuffer();
-	Thread producer = new ProducerThread(buffer);
-	producer.start();
-	Thread consumer = new ConsumerThread(buffer);
-	consumer.start();
-}
 
-public static class ProducerThread extends Thread {
-	private IntBuffer buffer;
 
-	public ProducerThread(IntBuffer buffer) {
-		this.buffer = buffer;
-	}
 
-	@Override
-	public void run() {
-		Random r = new Random();
-		while(true) {
-			int num = r.nextInt();
-			buffer.add(num);
-			System.out.println("Produced " + num);
-		}
-	}
-}
 
-public static class ConsumerThread extends Thread {
-	private IntBuffer buffer;
 
-	public ConsumerThread(IntBuffer buffer) {
-		this.buffer = buffer;
-	}
 
-	@Override
-	public void run() {
-		while(true) {
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			System.out.println("Consumed: " + buffer.remove());
-		}
-	}
-}
 
-public static class IntBuffer {
-	private int index;
-	private int[] buffer = new int[8];
 
-	public synchronized void add(int num) {
-		while(index == buffer.length - 1) {
-			try {
-				System.out.println("Waiting for buffer to empty...");
-				wait();
-				System.out.println("Add thread woke up!");
-			} catch(InterruptedException e) {}
-		}
-		buffer[index++] = num;
-		System.out.println("Notifying from add method that threads that they can now take the lock!");
-		notifyAll();
-	}
 
-	public synchronized int remove() {
-		while(index == 0) {
-			try {
-				System.out.println("Waiting for buffer to be filled...");
-				wait();
-				System.out.println("Remove thread woke up!");
-			}
-			catch(InterruptedException e) {}
-		}
 
-		int ret = buffer[--index];
-		notifyAll();
 
-		System.out.println("Notifying from remove method that threads that they can now take the lock!");
-		return ret;
-	}
-}
-```
 
-### The Dining Philosophers
-Deadlocks occur when locks (forks) are acquired in different orders. philospher 1 will try to get fork 1 then fork 2, but philosopher 2 will try to get fork 2 first and then fork. This is true of every philosopher except the last, which will try to get fork n-1 first and then fork 0. Reversing the order of acquisition for this philospher means that all philosophers acquire forks in the same order from a global perspective: lower number first.
-```java
-public class DiningPhilosophers {    // Each "fork" is just an Object we synchronize on
-    private Object[] forks;
-    private Philosopher[] philosophers;    // Prepare the forks and philosophers
 
-    private DiningPhilosophers(int num) {
-        forks = new Object[num];
-        philosophers = new Philosopher[num];
-        for (int i = 0; i < num; ++i) {
-            forks[i] = new Object();
-            int fork1 = i;
-            int fork2 = (i + 1) % num;
-            if (i == 0) {
-                philosophers[i] = new Philosopher(i, fork2, fork1);
-            } else {
-                philosophers[i] = new Philosopher(i, fork1, fork2);
-            }
-        }
-    }    // Start the eating process
 
-    public void startEating() throws InterruptedException {
-        for (int i = 0; i < philosophers.length; ++i) {
-            philosophers[i].start();
-        }
-        // Suspend the main thread until the first philosopher
-        // stops eating, which will never happen -- this keeps
-        // the simulation running indefinitely
-        philosophers[0].join();
-    }
-
-    // Each philosopher runs in its own thread.
-    private class Philosopher extends Thread {
-        private int id;
-        private int fork1;
-        private int fork2;
-
-        Philosopher(int id, int fork1, int fork2) {
-            this.id = id;
-            this.fork1 = fork1;
-            this.fork2 = fork2;
-        }
-
-        public void run() {
-            status("Ready to eat using forks " + fork1 + " and " + fork2);
-            while (true) {
-                status("Picking up fork " + fork1);
-                synchronized (forks[fork1]) {
-                    status("Picking up fork " + fork2);
-                    synchronized (forks[fork2]) {
-                        status("Eating");
-                    }
-                }
-            }
-        }
-
-        private void status(String msg) {
-            System.out.println("Philosopher " + id + ": " + msg);
-        }
-    }
-
-    // Entry point for simulation
-    public static void main(String[] args) {
-        try {
-            DiningPhilosophers d = new DiningPhilosophers(5);
-            d.startEating();
-        } catch (InterruptedException e) {
-        }
-    }
-}
-```
 
 # Object-Oriented Programming
 
 ## OO Problems
+
+### What is autoboxing?
+Autoboxing = casting a primitive type to a wrapper type. auto-unboxing is the opposite.
 
 ### Interfaces and Abstract Classes
 **Problem:** What is the difference between an interface and an abstract class in object-oriented programming?
@@ -1261,6 +1421,47 @@ public class Logger {
 }
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Databases
 Example of tables:
 ```sql
@@ -1363,6 +1564,34 @@ Need to use:
 ```sql
 SELECT * FROM Address WHERE apartment IS NULL; 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Knowledge-Based Questions
 
@@ -1481,26 +1710,6 @@ Symmetric key cryptography has the advantage that it’s much faster than public
  Both public key and symmetric key cryptography are used to get secure information from the web. First your browser establishes a shared session key with the website using public key cryptography. 
  Then you communicate with the website using symmetric key cryptography to actually obtain the private information.
 
-# Threading
-Threads in Java have their own stack but they share the same heap, so we can share data between them - in that sense when using the observer pattern an object doesn't have a "thread" or a "heap", they will be changed by the thread executing that code.
-
-
-## How to determine memory usage of an object?
-Add amout of memory used by each instance variable to the overhead associated with each object. Typically 16 byte. The overhead includes a reference to the class, garabage collection info, and sync info.   
-The object will usually be padded to be a multiple of 8.
-- A reference to an object is typically 8 bytes.  
-A nested non-static class requires an extra 8 bytes for a reference to the enclosing instance.
-
-## Size of array
-Implemeent5ed as objects, with overhead for length.
-For a primitive type:
-- 24 bytes for header info (16 bytes overhead, 4 bytes for length, 4 bytes for padding) + memory used to store values, e.g. for int then it's + 4N
-For objects:
-- Same but 8N for 8 bytes for reference.
-
-## Memory for strings
-- Aliasing is common
-- Space needed for the characters is accounted for seperately because a char array is often shared among strings.
 
 
 Image by <a href="https://pixabay.com/users/blickpixel-52945/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=453758">Michael Schwarzenberger</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=453758">Pixabay</a>

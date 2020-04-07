@@ -3,13 +3,13 @@ path: "/networking"
 cover: "./networking.jpg"
 title: "Networking"
 published: true
-tags: ["something"]
-date: "2018-10-15"
+tags: []
+date: "2020-04-07"
 ---
 
-# Networking
+This sections discusses networking.
 
-## Internet
+# Internet
 The internet is a distributed packet-switched network. No one person is in charge of it, it is a distributed network.
 
 Bandwidth is the maximum transmission capacity of a device.
@@ -92,7 +92,45 @@ Using viruses, hackers cna take over millions of computers world wide and then u
 
 90% of the time a system gets hacked due to a human error. 
 
-## UDP and TCP
+## Packet Transmission across the internet
+Packets can take different routes - this is packet switching.
+
+Circuit switching - used by POTS plain old telephone systems. One path all packets take. Path set up prior to any communication.
+
+MAC addresses change as packet crosses the internet but IP addresses stay the same.
+
+MAC Addresses = layer 2 Data Link
+IP Addresses = Layer 3 Network
+
+The header added by the network layer, together with other layer info makes a frame.  
+This header targets a specific MAC address for a router. When it gets to that router, it removes the header, then passes that datagram (frame without network header) to network layer. Network layer looks what next hop is, whic his router 3. Router 1 sends datagram down the network layer to add header for router 2 to make up frame.
+
+Repeat this till you get to the host (destination IP).
+
+Routers look in their routing table to see what the next hop is.
+
+When host seems IP address in datagram is its own it removes network header. Then passes up to the transport layer and looks at port, removes header, goes to application layer, and data is passed to app running on that port.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# UDP and TCP
 Every network packet follws the following 5 layer structure:
 - Application: e.g. HTTP
 - Transport: UDP and TCP
@@ -106,7 +144,7 @@ The transport layer creates about 65K ports on computer per network connection. 
 
 When an application creates a message it is passed on to the transport layer. On this layer we wrap the message inside what we call a segment. This segment contains some additional information like the source and the destination ports. It is then passed onto the network layer for further processing. The receiver will see our segment when the network layer passes it to the transport layer. The segment will be examined to determine the destination port and then the message is unwrapped and delivered to the correct port.
 
-### UDP
+## UDP
 User Datagram Protocol
 
 The lightweight, connectionless choice.
@@ -131,7 +169,7 @@ Is called message-oriented, this means applications send their data in distinct 
 
 Don't have the overhead of opening and closing connections every time.
 
-### TCP
+## TCP
 Transmission COntrol Protocol
 
 The reliable, connection-based choice.
@@ -158,7 +196,38 @@ Multimedia streaming can use either UDP or TCP:
 - UDP is preferred because it has less overhead, send delay is undesirable, and data loss can be masked.
 - TSDP is sometimes preferred when its overhead doesn't deteriorate performance, and some firewalls block UDP for security reasons.
 
-## OSI and TCP/IP
+TCP looks at all the packets whne they are received to make sure all packets are there and will sign if all are there ,else it won't sign and they need to be sent asgain. - Routes and TCp are scalable. The more routes, the more reliable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# OSI and TCP/IP
 Bakc in the past, every operating system had their own way to communicate over a network.  
 This was chaos, so the International Standards Origanisation (ISO) created a model called Open Systems Interconnect (OSI) to solve this interoperability problem. It doesn't really exist, it is used to describe how networks work.
 
@@ -198,9 +267,20 @@ Internet Layer protocols are IP, ICMP, ARP. Ping uses ICMP
 
 Network Access protocols are ethernet, WiFI, Fiber Optics, microwave, etc.
 
-# Networking
 
-## Sockets
+
+
+
+
+
+
+
+
+
+
+
+
+# Sockets
 When establishing connectivity, the client and server each bind a "socket" to their end of the connection. Once a connection has been established the client and sever both read from and writre to the socket when communicating.
 
 A socket is a combination of both an IP address and a port number. Each socket used in a client-sever communication is an endpoint of the two-way communication link used to send packets between applications. Multiple TCP connections can be initiated between each client and a server and each connection is unique by its combination of ports and endpoints.
@@ -243,7 +323,42 @@ The client already knows the port and ip to connect to.
 
  Wireshark is a packet sniffer, how does that work?
 
-## SSL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# SSL
 Facebook had a problem where they didn't encrypt their traffic after sign in, so anyone could sniff your packets.
 
 You could use tools like firesheep to do this, you could get the users cookie and use it to impersonate them,
@@ -305,29 +420,32 @@ SSL 2.0     TLS 1.0
 SSL 3.0     TLS 1.1 
 etc.
 
-## Packet Transmission across the internet
-Packets can take different routes - this is packet switching.
 
-Circuit switching - used by POTS plain old telephone systems. One path all packets take. Path set up prior to any communication.
 
-MAC addresses change as packet crosses the internet but IP addresses stay the same.
 
-MAC Addresses = layer 2 Data Link
-IP Addresses = Layer 3 Network
 
-The header added by the network layer, together with other layer info makes a frame.  
-This header targets a specific MAC address for a router. When it gets to that router, it removes the header, then passes that datagram (frame without network header) to network layer. Network layer looks what next hop is, whic his router 3. Router 1 sends datagram down the network layer to add header for router 2 to make up frame.
 
-Repeat this till you get to the host (destination IP).
 
-Routers look in their routing table to see what the next hop is.
 
-When host seems IP address in datagram is its own it removes network header. Then passes up to the transport layer and looks at port, removes header, goes to application layer, and data is passed to app running on that port.
 
-## Random
-TCP looks at all the packets whne they are received to make sure all packets are there and will sign if all are there ,else it won't sign and they need to be sent asgain. - Routes and TCp are scalable. The more routes, the more reliable.
 
-## HTTP 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# HTTP 2
 HTTP 1.1. didn't have multiplexing, you could send multiple requests but only get back data after the first returned. 
 
 Only could have 6 TCP connections from one origin.
@@ -350,7 +468,28 @@ For HTTP2 to be successful we need to have smarter servers who are going to unde
 
 One RPC stack to rule them all - standardised high performance RPC protocol stack. No longer need gRPC and protobuf?
 
-### Network Performance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Network Performance
 **Problem:** What are the two major issues in networking performance?
 
 Any network can be measured by two major characteristics: latency and bandwidth. Latency refers to the time it takes a given bit of information to get from one point to another on the network. 
@@ -359,4 +498,88 @@ Bandwidth refers to the rate at which data moves through the network once commun
 
 A pipe is a useful analog for a network. The time it takes for a molecule of water to go through the whole pipe is related to the length; this is analogous to the latency. The width of the pipe determines the bandwidth: how much water can pass in a given time. 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# DNS
+DNS is hierarchical, has few authoritative servers at the top level.
+
+You router or ISP privddes information about which DNS server(s) to contact when doing a lookup.
+
+Lower level DNS servers cache mappings, which could become stale due to DNS propagation delays.
+
+DNS results can also be cached by your browser or OS for a certain period of time, determined by the time to live.
+
+- NS Record (name server) - Specifies the DNS servers for your domain/subdomain.
+- MX record (mail exchange) - specifies the mail servers for accepting messages.
+- A record (address) - Points a name to an IP address.
+- CNAME (canonical) - Points a name to another name or `CNAME` (example.com to www.example.com) or to an `A` record.
+
+Services such as CloudFlare and Route53 provide managed DNS services. Some DNS services can route traffic through various methods:
+- Weighted round robin
+    - Prevent traffic from going to servers under maintenance
+    - balance between varying cluster sizes
+    - A/B testing
+- Latency-based
+- Geolocation-based
+
+Disadvantages:
+- Accessing a DNS server introduces a slight delay, mitagated by caching
+- DNS server management could be complex and is generally managed by governments, ISPs and large companies.
+- DNS services have recently come under DDoS attack, prevents users from accessing website such as Twitter without known Twitter's IP address(es).
+
+DNS architecture is a hierarchical distributed database and an associated set of protocols that define:
+- A mechanism for querying and updating the database.
+- A mechanism for replicating the information in the database among servers.
+- A schema of the database.
+
+In the early days of the internet, the host names of the computers in the network were managed through the use of a single HOSTS file located on a centrally administered server.
+
+Each site that needed to resolve host names on the network downloaded this file.
+
+As the number of hosts on the internet grew, we needed a scalable decentralised administration.
+
+With DNS, the host names reside in a database that can be distributed among multiple servers, decreasing the load on any one server and providing the ability to administer theis naming system on a per-parition basis. DNS supports hierarchical names and allows registration of various data types in addition to host name-to-IP address mapping used in HOSTS files. Because the DNS database is distributed, its potential size is unlimited and performance is not degraded when more servers are added.
+
+The names in a DNS database form a hierarchical tree structure called the domain namespace. Domain names consist of individual labels separated by dots, for example: mydomain.microsoft.com
+
+![DNS Tree](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/images/dd197427.b806a082-8b59-44cd-87cc-eaaffceef548%28ws.10%29.gif)
+
+This figure shows how Microsoft is assigned authority by the Internet root servers for its own part of the DNS domain namespace tree on the Internet. DNS clients and servers use queries as the fundamental method of resolving names in the tree to specific types of resource information. This information is provided by DNS servers in query responses to DNS clients, which then extract the information and pass it to a requesting program for resolving the queried name. In the process of resolving a name, keep in mind that DNS servers often function as DNS clients, querying other servers in order to fully resolve a queried name.
+
+Any DNS domain name used in the tree is technically a domain. Most DNS discussions, however, identify names in one of five ways, based on the level and the way a name is commonly used. For example, the DNS domain name registered to Microsoft (microsoft.com.) is known as a second-level domain. This is because the name has two parts (known as labels) that indicate it is located two levels below the root or top of the tree. Most DNS domain names have two or more labels, each of which indicates a new level in the tree. Periods are used in names to separate labels.
+
+
+
+
+
+
+
+
+
+
+
+
+
 Image by <a href="https://pixabay.com/users/TheAndrasBarta-2004841/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1264062">TheAndrasBarta</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1264062">Pixabay</a>
+
+
+
+
+

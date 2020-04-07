@@ -3,8 +3,8 @@ path: "/software-principles"
 cover: "./software-principles.jpg"
 title: "Software Principles"
 published: true
-tags: ["something"]
-date: "2018-10-15"
+tags: []
+date: "2020-04-07"
 ---
 
 # Design Patterns
@@ -105,6 +105,31 @@ Factory
 
 (put this in a table).
 
+
+
+
+
+
+
+ensures that at most one instance of a class exists at any given time. 
+
+Singletons are also sometimes used as a substitute for global variables, but this doesn’t avoid any of the global state problems that plague global variables, so many people consider this use an anti-pattern. 
+
+Singletons are bettern than a set of static methods because:
+- Inheritance and interfaces: Singletons are objects, they can inherit from base classes and implement interfaces.
+- Possible Multiplicity: You can change your mind and create multiple objects without chaing a lot of code.
+- Dynamic binding: The actual class used to create the singleton can be determined at run time, not at compile time.
+
+Disadvantages:
+- testing, hard coded in to classes
+- Methods must be synchronised in multithreaded environments, slowing access to the singleton's state.
+- may slow down the application's startup time as it initialisations, and may hold onto resources longer than necessary.
+
+
+
+
+
+
 ### Builder
 Good for constructing objects which have a lot of parameters or we want them to be immutable when we've constructed them.  
 
@@ -190,6 +215,24 @@ public class LunchOrder {
 if you don't want to put it in the same class you can refactor to add it into a seperate class.
 
 Can negate the anti-pattern of exposing setters for every parameter we pass in.
+
+
+
+
+
+
+Creates objects in a stepwise manner without knowing or caring how those objects are constructed.  Instead of constructing an object directly (or via a factory), you instantiate a Builder and let it create the object on your behalf. 
+Builders are particularly useful for initializing objects that require multiple constructor parameters, especially parameters of the same or similar types.
+
+Not only is the object initialization much clearer and easier to understand, but initialization parameters can be easily added and removed. Certain parameters can be mandatory, and the others can be made optional with default values. 
+
+Simpler initialization is one use for builders. Sometimes it’s also useful to create a hierarchy of builders. At the top of the hierarchy is an abstract builder class that defines the methods for initializing the different parts of an object. Concrete subclasses override these methods to build the object in different ways. For example, a generic document builder would expose abstract methods like addHeading and addParagraph, which would be implemented by different subclasses to create HTML documents, PDF documents, and so on. 
+
+Use Builder when objects are complex to construct and are constructed in several steps. Otherwise, Abstract Factory may be simpler to use.
+
+
+
+
 
 #### Comparison
 Builder
@@ -363,6 +406,15 @@ One issue is shallow vs deep copy - your clone method will be a shallow copy, bu
     - NumberFormat
 
 Create methods are usually parameterised - this is used to determine the concrete type used.
+
+
+
+A factory method is Technically any method whose primary purpose is to create and return a new object. the factory method pattern applies this concept to a class hierarchy.
+
+A base class defines a factory method that can be overriden in a subclass, enabling the subclass to determine how a new object is created. 
+
+The base class may or may not provide a default implementation for the method, but it always uses the factory method to create a new object of the required type. 
+
 
 ```java
 public class AboutPage extends Page {
@@ -887,6 +939,10 @@ You can often experience this problem when working with classes of the graphical
 
 Should go over how to use observer with lambdas and concurrency.
 
+### In the Observer pattern, what strategies can the subject use to efficiently update its observers?
+
+A naïve implementation of the Observer pattern can yield poor performance if many objects are observing other objects. The most obvious problem is that a subject updates its state too often, causing it to spend most of its time updating its observers. This can happen when multiple properties are changed many times in rapid succession in a single code sequence. In such situations it may make more sense to briefly turn updates off, make the changes, then turn updates on and send a single update notification to all interested objects. Another potential problem relates to how observers determine what has changed. In many windowing systems, for example, it’s much more efficient to redraw just the part of the screen that has changed, rather than the entire display. To do this properly, the view (the observer) needs to know which part of the model (the subject) has changed. Rather than have the observer query the subject to determine what changed, why not have the subject pass the information along as part of the update notification? 
+
 #### Advantages/Disadvantages
 - Open/Closed principle. You can itroduce noew subscriber classes without having to change the publisher's code (and vice versa if there's a publisher interface).
 - You can establish relations between objects at runtime.
@@ -1035,6 +1091,19 @@ Use the visitor pattern when:
 - Visitors might lack the necessary access to the private fields and methods of the elements that they’re supposed to work with.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # SOLID Principles
 
 ## Single-Responsibility Principle
@@ -1129,51 +1198,43 @@ Any other maven module which depends on the engine only relies on the API.
 
 This is a benefit of splitting out your layers into mavem modules? You could change the underlying maven moduole, without recompiling everything.
 
-# Design Patterns
-
-Design pattersn are categorised into: creational, behavourial, and structural.
-
-## Creational
-
-### Singleton
-ensures that at most one instance of a class exists at any given time. 
-
-Singletons are also sometimes used as a substitute for global variables, but this doesn’t avoid any of the global state problems that plague global variables, so many people consider this use an anti-pattern. 
-
-Singletons are bettern than a set of static methods because:
-- Inheritance and interfaces: Singletons are objects, they can inherit from base classes and implement interfaces.
-- Possible Multiplicity: You can change your mind and create multiple objects without chaing a lot of code.
-- Dynamic binding: The actual class used to create the singleton can be determined at run time, not at compile time.
-
-Disadvantages:
-- testing, hard coded in to classes
-- Methods must be synchronised in multithreaded environments, slowing access to the singleton's state.
-- may slow down the application's startup time as it initialisations, and may hold onto resources longer than necessary.
-
-### Builder
-Creates objects in a stepwise manner without knowing or caring how those objects are constructed.  Instead of constructing an object directly (or via a factory), you instantiate a Builder and let it create the object on your behalf. 
-Builders are particularly useful for initializing objects that require multiple constructor parameters, especially parameters of the same or similar types.
-
-Not only is the object initialization much clearer and easier to understand, but initialization parameters can be easily added and removed. Certain parameters can be mandatory, and the others can be made optional with default values. 
-
-Simpler initialization is one use for builders. Sometimes it’s also useful to create a hierarchy of builders. At the top of the hierarchy is an abstract builder class that defines the methods for initializing the different parts of an object. Concrete subclasses override these methods to build the object in different ways. For example, a generic document builder would expose abstract methods like addHeading and addParagraph, which would be implemented by different subclasses to create HTML documents, PDF documents, and so on. 
-
-Use Builder when objects are complex to construct and are constructed in several steps. Otherwise, Abstract Factory may be simpler to use.
-
-### Factory Method
-A factory method is Technically any method whose primary purpose is to create and return a new object. the factory method pattern applies this concept to a class hierarchy.
-
-A base class defines a factory method that can be overriden in a subclass, enabling the subclass to determine how a new object is created. 
-
-The base class may or may not provide a default implementation for the method, but it always uses the factory method to create a new object of the required type. 
-
-### In the Observer pattern, what strategies can the subject use to efficiently update its observers?
-
-A naïve implementation of the Observer pattern can yield poor performance if many objects are observing other objects. The most obvious problem is that a subject updates its state too often, causing it to spend most of its time updating its observers. This can happen when multiple properties are changed many times in rapid succession in a single code sequence. In such situations it may make more sense to briefly turn updates off, make the changes, then turn updates on and send a single update notification to all interested objects. Another potential problem relates to how observers determine what has changed. In many windowing systems, for example, it’s much more efficient to redraw just the part of the screen that has changed, rather than the entire display. To do this properly, the view (the observer) needs to know which part of the model (the subject) has changed. Rather than have the observer query the subject to determine what changed, why not have the subject pass the information along as part of the update notification? 
 
 
-## What is autoboxing?
-Autoboxing = casting a primitive type to a wrapper type. auto-unboxing is the opposite.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Image by <a href="https://pixabay.com/users/Wounds_and_Cracks-218774/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Christos Giakkas</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Pixabay</a>

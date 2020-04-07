@@ -3,8 +3,8 @@ path: "/data-structures"
 cover: "./data-structures.jpg"
 title: "Data Structures"
 published: true
-tags: ["something"]
-date: "2018-10-15"
+tags: []
+date: "2020-04-07"
 ---
 
 # What is a data type?
