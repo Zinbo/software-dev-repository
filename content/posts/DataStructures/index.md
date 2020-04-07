@@ -3,6 +3,8 @@ path: "/data-structures"
 cover: "./data-structures.jpg"
 title: "Data Structures"
 published: true
+tags: ["something"]
+date: "2018-10-15"
 ---
 
 # What is a data type?
@@ -909,6 +911,157 @@ bool determineTermination( Node *head ){
 	} 
 }
 ```
+## Using a linked list for Stack
+Linked List achieves optimum design goals:
+- Use for any type
+- Space required is always proportional to the size of the collection
+- Time is independent of size
+This is all better than an array, because you don't need to resize.
+```java
+public class  Stack<Item> implements Iterable<Item> {           private Node first; // top of stack (most recently added node)   
+    private int N;      // number of items   
+    private  class Node {  
+        // nested class to define nodes      
+        Item item;      
+        Node next;   
+    }   
+    
+    public boolean isEmpty() {  
+        return first == null; 
+    }  
+    // Or: N == 0.   
+    
+    public int size() {  
+        return N; 
+    }   
+    
+    public void push(Item item) {  
+        // Add item to top of stack.      
+        Node oldfirst = first;      
+        first = new Node();      
+        first.item = item;      
+        first.next = oldfirst;      
+        N++;   
+    }   
+    
+    public Item pop() {  
+        // Remove item from top of stack.      
+        Item item = first.item;      
+        first = first.next;      
+        N--;      
+        return item;   
+    }   
+}
+```
+
+## Using a Linked List for a Queue
+Linked list is also good for a queue
+```java
+public class  Queue<Item> implements Iterable<Item> {           
+    private Node first; // link to least recently added node   
+    private Node last;  // link to most recently added node   
+    private int N;      // number of items on the queue   
+    
+    private  class Node   {  
+        // nested class to define nodes      
+        Item item;      
+        Node next;   
+    }   
+    
+    public boolean isEmpty() {  
+        return first == null;  
+    }  
+    // Or: N == 0.   
+    
+    public int size() {  
+        return N;  
+    }   
+    
+    public void enqueue(Item item) {  
+        // Add item to the end of the list.      
+        Node oldlast = last;      
+        last = new Node();      
+        last.item = item;      
+        last.next = null;      
+        if (isEmpty()) first = last;      
+        else           oldlast.next = last;      
+        N++;   
+    }   
+    
+    public Item dequeue() {  
+        // Remove item from the beginning of the list.      
+        Item item = first.item;
+        first = first.next;      
+        if (isEmpty()) last = null;      
+        N--;      
+        return item;   
+    }
+    
+}
+```
+
+
+## Array vs Linked List
+| Advantages | Disadvantages |
+| ---------- | ------------- |
+| index provides immediate accesss to any item | need to know size on initialisation |
+| uses space proportional to size | need reference to access an item |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1042,6 +1195,57 @@ public class MyArrayList<T> {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Queues
 A priority queue allows you to assign a priority to elements. If you insert an element with a higher priority, it will move to its proper place in the queue. You'll usually need to define a comparator for comparing elements. Java has its own implementation, PriorityQueue. 
 
@@ -1146,6 +1350,47 @@ public class StaticQueue<T> {
     }
 }
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1443,6 +1688,112 @@ In java, a hash table is synchronised, a hash map is not. Should probably use Co
 
 ### Chaining
 add impl for this and open addressing
+
+### Hash Tables
+We reference key-value pairs using arrays by doing arithmetic operations to transform keys into array indices.
+Two parts:
+- Compute hash function that transforms the search key into an array index.
+- Collision-resolution process that deals with this situation.
+Time-space trade off:
+- no memory limitation, use key as index
+- no time limitation, min amount of memory by using sequential search in unordered arra
+If we have an array that can hold M key-value pairs, then we need a hash function that can transform any given key into an index in that array. Every int should be equally likely.   
+Most common method: Size M is prime, compute remainder when dividing key k by M.   
+Requirement for good hash function
+- consistent
+-effeciient to compute
+- uniformly distributes keys
+Seperate chaining (collision resolution): For each array index build a linked list of the key-value pairs whose keys hash to that index. Search is two step, hash to find list, search through list for key.
+```java
+Look this up online
+```
+Linear probing (CR): store N key-value pairs in a hash table of size M > N. Called open addressing hashing methods. Liner probing, if there is a collision then go to the next entry.
+- key equal to search keyt: search hit
+- Empty position (null key at index position): search miss
+- Key not equal to search key: try next entrym till found or empty.
+```java
+Look this up online
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2137,6 +2488,206 @@ public static Node rotateRight( Node oldRoot ){
 	return newRoot; 
 } 
 ```
+
+### Binary Search Tree
+Is a binary tree where each node has a Comparable key and an associated value and satisfies the restriction that the key in any node is larger than the keys in all nodes to the left and smaller than the keys in all ndoes to the right.
+```java
+public class  BST<Key extends Comparable<Key>, Value> {
+    private Node root; // root of BST
+    private class  Node   {
+        private Key key;              // key
+        private Value val;            // associated value
+        private Node left, right;     // links to subtrees
+        private int N;                // # nodes in subtree rooted here
+
+        public Node(Key key, Value val, int N)      {
+            this.key = key; this.val = val; this.N = N;
+        }
+    }
+
+    public int size()   {
+        return size(root);
+    }
+
+    int size(Node x)   {
+        if (x == null) return 0;
+        else
+            return x.N;
+    }
+
+    public  Value get(Key key) {
+        return get(root, key);
+    }
+
+    private Value get(Node x, Key key) {
+        // Return value associated with key in the subtree rooted at x;
+        // return null if key not present in subtree rooted at x.
+        if (x == null) return null;   int cmp = key.compareTo(x.key);
+        if      (cmp < 0) return get(x.left, key);
+        else if (cmp > 0) return get(x.right, key);
+        else return x.val;
+    }
+
+    public void put(Key key, Value val) {
+        // Search for key. Update value if found; grow table if new.
+        root = put(root, key, val);
+    }
+
+    private Node put(Node x, Key key, Value val) {
+        // Change key’s value to val if key in subtree rooted at x.
+        // Otherwise, add new node to subtree associating key with val.
+        if (x == null) return new Node(key, val, 1);
+        int cmp = key.compareTo(x.key);
+        if      (cmp < 0) x.left  = put(x.left,  key, val);
+        else if (cmp > 0) x.right = put(x.right, key, val);
+        else x.val = val;   x.N = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    public Key min() {
+        return min(root).key;
+    }
+
+    private Node min(Node x) {
+        if (x.left == null)
+            return x;
+        return min(x.left);
+    }
+
+    public Key floor(Key key) {
+        Node x = floor(root, key);
+        if (x == null) return null;
+        return x.key;
+    }
+
+    private Node floor(Node x, Key key) {
+        if (x == null) return null;
+        int cmp = key.compareTo(x.key);
+        if (cmp == 0) return x;
+        if (cmp < 0)  return floor(x.left, key);
+        Node t = floor(x.right, key);
+        if (t != null) return t;
+        else return x;
+    }
+
+    public Key select(int k) {     
+        return select(root, k).key; 
+    } 
+        
+    private Node select(Node x, int k) {   
+        // Return Node containing key of rank k.    
+        if (x == null) return null;    
+        int t = size(x.left);    
+        if      (t > k) return select(x.left,  k);    
+        else if (t < k) return select(x.right, k-t-1);    
+        else            return x; 
+    } 
+        
+    public int rank(Key key) {  
+        return rank(key, root);  
+    } 
+    
+    private int rank(Key key, Node x) {  
+        // Return number of keys less than x.key in the subtree rooted at x.   
+        if (x == null) return 0;   
+        int cmp = key.compareTo(x.key);   
+        if      (cmp < 0) return rank(key, x.left);   
+        else if (cmp > 0) return 1 + size(x.left) + rank(key, x.right);   
+        else              return size(x.left);
+    }
+}
+```
+
+### Balanced search trees
+These are trees where we want the height to be logN.
+
+### 2-3 Search Trees
+Is empty or:
+- A 2-node, with 1 key and associated value and two links, a left link to a 2-3 tree with smaller keys and a right link to a 2-3 tree with larger keys
+- A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
+
+### Red-Black trees
+Need to look this up.
+
+### Tries
+Is a search tree.  
+Each node has R links, where R is the alphabet size. We can view each link as pointing to a trie. Composed of nodes that contain links that are either null or references to other nodes.  
+Each link corresponds to a chracter value - since each link points to exactly one node, we label each node with the chracter value corresponding to the link that points to it. Each node has a value which may be null or the vaslue associated with one of the string keys in the symbol table. We store the value assoicated with each key in the node corresponding to its last character.
+| Key    | Value |
+|--------|-------|
+| by     | 4     |
+| sea    | 1     |
+| sells  | 1     |
+| she    | 0     |
+| shells | 3     |
+| the    | 5     |
+- copy graph from page 17 on paper   
+Seach hits take time proportional to the legnth of the search key.  
+Search misses involve examining only a few chracters.   
+The vlaue of non-terminating nodes is null, so we known that a substring isn't a valid search term.
+```java
+public class  TrieST<Value> {   
+    private static int R = 256; // radix   
+    private Node root;          // root of trie   
+    private static class Node   {      
+        private Object val;      
+        private Node[] next = new Node[R];   
+    }   
+    
+    public Value get(String key)   {      
+        Node x = get(root, key, 0);      
+        if (x == null) return null;      
+        return (Value) x.val;   
+    }
+    
+    private Node get(Node x, String key, int d)   {  
+        // Return value associated with key in the subtrie rooted at x.      
+        if (x == null) return null;      
+        if (d == key.length()) return x;      
+        char c = key.charAt(d); // Use dth key char to identify subtrie.      
+        return get(x.next[c], key, d+1);   
+    }   
+    
+    public void put(String key, Value val)   {  
+        root = put(root, key, val, 0);  
+    }   
+    
+    private Node put(Node x, String key, Value val, int d)   {  
+        // Change value associated with key if in subtrie rooted at x.      
+        if (x == null) x = new Node();      
+        if (d == key.length()) {  
+            x.val = val; return x; 
+        }      
+        char c = key.charAt(d); // Use dth key char to identify subtrie.
+        x.next[c] = put(x.next[c], key, val, d+1);      
+        return x;   
+    } 
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3060,6 +3611,63 @@ Many array and string problems require the use of additional temporary data stru
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Recursion
 
 A recursive function performs a task in part by calling itself to perform the subtasks. At some point, the function encounters a subtask that it can perform without calling itself. This case, in which the function does not recurse, is called the base case; the former, in which the function calls itself to perform a subtask, is referred to as the recursive case.
@@ -3160,332 +3768,78 @@ static public void main (String[] args)
 } 
 ```
 
-## Implementing Iterable Collection
-The collection must implement an `iterator()` method that returns an `Iterator` object.
-- The iterator class must include two methods:
-    - `hasNext()`, which returns a boolean
-    - `next()`, which returns a generic item from the collection.
 
-## Using a linked list for Stack
-Linked List achieves optimum design goals:
-- Use for any type
-- Space required is always proportional to the size of the collection
-- Time is independent of size
-This is all better than an array, because you don't need to resize.
-```java
-public class  Stack<Item> implements Iterable<Item> {           private Node first; // top of stack (most recently added node)   
-    private int N;      // number of items   
-    private  class Node {  
-        // nested class to define nodes      
-        Item item;      
-        Node next;   
-    }   
-    
-    public boolean isEmpty() {  
-        return first == null; 
-    }  
-    // Or: N == 0.   
-    
-    public int size() {  
-        return N; 
-    }   
-    
-    public void push(Item item) {  
-        // Add item to top of stack.      
-        Node oldfirst = first;      
-        first = new Node();      
-        first.item = item;      
-        first.next = oldfirst;      
-        N++;   
-    }   
-    
-    public Item pop() {  
-        // Remove item from top of stack.      
-        Item item = first.item;      
-        first = first.next;      
-        N--;      
-        return item;   
-    }   
-}
-```
 
-## Using a Linked List for a Queue
-Linked list is also good for a queue
-```java
-public class  Queue<Item> implements Iterable<Item> {           
-    private Node first; // link to least recently added node   
-    private Node last;  // link to most recently added node   
-    private int N;      // number of items on the queue   
-    
-    private  class Node   {  
-        // nested class to define nodes      
-        Item item;      
-        Node next;   
-    }   
-    
-    public boolean isEmpty() {  
-        return first == null;  
-    }  
-    // Or: N == 0.   
-    
-    public int size() {  
-        return N;  
-    }   
-    
-    public void enqueue(Item item) {  
-        // Add item to the end of the list.      
-        Node oldlast = last;      
-        last = new Node();      
-        last.item = item;      
-        last.next = null;      
-        if (isEmpty()) first = last;      
-        else           oldlast.next = last;      
-        N++;   
-    }   
-    
-    public Item dequeue() {  
-        // Remove item from the beginning of the list.      
-        Item item = first.item;
-        first = first.next;      
-        if (isEmpty()) last = null;      
-        N--;      
-        return item;   
-    }
-    
-}
-```
 
-## Array vs Linked List
-| Advantages | Disadvantages |
-| ---------- | ------------- |
-| index provides immediate accesss to any item | need to know size on initialisation |
-| uses space proportional to size | need reference to access an item |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Data Structures
 ### Synbol Table
 A data structure for key-value pairs that support two operations:;
 - insert (put) a new pair into the table ans search for (get) the value associated with a given key.
 
-### Binary Search Tree
-Is a binary tree where each node has a Comparable key and an associated value and satisfies the restriction that the key in any node is larger than the keys in all nodes to the left and smaller than the keys in all ndoes to the right.
-```java
-public class  BST<Key extends Comparable<Key>, Value> {
-    private Node root; // root of BST
-    private class  Node   {
-        private Key key;              // key
-        private Value val;            // associated value
-        private Node left, right;     // links to subtrees
-        private int N;                // # nodes in subtree rooted here
-
-        public Node(Key key, Value val, int N)      {
-            this.key = key; this.val = val; this.N = N;
-        }
-    }
-
-    public int size()   {
-        return size(root);
-    }
-
-    int size(Node x)   {
-        if (x == null) return 0;
-        else
-            return x.N;
-    }
-
-    public  Value get(Key key) {
-        return get(root, key);
-    }
-
-    private Value get(Node x, Key key) {
-        // Return value associated with key in the subtree rooted at x;
-        // return null if key not present in subtree rooted at x.
-        if (x == null) return null;   int cmp = key.compareTo(x.key);
-        if      (cmp < 0) return get(x.left, key);
-        else if (cmp > 0) return get(x.right, key);
-        else return x.val;
-    }
-
-    public void put(Key key, Value val) {
-        // Search for key. Update value if found; grow table if new.
-        root = put(root, key, val);
-    }
-
-    private Node put(Node x, Key key, Value val) {
-        // Change key’s value to val if key in subtree rooted at x.
-        // Otherwise, add new node to subtree associating key with val.
-        if (x == null) return new Node(key, val, 1);
-        int cmp = key.compareTo(x.key);
-        if      (cmp < 0) x.left  = put(x.left,  key, val);
-        else if (cmp > 0) x.right = put(x.right, key, val);
-        else x.val = val;   x.N = size(x.left) + size(x.right) + 1;
-        return x;
-    }
-
-    public Key min() {
-        return min(root).key;
-    }
-
-    private Node min(Node x) {
-        if (x.left == null)
-            return x;
-        return min(x.left);
-    }
-
-    public Key floor(Key key) {
-        Node x = floor(root, key);
-        if (x == null) return null;
-        return x.key;
-    }
-
-    private Node floor(Node x, Key key) {
-        if (x == null) return null;
-        int cmp = key.compareTo(x.key);
-        if (cmp == 0) return x;
-        if (cmp < 0)  return floor(x.left, key);
-        Node t = floor(x.right, key);
-        if (t != null) return t;
-        else return x;
-    }
-
-    public Key select(int k) {     
-        return select(root, k).key; 
-    } 
-        
-    private Node select(Node x, int k) {   
-        // Return Node containing key of rank k.    
-        if (x == null) return null;    
-        int t = size(x.left);    
-        if      (t > k) return select(x.left,  k);    
-        else if (t < k) return select(x.right, k-t-1);    
-        else            return x; 
-    } 
-        
-    public int rank(Key key) {  
-        return rank(key, root);  
-    } 
-    
-    private int rank(Key key, Node x) {  
-        // Return number of keys less than x.key in the subtree rooted at x.   
-        if (x == null) return 0;   
-        int cmp = key.compareTo(x.key);   
-        if      (cmp < 0) return rank(key, x.left);   
-        else if (cmp > 0) return 1 + size(x.left) + rank(key, x.right);   
-        else              return size(x.left);
-    }
-}
-```
-
-### Balanced search trees
-These are trees where we want the height to be logN.
-
-### 2-3 Search Trees
-Is empty or:
-- A 2-node, with 1 key and associated value and two links, a left link to a 2-3 tree with smaller keys and a right link to a 2-3 tree with larger keys
-- A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
-
-### Red-Black trees
-Need to look this up.
-
-### Hash Tables
-We reference key-value pairs using arrays by doing arithmetic operations to transform keys into array indices.
-Two parts:
-- Compute hash function that transforms the search key into an array index.
-- Collision-resolution process that deals with this situation.
-Time-space trade off:
-- no memory limitation, use key as index
-- no time limitation, min amount of memory by using sequential search in unordered arra
-If we have an array that can hold M key-value pairs, then we need a hash function that can transform any given key into an index in that array. Every int should be equally likely.   
-Most common method: Size M is prime, compute remainder when dividing key k by M.   
-Requirement for good hash function
-- consistent
--effeciient to compute
-- uniformly distributes keys
-Seperate chaining (collision resolution): For each array index build a linked list of the key-value pairs whose keys hash to that index. Search is two step, hash to find list, search through list for key.
-```java
-Look this up online
-```
-Linear probing (CR): store N key-value pairs in a hash table of size M > N. Called open addressing hashing methods. Liner probing, if there is a collision then go to the next entry.
-- key equal to search keyt: search hit
-- Empty position (null key at index position): search miss
-- Key not equal to search key: try next entrym till found or empty.
-```java
-Look this up online
-```
-
-## Graphs
-Path: A sequence of vertices connected by edges. A simple path is one with no repeated vertices.   
-Connected: If there is a path from every vertex to every other vertex in the graph.
-
-### Adjacent-lists data structure
-Keep track of all the vertices adjacent to each vertex on a linked list so that, given a vertex, we can immediately access its list.  
-To add an edge connecting v and w, we add w to v's adjacency list and v to w's adjacency list.
-```java
-Find a good implementation of graph with adjacent lists structure
-```
-
-### Depth-First Search
-
-### Breadth First Search
-
-## Dijstras Shortest-Path Algorithm
-- look this up online
 
 
-### Tries
-Is a search tree.  
-Each node has R links, where R is the alphabet size. We can view each link as pointing to a trie. Composed of nodes that contain links that are either null or references to other nodes.  
-Each link corresponds to a chracter value - since each link points to exactly one node, we label each node with the chracter value corresponding to the link that points to it. Each node has a value which may be null or the vaslue associated with one of the string keys in the symbol table. We store the value assoicated with each key in the node corresponding to its last character.
-| Key    | Value |
-|--------|-------|
-| by     | 4     |
-| sea    | 1     |
-| sells  | 1     |
-| she    | 0     |
-| shells | 3     |
-| the    | 5     |
-- copy graph from page 17 on paper   
-Seach hits take time proportional to the legnth of the search key.  
-Search misses involve examining only a few chracters.   
-The vlaue of non-terminating nodes is null, so we known that a substring isn't a valid search term.
-```java
-public class  TrieST<Value> {   
-    private static int R = 256; // radix   
-    private Node root;          // root of trie   
-    private static class Node   {      
-        private Object val;      
-        private Node[] next = new Node[R];   
-    }   
-    
-    public Value get(String key)   {      
-        Node x = get(root, key, 0);      
-        if (x == null) return null;      
-        return (Value) x.val;   
-    }
-    
-    private Node get(Node x, String key, int d)   {  
-        // Return value associated with key in the subtrie rooted at x.      
-        if (x == null) return null;      
-        if (d == key.length()) return x;      
-        char c = key.charAt(d); // Use dth key char to identify subtrie.      
-        return get(x.next[c], key, d+1);   
-    }   
-    
-    public void put(String key, Value val)   {  
-        root = put(root, key, val, 0);  
-    }   
-    
-    private Node put(Node x, String key, Value val, int d)   {  
-        // Change value associated with key if in subtrie rooted at x.      
-        if (x == null) x = new Node();      
-        if (d == key.length()) {  
-            x.val = val; return x; 
-        }      
-        char c = key.charAt(d); // Use dth key char to identify subtrie.
-        x.next[c] = put(x.next[c], key, val, d+1);      
-        return x;   
-    } 
-}
-```
+
+
 
 
 

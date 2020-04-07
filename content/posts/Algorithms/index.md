@@ -3,6 +3,8 @@ path: "/algorithms"
 cover: "./fractal-1119594_640.jpg"
 title: "Algorithms"
 published: true
+tags: ["something"]
+date: "2018-10-15"
 ---
 # Starting A Problem
 There are a number of steps to follow to solve a problem:

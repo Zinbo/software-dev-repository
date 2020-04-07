@@ -3,6 +3,8 @@ path: "/software-principles"
 cover: "./software-principles.jpg"
 title: "Software Principles"
 published: true
+tags: ["something"]
+date: "2018-10-15"
 ---
 
 # Design Patterns

@@ -3,6 +3,8 @@ path: "/computer-science"
 cover: "./computer-science.jpg"
 title: "Computer Science"
 published: true
+tags: ["something"]
+date: "2018-10-15"
 ---
 
 # Bit manipulation

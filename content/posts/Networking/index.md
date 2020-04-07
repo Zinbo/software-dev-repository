@@ -3,6 +3,8 @@ path: "/networking"
 cover: "./networking.jpg"
 title: "Networking"
 published: true
+tags: ["something"]
+date: "2018-10-15"
 ---
 
 # Networking

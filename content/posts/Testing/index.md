@@ -3,6 +3,8 @@ path: "/testing"
 cover: "./testing.jpg"
 title: "Testing"
 published: true
+date: "2018-10-15"
+tags: ["something"]
 ---
 
 
