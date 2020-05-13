@@ -3,7 +3,6 @@ path: "/networking"
 cover: "./networking.jpg"
 title: "Networking"
 published: true
-tags: []
 date: "2020-04-07"
 ---
 

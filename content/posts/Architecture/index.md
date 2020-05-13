@@ -3,7 +3,6 @@ path: "/architecture"
 cover: "./architecture.jpg"
 title: "Architecture"
 published: true
-tags: []
 date: "2020-04-07"
 ---
 
@@ -17,7 +16,7 @@ This section mostly relates to how you can scale your application to run for you
 1. Outline use cases, constraints, and assumptions
     - Gather requirements and scope the problem. Ask questions to clarify use cases and constraints. Ask things like, who is going to use it, how many users are there, how many requests per second do we expect?
 2. Create a high level design
-    - skwtch the main components and connections and justify them
+    - sketch the main components and connections and justify them
 3. Design core components
     - For example if you were asked to design a url shortening service, 
         - discuss how you would generate and store the hash, e.g. MD5, hash collisions, SQL or no SQL, schema, etc.

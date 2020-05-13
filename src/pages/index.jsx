@@ -64,7 +64,6 @@ Index.propTypes = {
               path: PropTypes.string.isRequired,
               title: PropTypes.string.isRequired,
               date: PropTypes.string.isRequired,
-              tags: PropTypes.array,
             }),
           }),
         }).isRequired
@@ -83,7 +82,6 @@ export const query = graphql`
           frontmatter {
             title
             path
-            tags
             date(formatString: "MM.DD.YYYY")
             cover {
               childImageSharp {

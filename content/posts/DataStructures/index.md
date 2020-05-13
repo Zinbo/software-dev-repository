@@ -3,7 +3,6 @@ path: "/data-structures"
 cover: "./data-structures.jpg"
 title: "Data Structures"
 published: true
-tags: []
 date: "2020-04-07"
 ---
 

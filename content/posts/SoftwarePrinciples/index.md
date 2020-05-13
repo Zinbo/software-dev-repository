@@ -3,7 +3,6 @@ path: "/software-principles"
 cover: "./software-principles.jpg"
 title: "Software Principles"
 published: true
-tags: []
 date: "2020-04-07"
 ---
 

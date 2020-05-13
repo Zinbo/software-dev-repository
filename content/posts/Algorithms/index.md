@@ -3,12 +3,13 @@ path: "/algorithms"
 cover: "./fractal-1119594_640.jpg"
 title: "Algorithms"
 published: true
-tags: []
 date: "2020-04-07"
 ---
-# Starting A Problem
+# Algorithm Basics
+.
+## Starting A Problem
 There are a number of steps to follow to solve a problem:
-1. Make sue you understand the problem
+1. Make sure you understand the problem
 2. When you understand the question, try a simple example
 3. Focus on the algorithm and data structures you will use to solve the problem. Requires problem recognition.
 4. After you figure out the algorithm and how you can implement it, explain your solution to your interviewer.
@@ -19,10 +20,11 @@ There are a number of steps to follow to solve a problem:
 9. Check time and space complexities and mention them to your interviewer (best, average, and worst case).
 10. If you get stuck, go back to the example and/or try a different data structure.
 
-# Algorithm Design
+## Algorithm Helper
 ![Canvas](https://www.hiredintech.com/the-algorithm-design-canvas.png)
 
-## Constraints to look out for
+## Constraints to look out for 
+.  
 
 ### Strings, Arrays and Numbers
 - How many elements can be in the array?
@@ -30,12 +32,6 @@ There are a number of steps to follow to solve a problem:
 - What is in each element? If it’s a number, is it an integer or a floating point? If it’s a string, is it single-byte or multibyte (unicode)?
 - If the problem involves finding a subsequence, does “subsequence” mean that the elements must be adjacent, or is there no such requirement?
 - Does the array contain unique numbers or can they be repeated (this is sometimes relevant)?
-
-### Grids/Mazes
-- For problems where some actor (e.g. a robot) is moving in a grid or maze, what moves are allowed? Can the robot move diagonally (hence 8 valid moves), or only horizontally/vertically (hence only 4 valid moves)?
-- Are all cells in the grid allowed, or can there be obstacles?
-- If the actor is trying to get from cell A to cell B, are cells A and B guaranteed to be different from each other?
-- If the actor is trying to get from cell A to cell B, is it guaranteed that there’s a path between the two cells?
 
 ### Graphs
 - How many nodes can the graph have?
@@ -46,35 +42,14 @@ There are a number of steps to follow to solve a problem:
 - Does the graph have multiple edges and/or self-loops?
 
 ### Return Values
-Return Values
 - What should my method return? For example, if I’m trying to find the longest subsequence of increasing numbers in an array, should I return the length, the start index, or both?
 - If there are multiple solutions to the problem, which one should be returned?
 - If it should return multiple values, do you have any preference on what to return? E.g. should it return an object, a tuple, an array, or pass the output parameters as input references? (This may not be applicable in languages allowing you to return multiple values, e.g. Python)
 - What should I do/return if the input is invalid / does not match the constraints? Options may be to do nothing (always assume the input is correct), raise an exception, or return some specific value.
 - In problems where you’re supposed to find something (e.g. a number in an array), what should be returned if the element is not present?
 
-### Complexities
-https://www.hiredintech.com/the-common-comlexities-handout.pdf
 
-
-
-
-
-
-
-
-
-
-# Big-O
-Big-O is used for time and space complexity.
-
-## How to do Big-O Analysis
-1. Figure out what the input is and what `n` represents
-2. Express the number of operations the algorithm performs in therms of n.
-3. Eliminate all but the highest-order terms
-4. Remove all constant factors
-
-## Common Runtimes
+## Common Big-O Runtimes
 - O(log n)
 - O(n)
 - O(n log n) - super linear
@@ -82,9 +57,7 @@ Big-O is used for time and space complexity.
 - O(c<sup>n</sup>) - exponential
 - O(n!)  - factorial
 
-A cheatsheet can be found [here](https://www.bigocheatsheet.com/).
-
-## Examples of Big-O
+### Examples of Big-O
 | Description | Order of Growth | Typical Code Framework | Description | Example |
 | ----------- | -------------- | ---------------------- | ----------- | ------- |
 | constant  | 1 | a = b + c; | statement | add two numbers |
@@ -100,17 +73,14 @@ A cheatsheet can be found [here](https://www.bigocheatsheet.com/).
 
 ## Stability
 Stability is when the initial order is preserved for elements that are the same.  
-
-If you sort students by name and then by class, you want this to be stable becasue you want to preserve the name ordering as much as you can.
-
 If the sort isn't stable you can't do two sorts consecutively.  
-
 Insertion sort and merge sort are stable, selection sort and shellsort are not.
 
 ## Selection sort
 - Find smallest, exchange with first, find next smallest, exchange with second
 - Running time is insensitive to order of array
 - Data movement is minimal, uses N exchanges
+
 ```java
 public class Selection {
     public static void sort(Comparable[] a) {
@@ -136,9 +106,10 @@ public class Selection {
 time complexity is O(n)<sup>2</sup>
 
 ## Insertion Sort
-- For each i from 0 to N-1, exchange a[i] with entries that arte larger in a[i] to a[0].
+- For each `i` from 0 to `N-1`, exchange `a[i]` with entries that are larger in `a[i]` to `a[0]`.
 - As the index travels from left to right the entries to the left of u are in sorted order.
 - This algorithm is much faster array is in order or nearly in order.
+
 ```java
 public class  Insertion {
     public static void sort(Comparable[] a) {
@@ -166,24 +137,24 @@ Best time complexity: O(n)
 average/worst: O(n)<sup>2<sup>
 
 ## Merge sort
-This is a recursive method.
+This is a recursive method:
 - Divide list into two halves
 - sort the two halves recursively
-- merge the two havlves
+- merge the two halves
+
+To merge:  
+We copy over the array to a new array, and we need to hold 3 indicies:
+- `i`, the current element in the first half
+- `j`, the current element in the second half
+- `k`, the current element in the sorted result.
+
+We compare the value at `i` and value at `j`, we take the smallest one and place it at `k`, and increment either `i` or `j`, depending which element we took. We do this until we reach the end of both halves.
 
 Time Complexity:
 - O(NlogN)
 
 Space Complexity:
-- uses extra space proportional to N.
-
-To merge:  
-We copy over the array to a new array, and we need to hold 3 indicies:
-- i, the current element in the first half
-- j, the current element in the second half
-- k, the current element in the sorted result.
-
-We compare the value at i and value at j, we take the smallest one and place it at k, and increment either i or j, depending which element we took. We do this until we reach the end of both halves.
+- uses extra space proportional to `N`.
 
 ### Top Down Merge Sort
 
@@ -193,34 +164,32 @@ public class MergeTD {
     // auxiliary array for merges
     public static void sort(Comparable[] a)   {
         aux = new Comparable[a.length];
-        // Allocate space just once.
         sort(a, 0, a.length - 1);
     }
 
     private static void sort(Comparable[] a, int lo, int hi) {
         // Sort a[lo..hi].
-        if (hi <= lo) return;
+        if (hi <= lo) return; // If the split array is size 0, return.
         int mid = lo + (hi - lo)/2;
-        sort(a, lo, mid);
-        // Sort left half.
-        sort(a, mid+1, hi);
-        // Sort right half.
-        merge(a, lo, mid, hi);
-        // Merge results (code on page 271).   
+        sort(a, lo, mid); // Sort left half.
+        sort(a, mid + 1, hi); // Sort right half.
+        merge(a, lo, mid, hi); 
     }
 
     public static void merge(Comparable[] a, int lo, int mid, int hi) {  
         // Merge a[lo..mid] with a[mid+1..hi].  
-        int i = lo, j = mid+1;   
-        for (int k = lo; k <= hi; k++)  
+        int pointerToLowerHalf = lo, pointerToUpperHalf = mid+1;   
+        for (int k = lo; k <= hi; k++)  {
             // Copy a[lo..hi] to aux[lo..hi].      
             aux[k] = a[k];   
-        for (int k = lo; k <= hi; k++)  
+        }
+        for (int k = lo; k <= hi; k++)  {
             // Merge back to a[lo..hi].      
-            if (i > mid)                    a[k] = aux[j++];      
-            else if (j > hi )               a[k] = aux[i++];      
-            else if (less(aux[j], aux[i]))  a[k] = aux[j++];      
-            else                            a[k] = aux[i++]; 
+            if (pointerToLowerHalf > mid)                                       a[k] = aux[pointerToUpperHalf++];      
+            else if (pointerToUpperHalf > hi )                                  a[k] = aux[pointerToLowerHalf++];      
+            else if (less(aux[pointerToUpperHalf], aux[pointerToLowerHalf]))    a[k] = aux[pointerToUpperHalf++];      
+            else                                                                a[k] = aux[pointerToLowerHalf++]; 
+        }
     }
     
     private static boolean less(Comparable v, Comparable w) {
@@ -229,28 +198,9 @@ public class MergeTD {
 }
 ```
 
-### Recursion
-```java
-private static void sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
-    if(hi <= lo) return;
-    int mid = lo + (hi - lo) / 2;
-    sort(a, aux, lo, mid);
-    sort(a, aux, mid+1, hi);
-    merge(a, aux, lo, mid, hi);
-}
-```
-
-```java
-public static void sort(Comparable[] a) {
-    aux = new Comparable[a.length];
-    sort(a, aux, 0, a.length - 1);
-}
-```
-
 ### Bottom-Up Merge Sort
-In bottom up, we pass through the entire arrat, merging sub arrays of size 1, then for size 2, then for size 4, etfc.  
-No recursion is needed for this.  
-It uses more space?
+In bottom up, we pass through the entire array, merging sub arrays of size 1, then for size 2, then for size 4, etc.  
+No recursion is needed for this.
 
 ```java
 public class MergeBU {

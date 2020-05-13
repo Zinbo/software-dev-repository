@@ -78,7 +78,6 @@ export const query = graphql`
       frontmatter {
         date
         title
-        tags
         cover {
           childImageSharp {
             fluid(

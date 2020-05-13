@@ -114,5 +114,4 @@ BlogList.propTypes = {
   excerpt: PropTypes.string,
   date: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  tags: PropTypes.array.isRequired,
 };
