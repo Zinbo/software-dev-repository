@@ -23,6 +23,16 @@ There are a number of steps to follow to solve a problem:
 ## Algorithm Helper
 ![Canvas](https://www.hiredintech.com/the-algorithm-design-canvas.png)
 
+## Checking for bugs in code
+Four common problem areas for any function:
+1. Check that the data comes into the function properly.
+    - accessing a variable you don't have
+    - reading as an int and should be a long
+2. Check that each line of the function works correctly
+3. Check that the data comes out fo the function correctly
+4. Check common error conditions
+    - empty data structures, null, etc.
+
 ## Constraints to look out for 
 .  
 
@@ -258,7 +268,7 @@ This algorithm will go through and sort the first half of the array first, in ch
 - works well for a variety of different input data.
 - substantially faster than any other sorting method in typical applications.
 - Is in place, time proportional to NlogN on average.
-- Partitions an array into two sub arrats, then sorts the sub arrays indepedently.
+- Partitions an array into two sub arrays, then sorts the sub arrays independently.
 - We do not merge, when the two sub arrays are sorted, the whole array is sorted.
 
 Is the sort used for primitives in Java
@@ -272,9 +282,6 @@ Basic idea is:
 - sort each piece recursively
 
 Advantage of quick sort over merge sort is that it doesn't require extra space. However it is not stable.
-
-If the array is in order, then worst case is O(N^2). Therefore we should shuffle the array.
-Best case is O(N log N).  
 
 Also benefits from using insertion sort at cut off point.
 
@@ -290,12 +297,10 @@ public class Quick {
     }
 
     static void shuffleArray(Comparable[] ar) {
-        // If running on Java 6 or older, use `new Random()` on RHS here
         Random rnd = new Random();
         for (int i = ar.length - 1; i > 0; i--)
         {
             int index = rnd.nextInt(i + 1);
-            // Simple swap
             Comparable a = ar[index];
             ar[index] = ar[i];
             ar[i] = a;
@@ -305,11 +310,8 @@ public class Quick {
     private static void sort(Comparable[] a, int lo, int hi)   {
         if (hi <= lo) return;
         int j = partition(a, lo, hi);
-        // Partition (see page 291).
-        sort(a, lo, j-1);
-        // Sort left part a[lo .. j-1].
-        sort(a, j+1, hi);
-        // Sort right part a[j+1 .. hi].
+        sort(a, lo, j-1); // Sort left part a[lo .. j-1].
+        sort(a, j+1, hi); // Sort right part a[j+1 .. hi].
     }
 
     private static int partition(Comparable[] a, int lo, int hi) {
@@ -342,6 +344,9 @@ public class Quick {
     }
 }
 ```
+
+If the array is in order, then worst case is O(N<sup>2</sup>). Therefore we should shuffle the array.
+Best case is O(N log N).  
 
 ## Algorithms For Strings
 </br>
@@ -414,27 +419,6 @@ public class  MSD {
  
 ```
 
-### converting a string to an integer
-1. Initialise the variable to 0
-2. If there are no more digits in the string then the algorithm is complete
-3. Fetch the next digit from the stirng (left to right)
-4. Multiply by 10 and add digit
-5. Repeat from step 2.
-
-### Converting Integer to string:
-1. Initialie empty string
-2. If 0, output 0
-3. Divide value by 10, computing remaiunder and quotent
-4. Convert remainder to a character, concat to end of string
-5. If quotent is not 0, make new value
-6. Output chars in reverse order
-
-
-
-
-
-
-
 # Selection Algorithms
 Goal: Given an array of N items, find the Kth largest.
 
@@ -458,50 +442,19 @@ As an example, if we're looking for the 5th largest element, if j comes back as 
 
 It takes linear time on average.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Dynamic Programming
 It is a general-purpose algorithm design technique that is most often used to solve combinatorial optimisation problems, where we are looking for the best possible input to some function chosen from an exponentially large search space.
 
 There are two parts:
-- programming technique: dynamic programming is essentially divide and conquer in reverse. We start from the bottom with the snallest instances of the problem, solving each increaseingly large instance in turn and storing the result in a table.
-- design principle: in building up our table, we are careful always to preserve alternative solutions we may need later, by delaying commitment to particular choices to the extent that we can.
+- **programming technique**: dynamic programming is essentially divide and conquer in reverse. We start from the bottom with the smallest instances of the problem, solving each increasingly large instance in turn and storing the result in a table.
+- **design principle**: in building up our table, we are careful always to preserve alternative solutions we may need later, by delaying commitment to particular choices to the extent that we can.
 
 Bottom up aspect is most useful with recursion that produces many duplicate subproblems.
 
 ## Memoization
 With fib sequence, a naive way to solve it is
+
 ```c
-int
 int fib(int n)
 {
     if(n < 2) {
@@ -513,9 +466,9 @@ int fib(int n)
 ```
 
 Memoization: wrap our recursive solution in a memoiser that stores previously-computed solutions in a hash table. 
+
 ```c
-int
-memoFib(int n)
+int memoFib(int n)
 {
     int ret;
 
@@ -561,10 +514,92 @@ int fib2(int n)
 Now this is linear time rather than the original algorithm, which was exponential.
 
 ## Recursion Problems
-</br>
+
+In many cases, your recursive functions may need additional data structures or an argument that tracks the recursion levle. Often the best solution in such cases is to move the data structure or argument initialisation into a separate function, This wrapper function ,which performs initialisation and then calls the purely recursive function, provides a clea, simple interface to the rest of the program.
+
+Although recursion is a powerful technique, it is not always the best approach, and rarely is it the most efficient approach. This is due to the relatively large overhead for function calls on most platforms. For a simple recursive function like factorial, many computer architectures sped more time on call overhead than on the actual calculation.  Iterative functions, which use looping constructs instead of recursive function calls, do not suffer from this overhead and are frequently more efficient.
+
+Any problem that can be solved recursively can also be solved iteratively. Iterative algorithms are often easy to write, even for tasks that might appear to be fundamentally recursive. As an example, here is how we can do factorial:
+```c
+int factorial( int n ){
+	int i, val = 1;
+	for( i = n; i > 1; i-- )  /* n = 0 or 1 falls through */
+		val *= i;
+	return val; 
+} 
+```
+It is significantly more efficient than the previous recursive implementation because it doesn't make any additional function calls.  
+You can eliminate the need for recursive calls by allocating your own stack and manually storing and retrieving local variable values from this stack.  
+Implementing this type of stack-based iterative function tends to be significantly more complicated than implementing an equivalent function using recursive calls. Furthermore, unless the overhead for the stack you use is significantly less than the function call overhead, a function written this way won't be more efficient than a conventional recursive implementation. Therefore you should implement recursive algorithms with recrusive calls unless instructed otherwise.  
+
+In an interview, a working solution is of primary importance; an efficient solution is secondary.
+
+## Tail recursion
+A recursive function is tail recurisve when the recursive call is the last thing executed by the function. For example the following C++ function print() is tail recurisve.
+```c
+void print(int n) 
+{ 
+    if (n < 0)  return; 
+    cout << " " << n; 
+  
+    // The last executed statement is recursive call 
+    print(n-1); 
+}
+```
+Tail recursive functions are considered better than non-tail recursive functions as tail-recursion can be optimised by the compiler. The idea used by compilers to optimise tail-recursive functions is simple, since the recursive call is the last statmeent, there is nothing left to do in the current function, so saving the current function's stack frame is of no use.
+
+### How to rewrite a non-tail recursive function to be tail-recursive?
+Consuider this algorithm:
+```java
+// A NON-tail-recursive function. 
+// The function is not tail 
+// recursive because the value  
+// returned by fact(n-1) is used 
+// in fact(n) and call to fact(n-1) 
+// is not the last thing done by 
+// fact(n) 
+static int fact(int n) 
+{ 
+	if (n == 0) return 1; 
+	
+	return n*fact(n-1); 
+} 
+	
+// Driver program 
+public static void main(String[] args) 
+{ 
+	System.out.println(fact(5)); 
+} 
+```
+Although it looks tail recursive, we can see that the value returned by `fact(n-1)` is used in `fact(n)`, so the call to `fact(n-1)` is not the last thing done by `fact(n)`.  
+
+We can write this as a tail recursive function, where we use one more argument and accumulate the factorial value in the second algorithm. When `n` reaches 0, return the accumulated value.
+```java
+// A tail recursive function  
+// to calculate factorial 
+static int factTR(int n, int a) 
+{ 
+	if (n == 0)  
+		return a; 
+	
+	return factTR(n - 1, n * a); 
+} 
+	
+// A wrapper over factTR 
+static int fact(int n) 
+{ 
+	return factTR(n, 1); 
+} 
+
+// Driver code 
+static public void main (String[] args) 
+{ 
+	System.out.println(fact(5)); 
+} 
+```
 
 ### Binary Search
-**Problem:** Implement a function to perform a binary search on a sorted array of integer to find the index of a given integer. Comment on the efficiency of this search, and compare it with other search methods.
+**Problem:** Implement a function to perform a binary search on a sorted array of integer to find the index of a given integer. 
 
 In binary search there are 3 possibilities:
 1. The central element is less than what you're searching for, so you eliminate the first half of the search space.
@@ -664,7 +699,7 @@ static void printPermutn(String str, String ans)
             String ros = str.substring(0, i) +  
                          str.substring(i + 1); 
   
-            // Recurvise call 
+            // Recursive call 
             printPermutn(ros, ans + ch); 
         } 
     } 
@@ -702,35 +737,6 @@ public class Combinations {
 	} 
 }
 ```
-
-### Telephone Words
-**Problem:** People in the United States often give others their telephone number as a word representing the seven-digit number after the area code. For example, if my telephone number were 866-2665, I could tell people my number is “TOOCOOL,” instead of the hard-to-remember seven-digit number. Note that many other possibilities (most of which are nonsensical) can represent 8662665.  
-Write a function that takes a seven-digit telephone number and prints out all of the possible “words” or combinations of letters that can represent the given number. Because the 0 and 1 keys have no letters on them, you should change only the digits 2–9 to letters. You’ll be passed an array of seven integers, with each element being one digit in the number. You may assume that only valid phone numbers will be passed to your function.  
-You can use the helper function 
-`char getCharKey( int telephoneKey, int place )`
-which takes a telephone key (0–9) and a place of either 1, 2, 3 and returns the character corresponding to the letter in that position on the specified key. For example, GetCharKey(3,2) will return ‘E’ because the telephone key 3 has the letters “DEF” on it and ‘E’ is the second letter.
-
-```java
-public void printOutAllCombinations(int[] phoneNumber) {
-	this.phoneNumber = phoneNumber;
-	printOutStringRecursively(0);
-}
-
-public void printOutStringRecursively(int index){
-	if(index == PHONE_NUMBER_LENGTH) {
-		System.out.println(recursiveArray);
-		return;
-	}
-
-	for(int i = 0; i < 3; i++) {
-		recursiveArray[index] = getLetterForNumberAtIndex(phoneNumber[index], i);
-		printOutStringRecursively(index+1);
-		if(phoneNumber[index] == 0 || phoneNumber[index] == 1) return;
-	}
-}
-```
-
-
 
 Image by <a href="https://pixabay.com/users/TheDigitalArtist-202249/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1119594">Pete Linforth</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1119594">Pixabay</a>
 

@@ -12,6 +12,7 @@ date: "2020-04-07"
 - Behavioural
 
 ## Creational
+</br>
 
 ### Singleton
 Most used
@@ -1089,20 +1090,6 @@ Use the visitor pattern when:
 -  You need to update all visitors each time a class gets added to or removed from the element hierarchy.
 - Visitors might lack the necessary access to the private fields and methods of the elements that they’re supposed to work with.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # SOLID Principles
 
 ## Single-Responsibility Principle
@@ -1197,44 +1184,13 @@ Any other maven module which depends on the engine only relies on the API.
 
 This is a benefit of splitting out your layers into mavem modules? You could change the underlying maven moduole, without recompiling everything.
 
+# KISS
 
+# YAGNI
 
+# DRY
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# DAMP
 
 Image by <a href="https://pixabay.com/users/Wounds_and_Cracks-218774/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Christos Giakkas</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Pixabay</a>
 

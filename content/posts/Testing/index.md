@@ -8,31 +8,19 @@ date: "2020-04-07"
 
 
 # Testing
+</br>
 
-Some people don't agree with Test Driven Development - puts too much enphasis on unit testing and not enough on integration testing/system testing.
+## Testing Principles
+- Some people don't agree with Test Driven Development - puts too much enphasis on unit testing and not enough on integration testing/system testing.
+- Don't mix test code and production - should avoid having ability to run "test mode", should be externalised if possible.
+- Integration tests should not contribute to code coverage
+- We should write tests before fixing bugs.
+- It's important to have tests that ensure external systems are available and working correctly but these tests should not be the same as the tests which verify thast code is working as expected.
+- External systems should be tested independently and monitored with appropriate hardware and/or device monitoring systems.
+   - There are however occasions where having a fully working copy of a production system in a controlled environment can be of great benefit and where mocking dependencies is not an appropriate solution.
+- final and static methods are often unmockable.
+- Using new can be problematic as we can't mock this. Using factories instead can be better, where we can mock the factory and call .create() to create the object.
 
-Don't mix test code and production - should avoid having ability to run "test mode", should be externalised if possible.
-
-Integration tests should not contribute to code coverage
-
-We should write tests before fixing bugs.
-
-Need notes on microservices testing
-
-It's important to have tests that ensure external systems are available and working correctly but these tests should not be the same as the tests which verify thast code is working as expected.
-
-External systems should be tested independently and monitored with appropriate hardware and/or device monitoring systems.
-
-Where are integration tests on the microservice testing pyramid?
-
-There are however occasions where having a fully working copy of a production system in a controlled environment can be of great benefit and where mocking dependencies is not an appropriate solution.
-
-https://martinfowler.com/articles/practical-test-pyramid.html
-https://www.gocd.org/2018/05/08/continuous-delivery-microservices-test-strategy/
-
-final and static methods are often unmockable (however PowerMock does allow them to be mocked, but this might not be available on Android).
-
-Using new can be problematic as we can't mock this. Using factories instead can be better, where we can mock the factory and call .create() to create the object.
 ```java
 private EmailerFactory factory;
 
@@ -68,33 +56,13 @@ protected Emailer newEmailer() {
     return new Emailer();
 }
 ```
+- We CAN use spies to check the internal workings of a class, but we should be hesitant to do this, as it may be a code smell (need to use reflection, brittle).
 
-We CAN use spies to check the internal workings of a class, but we should be hesitant to do this, as it may be a code smell (need to use reflection, brittle).
-
-PowerMock
-
-jMocker?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Microservices testing
+Need to fill this in 
 
 # Practical Test Pyramid
-Continuous delivery is a practice where you automatically ensure that your software can be released into produiction any time. YOu use a build pipeline to automatically test your software ande dpeloy it to your testing and production envirnoments.
+Continuous delivery is a practice where you automatically ensure that your software can be released into production any time. You use a build pipeline to automatically test your software and deploy it to your testing and production environments.
 
 Mike Cohn's original test pyramid had three layers:
 1. Unit Tests
@@ -102,19 +70,19 @@ Mike Cohn's original test pyramid had three layers:
 3. User Interface Tests
 
 What we should take from this is:
-Write lots of small and fast unit tests. Write some more coarse-grained tests and very few high-levle tests that test your application from end to end.
+Write lots of small and fast unit tests. Write some more coarse-grained tests and very few high-level tests that test your application from end to end.
 
 ## Unit Tests
 Solitary unit tests = stub all collaborators  
 Social unit tests = talk to real collaborators.
 
-Unit tests should ensure that all your non-trivial code paths are tests, but at the same time they shouldn't be tied to your implementation too closely. If they break as soon as you refactor then you lose one big benefit of unit tests: acting as a safety net for code changes. Don't reflect your internal code structure within your unit tests. Test for observable behaviour instead.
+Unit tests should ensure that all your non-trivial code paths are tested, but at the same time they shouldn't be tied to your implementation too closely. If they break as soon as you refactor then you lose one big benefit of unit tests: acting as a safety net for code changes. Don't reflect your internal code structure within your unit tests. Test for observable behaviour instead.
 
-If you really need to test a private method it's most liekly a design problem rather than a scoping problem. Most likely the class you're testing is too complexy and violates the SRP. The solution that often works is to split the class in two.
+If you really need to test a private method it's most likely a design problem rather than a scoping problem. Most likely the class you're testing is too complex and violates the SRP. The solution that often works is to split the class in two.
 
 We should follow arrange, act, assert.
 
-MockMVC gives a nice DSL you can use to fire fake requests against your spring controllers. @WebMvcTest is part of that.
+MockMVC gives a nice DSL you can use to fire fake requests against your spring controllers. `@WebMvcTest` is part of that.
 
 ## Integration Tests
 Integration tests should test the integration of your application with all the parts that live outside your application.
@@ -123,34 +91,34 @@ For some people, integration testing means to test through the entire stack of y
 
 Narrow integration tests live at the boundary of your services. An example would be a databse integration test.  Start the db and execute a function that tests this.
 
-For testing a separate servie via a REST API:
+For testing a separate service via a REST API:
 1. start your app
-2. start an instnace of the separate service or a test double with the same interface.
+2. start an instance of the separate service or a test double with the same interface.
 3. trigger a function within your code that reads from the separate service's API
 4. Check that your app can parse the response correctly.
 
 Write integration tests for all pieces of code where you can either serialise or deserialise data.
 
-When writing narrow integration tests you should aim to run yoour external dependencies locally: spin up a local MySQL database, test against a local ext4 filesystem. If you'rte integrating with a separate service either run an instance of that service locally or build and run a fake versiopn that mimics the behaviour of the real service.
+When writing narrow integration tests you should aim to run your external dependencies locally: spin up a local MySQL database, test against a local ext4 filesystem. If you're integrating with a separate service either run an instance of that service locally or build and run a fake versiopn that mimics the behaviour of the real service.
 
 If there's no way to run a third-party service locally you should opt for running a dedicated test instance and point at this test instance when running your integration tests.
 
-We should use tools like wiremock to mock out services like darksky, so we don't call the real service.
+We should use tools like wiremock to mock out services over REST, so we don't call the real service.
 
 Running contract tests against the fake and the real server ensures that the fake we use in our integration tests is a faithful test double. 
 
 ## Contract Tests
-Automated ocntract tests make sure that the implementations on the consumer and provider side still stick to the define contract. Consumer-Driven Contact tests (CDC tests) let the consumers drive the implementation of a contract. Using CDC, consumers of an interface write tests that check the interface for all data they need from that interface. The comsuming team then publishes these tests os that the pbulishing team can fetch and execute these tests easily. The providing team can now develop their API by running the CDC tests. Ince all tests pass they know they have implemented everything the consuming team needs.
+Automated contract tests make sure that the implementations on the consumer and provider side still stick to the define contract. Consumer-Driven Contact tests (CDC tests) let the consumers drive the implementation of a contract. Using CDC, consumers of an interface write tests that check the interface for all data they need from that interface. The comsuming team then publishes these tests so that the publishing team can fetch and execute these tests easily. The providing team can now develop their API by running the CDC tests. Once all tests pass they know they have implemented everything the consuming team needs.
 
 If your organisation adopts a microservices approach, having CDC tests is a big step towards establishing autonomous teams. CDC tests are an automated way to foster team communication. 
 
-Pact is a good approach of writing tests for the consumer and the provider side, gives you stubs for separate services out fo the box and allows you to exchange CDC tests with other teams..
+Pact is a good approach of writing tests for the consumer and the provider side, gives you stubs for separate services out of the box and allows you to exchange CDC tests with other teams.
 
 ## UI Tests
 These can just be unit tests for UI, not end to end tests.
 
 ## End to End Tests
-Testing your deployed application via its user interface is the most end-to-end way you could test your application. The previously described, webdriver driven UI tests are a good example of end-to-end tests.
+Testing your deployed application via its user interface is the most end-to-end way you could test your application. The previously described, webdriver-driven UI tests are a good example of end-to-end tests.
 
 End to end tests are also called broad stack tests.
 
@@ -160,22 +128,22 @@ In a microservices world there's also the big question of who's in charge of wri
 
 Due to their high maintenance cost you should aim to reduce the number of end-to-end tests to a bare minimum.
 
-Think about the high value interactions users will have with your application. Try to come up with user journeys that define the core value of your produce and translate the most important steps of these user journeys into automated end-to-end tests.
+Think about the high value interactions users will have with your application. Try to come up with user journeys that define the core value of your product and translate the most important steps of these user journeys into automated end-to-end tests.
 
-Avoid a graphical user interface whne testign your application can be a good idea to come up with tests that are less flakey than full end-to-end tests while still covering a broad part of your application's stack. This can come in handy when testing through the web interface of your application is particularly hard. Maybe you don't evne havea web UI but serve a REST API instead. 
+Avoiding a graphical user interface when testing your application can be a good idea to come up with tests that are less flaky than full end-to-end tests while still covering a broad part of your application's stack. This can come in handy when testing through the web interface of your application is particularly hard. Maybe you don't even have a web UI but serve a REST API instead. 
 
 These are called Subcutaneous tests. This means a test that operates just under the UI of an application. This is particularly valuable when doing functional testing of an application: when you want to test end-to-end behaviour, but its difficult to test through the UI itself.
 
-Subcutaneous testing can avoid difficulties with hard-to-test presentation technologies and usually is much fsater than testing through the UI. The big danger is that, unless you are a firm follower of keeping all useful logic out of your UI< subcutaneous testing will leave important behaviour out of its test.
+Subcutaneous testing can avoid difficulties with hard-to-test presentation technologies and usually is much faster than testing through the UI. The big danger is that, unless you are a firm follower of keeping all useful logic out of your UI, subcutaneous testing will leave important behaviour out of its test.
 
-REST-assured can be agood library for writing these kind of tests.
+REST-assured can be a good library for writing these kind of tests.
 
 ## Acceptance tests
 Make sure your software works correctly from a user's perspective, not just from a technical perspective.
 
 Functional and acceptance tests are the same thing.
 
-Cna come in different levels of granularity. Write them at the lowest level you can. Acceptance testing is orthogonal to your test pyramid
+Can come in different levels of granularity. Write them at the lowest level you can. Acceptance testing is orthogonal to your test pyramid.
 
 ## Exploratory Testing
 Take some time on a regular schedule to try and break your app.
@@ -191,14 +159,14 @@ Where to put longer running integration tests in pipeline?
 ## Avoid Test Duplication
 Keep two rules of thumb in mind:
 1. If a higher level test spots an error and there's no lower-level test failing, you need to write a lower-level test
-2. Push your tests as far down the test pyramind as you can.
+2. Push your tests as far down the test pyramid as you can.
 
-If a higher-level test gives you more confidence that your application works correctly, you should have it. Writing a unit test for a Controller class helps to test the logic within the Controller itself. Still, this won't tell you whether the REST endpoint this Controller provides actually responds to HTTP requests. So you move up the test pyramid and add a test that checks for exactly that - but nothing more. You don't test all the conditional logic and edge cases that tyour lower-level tests already cover in the higher-level test again. Make sure that the higher-level test focuses on the part that the lower-level tests couldn't cover.
+If a higher-level test gives you more confidence that your application works correctly, you should have it. Writing a unit test for a Controller class helps to test the logic within the Controller itself. Still, this won't tell you whether the REST endpoint this Controller provides actually responds to HTTP requests. So you move up the test pyramid and add a test that checks for exactly that - but nothing more. You don't test all the conditional logic and edge cases that your lower-level tests already cover in the higher-level test again. Make sure that the higher-level test focuses on the part that the lower-level tests couldn't cover.
 
 ## Write clean test code
 - test one condition per test.
 - Readability matters. Don't try to be overly DRY. Duplication is okay if it improves readability. Try to find a balance between DRY and DAMP code.
-- When it doubt use the role of three to decide when to refactor. 
+- When it doubt use the role of three to decide when to refactor.  "To build something truly reusable, you must convince three different audiences to use it thoroughly first."
 
 https://blog.codinghorror.com/rule-of-three
 

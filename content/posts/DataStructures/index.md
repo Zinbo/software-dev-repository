@@ -5,9 +5,11 @@ title: "Data Structures"
 published: true
 date: "2020-04-07"
 ---
-
-# What is a data type?
-A set of values and a set of operations on those values. Most programming languages support common data types of real, integer, boolean, floating-point numbers, strings.   
+# Data Structure Terminology
+.
+## What is a data type?
+A data type is a set of values and a set of operations on those values.  
+Most programming languages support common data types of real, integer, boolean, floating-point numbers, strings.   
 
 For example, in the Java programming language, the type int represents the set of 32-bit integers ranging in value from −2,147,483,648 to 2,147,483,647, as well as the operations that can be performed on integers, such as addition, subtraction, and multiplication. 
 
@@ -17,140 +19,65 @@ The different data types are:
 - machine data types
 - boolean type
 - numeric types
-- composite types (e.g. array, record, union, set, an object). They are derived from more than one primitive type. This can be done in a number of ways. The ways they are combined are called data structures. Can also have linked list, but is argued to be more of a data structure rather than a type, although some people think its a type.
+- composite types (e.g. array, record, union, set, an object). They are derived from more than one primitive type. This can be done in a number of ways. The ways they are combined are called data structures. We could also include linked list, but it is argued to be more of a data structure rather than a type, although some people think its a type.
 - enumerations
 - string and text types
 - pointers and references
 
-An attribute of data which tells the compiler or interpreter how the programmer intends to use the data.
-
-# What is an abstract data type?
-An abstract data type is a data type whose representation is hiddle from the client. We use an API to specify behaviour.   
+## What is an abstract data type?
+An abstract data type is a data type whose representation is hidden from the client. We use an API to specify behaviour.   
 Exampels of ADTs: Integer, Date, Stack, Queue, Bag, Tree, Graph, List, Hash, Smart Pointer
 
-Any type that does not specify an implementation is an abstract data type. For instance, a stack (which is an abstract type) can be implemented as an array (a contiguous block of memory containing multiple values), or as a linked list (a set of non-contiguous memory blocks linked by pointers).
+Any type that does not specify an implementation is an abstract data type. For instance, a stack (which is an abstract type) can be implemented as an array or as a linked list.
 
-Abstract types can be handled by code that does not know or "care" what underlying types are contained in them. Programming that is agnostic about concrete data types is called generic programming. Arrays and records can also contain underlying types, but are considered concrete because they specify how their contents or elements are laid out in memory.
+Abstract types can be handled by code that does not know or "care" what underlying types are contained in them. Arrays and records can also contain underlying types, but they are considered concrete because they specify how their contents or elements are laid out in memory.
 
-There are a mathematical model for data types, where a data type is defined by its behaviour from the point of view of a user of the data (API).   
-This contrasts with data structures, which are concrete reprensentations of data, and are the point of view of an implementer, not a user.  
-Examples are: Map, List, Set, Queue, Graph, Stack.
+This contrasts with data structures, which are concrete reprensentations of data, and are the point of view of an implementer, not a user.
 
-# What is a data structure?
-A data organisation, management, and storage format that enables efficient access and modification. Is a collection of data vlaues, the relationships among them, and the functions or operations that can be applied to the data.
+## What is a data structure?
+A data organisation, management, and storage format that enables efficient access and modification. Is a collection of data values, the relationships among them, and the functions or operations that can be applied to the data.
+
 Array, record, union, tagged union, object, graphs, binary trees.
 
 # Arrays
 - To access an element: array_addr + elem_size x (i - first_index). This is why elements have to be homogenous, so the size can be calculated correctly.
 - To access elements in multidimensional arrays (not jagged), we use the same algo. If we want to find element (3, 4) with row size 6 (with elem size 1): `array_adr + (3 - 1) x 6 + (4 - 1)`.
 - arrays can be organised in memory either by row major, where each row is contiguous, or column-major, where each column is contiguous.
+
 |           | Add  | Remove |
 |-----------|------|--------|
 | Beginning | O(n) | O(n)   |
 | End       | O(1) | O(1)   |
 | Middle    | O(n) | O(n)   |
-- Important to remember that access is constant time.
+
+access is O(1).
 
 ## Dynamic arrays
-Static arrays have size declared at compile time.  
-Dynamically-allocated arrays have their size and memory allocated at runtime, from dynamic memory, but once declared they don't change.  
-Dynamic arrays don't have a constant size, they can grow. Like array list.
+**Static arrays** have size declared at compile time.  
+**Dynamically-allocated arrays** have their size and memory allocated at runtime, from dynamic memory, but once declared they don't change.  
+**Dynamic arrays** don't have a constant size, they can grow. Like array list.
 
 
 2D arrays have their rows all of the same length. Some languages have this built in, such as C#.  
-Jagged arrays, rows can have different lengths, require a bit more work to declare
+Jagged arrays can have rows of different lengths.
 - Arrays are contiguous in memory, even 2d arrays, which have the rows after each other.
-- Java doesn't support true multi-dimensional arrays, even when you declare like so: `int[][] array3 = new int[32][32];` it is a jagged array in java. What's the difference between this and a multidimensional array?
-
-## Arrays
-AN array is a sequence of variables of the same type arranged contiguously in a block of memory.  
-Array lookup is O(1) as long as you know the index of the element you want.  
-The price for this improved look up is significately decreaased efficiency for insertion and deletion of data in the middle of the array. Because an array is essentially a bloc kof contiguous memory, it's not possible to create or eliminate storage between any two elements as it is wit ha linked list. Ins4tead you must physically move data within the array to make room for an insertion or close the gap left by a deletion, this is an O(n) operation.
-
-They are not dynamic.
-
-They are best used when you know how many elements you need to store before the program executes.
-
-In C and C++, array names point to the first element of an array. The compiler tracks only the location of arrays, not their size. This means you can write to the 20th element in an array of size 10. This will usually overwrite some other data structure.
-
-In java, an array is an object in and of itself, seperate from the data type it holds. A reference to an array is therefore not interchangeable with a reference to an element of the array.
-
-In C#, there are some differences. In Java the concept of multi-dimensional arrays, an array of array objects, such as int[2][3], is called a jagged array in C#, and multidimensional arrays specified using comma-seperated arguments, such as int[2,3].
-
-In javascript arrays are dynamic and resize themmselves automatically.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Java doesn't support true multi-dimensional arrays, even when you declare like so: `int[][] array3 = new int[32][32];` it is a jagged array.
 
 
 # Strings
-There are different encodings of strings, e.g. UTF-16 which represents code points as 16-bit chars, and uses two 16-bit chars to represent the remainder. This is used to encode strings in Java and C#. UTF-8 which uses one to four 8-bit chars to encode all unicode code points and has the advatange that all ASCII code are represented by a single byte. So ASCII encoded text is a subset of UTF-8 encoded text. Variable length encodings make string manupulation considerably more complicated.  There may be fewer characters in a string than the number of chars required to store it.
+There are different encodings of strings, e.g. UTF-16 which represents code points as 16-bit chars, and uses two 16-bit chars to represent the remainder. This is used to encode strings in Java and C#. UTF-8 which uses one to four 8-bit chars to encode all unicode code points and has the advatange that all ASCII code are represented by a single byte. So ASCII encoded text is a subset of UTF-8 encoded text.  
+Variable length encodings make string manipulation considerably more complicated.  There may be fewer characters in a string than the number of chars required to store it.
 
 Most languages store strings interally as arrays.
 
-In C, a string is contained in a char array. As C doesn't keep track of the size of arrays, it uses the null cahracter '\0'. The character array must have room for the terminator: A 10-character string requires an 11-character array. This makes finding the length of a string O(n).
+In C, a string is contained in a char array. As C doesn't keep track of the size of arrays, it uses the null character `\0`. The character array must have room for the terminator: A 10-character string requires an 11-character array. This makes finding the length of a string O(n).
 
 C++ strings are not null-terminated, so they can store null bytes, unlike C strings. Multiple copies of the same string share the same underlying buffer whenever possible, but because a string is mutable, new buffers are creatred as necessary.
 
 In Java, String interally holds a string using a char array. Java's char type has a size of two bytes. The compiler implicitly uses StringBuffer instances when two String instances are concatenated using the + operator, which is convenient buit can lead to inefficient code if you're not careful. Same for C#
 
 ## Problems
+.
 ### First the First Nonrepeated Character
 **Problem:**  Write an efficient function to find the first nonrepeated character in a string. For instance, the first nonrepeated character in `total` is `o` and the first nonrepeated character in `teeter` is `r`. Discuss the efficiency of your algorithm.
 
@@ -186,9 +113,9 @@ public static Character firstNonRepeated( String str ){
 }
 ```
 
-There are however two flaws with this solution. One is that it assumes that every Unicode character can be represented in a single 16-bit Java char.. With the UTF-16 encioding that Java uses ionternally for stirngs ,only the first 2<sup>16</sup> Unicode characters or code points  (the Basic Multilingual Plane or BMP) can be represented in a single char, the remaining code points require 2 chars. Because the implementation iterates through the string one char at a time, it won't interpret anything outside the BMP correctly.
+There are however two flaws with this solution. One is that it assumes that every Unicode character can be represented in a single 16-bit Java char. With the UTF-16 encioding that Java uses internally for strings, only the first 2<sup>16</sup> Unicode characters or code points  (the Basic Multilingual Plane or BMP) can be represented in a single char, the remaining code points require 2 chars. Because the implementation iterates through the string one char at a time, it won't interpret anything outside the BMP correctly.
 
-As generics only works with reference types, it means that every time we increment the value assicated with a jey the Integer object that held the value is thrown away and a new Integer with the incremented value is constructed.   
+As generics only works with reference types, it means that every time we increment the value associated with a key the Integer object that held the value is thrown away and a new Integer with the incremented value is constructed.   
 As we only need to know about three values: zero times, one time, more than one time, we can create objects to represent these states.
 ```java
 public static String firstNonRepeated( String str ){
@@ -281,23 +208,14 @@ public String removeChars( string str, string remove ) {
 		flags[r[i]] = true;
 	}
 
-	StringBuilder sb = new StringBuilder();
 	for(int currentCharIndex = 0; currentCharIndex < s.length; currentCharIndex++) {
 		char charInStr = s[i];
-		if(flags[charInStr) continue;
+		if(flags[charInStr]) continue;
 		//skip over char, not needed to remove, just need to place the next char in the array
 		s[destinationIndex++] = s[currentCharIndex];
 	}
 }
 ```
-
-### Reverse Words
-**Problem:** Write a function that reverses the order of the words in a string. For example, your function should transform the string `"Do or do not, there is no try."` to `"try. no is there not, do or Do"`. Assume that all words are space delimited and treat punctuation the same as letters.
-
-One way to solve this is to use a token scanner that iterates through each character of the stirng. The scanner can differentiate between nonword characters, namely, the space character, and word characters, which for this problem are all fcharacters except space.  
-We can scan for words, then write these words into a temporary buffer, and then copy the buffer back over the origina string. To reverse the order of the words, we should scan the string backwards to identify the words in the reverse order, but we will have to write the words back in a forward order.  
-So for the string `piglet quantum` we would need to start with the letter m, scan until we get to q and then copy the letyters in the word in the forward direction until we get back to m. Next we would copy the space character immediately because it's a nonword character. We would then move onto the next word.  
-After we scan and copy the whole string, copy the buffer back over the original string. Then you can deallocate the temp buffer nad return from the function.
 
 ### Integer/String Conversions
 **Problem:** Write two conversion routines. The first routine converts a string to a signed integer. You may assume that the string contains only digits and the minus character ('-'), that it is a properly formatted integer number, and that the number is within the range of an int type. The second routine converts a signed integer stored as an int back to a string.
@@ -391,85 +309,9 @@ public static String intToStr( int num ){
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Linked List
 API for Linked List with time complexity
+
 | Singly-Linked List   | no tail pointer | with tail pointer |
 |----------------------|-----------------|-------------------|
 | PushFront(Key)       | O(1)            |                   |
@@ -484,8 +326,6 @@ API for Linked List with time complexity
 | AddBefore(Node, Key) | O(n)            |                   |
 | AddAfter(Node, Key)  | O(1)            |                   |
 
-
-# Linked List
 Types of linked list:
 - singly linked lists
 - doubly linked lists
@@ -495,7 +335,7 @@ Types of linked list:
 The first element is the head.  
 The last element is the tail and has an empty or null link.
 
-A compelte traversal of the list must begin with the first node. It's common to store the pointer or reference ot the first element of a list in a seperate data structure.
+A complete traversal of the list must begin with the first node. It's common to store the pointer or reference to the first element of a list in a seperate data structure.
 
 ```java
 public class <T> ListElement {
@@ -592,66 +432,122 @@ bool deleteElement(IntElement **head, IntElement * deleteMe) {
 }
 ```
 
-If you aren't using garbage collection you need to use two pointers. One to hold elem->next and one to hold elem after. The same for insert.
-
 ## linked list problems
+</br>
 
 ### Implement a stack
 **Problem:** Implement a stack using a linked list or a dynamic array.  
 
-The main advatage of dynamic arrays over linked lists is that arrays offer random access to the array elements. However this is not needed for a stack.  
+The main advantage of dynamic arrays over linked lists is that arrays offer random access to the array elements. However this is not needed for a stack.  
 As the dynamic array grows it must be resized, which can be a time consuming operation.  
 
-Linked lists usually allocate mmeory dynamically for each element. Depending on the overhead of the memory allocator, these allocations are often more time consuming than the copies required by a dynamic array, so a stack based on a dynamic array is usually faster than one based on a linked list. 
+Linked lists usually allocate memory dynamically for each element. Depending on the overhead of the memory allocator, these allocations are often more time consuming than the copies required by a dynamic array, so a stack based on a dynamic array is usually faster than one based on a linked list. 
 
 A linked list is less complicated to implement for a stack.
 
-Will need push and pop methods. Push needs the data to push, pop will return the data removed.
+## Using a linked list for Stack
+Linked List achieves optimum design goals:
+- Use for any type
+- Space required is always proportional to the size of the collection
+- Time is independent of size
+This is all better than an array, because you don't need to resize.
 
-We should think about creating createStack and deleteStack methods. Not necessarily needed for linked list, but needed for dynamic array. Adding them allows the interface to be implementation independent.
-```c
-bool createStack(Element **stack) {
-    *stack = NULL;    
-    return true; 
-}
-
-bool deleteStack(Element **stack) {
-    Element *next;
-    while( *stack ){
-        next = (*stack)->next;
-        free( *stack );
-        *stack = next;
-    }
-    return true;
-}
-
-bool push(Element **stack, void *data) {
-    Element *elem = malloc(sizeof(Element));
-    if(!elem) return false;
-
-    elem->data = data;
-    elem->next = *stack;
-    *stack = elem;
-    return true;
-}
-
-bool pop(Element **stack, void **data) {
-    Element *elem;
-    if(!(elem = *stack)) return false;
-
-    *data = elem->data;
-    *stack = elem->next;    
-    free( elem );    
-    return true;
+```java
+public class  Stack<Item> implements Iterable<Item> {           
+    private Node first; // top of stack (most recently added node)   
+    private int N;      // number of items   
+    private  class Node {  
+        // nested class to define nodes      
+        Item item;      
+        Node next;   
+    }   
+    
+    public boolean isEmpty() {  
+        return first == null; 
+    }  
+    // Or: N == 0.   
+    
+    public int size() {  
+        return N; 
+    }   
+    
+    public void push(Item item) {  
+        // Add item to top of stack.      
+        Node oldfirst = first;      
+        first = new Node();      
+        first.item = item;      
+        first.next = oldfirst;      
+        N++;   
+    }   
+    
+    public Item pop() {  
+        // Remove item from top of stack.      
+        Item item = first.item;      
+        first = first.next;      
+        N--;      
+        return item;   
+    }   
 }
 ```
- The problem is easier with C++, because create and delete can be the constructor and destructor.
+
+## Using a Linked List for a Queue
+Linked list is also good for a queue
+```java
+public class  Queue<Item> implements Iterable<Item> {           
+    private Node first; // link to least recently added node   
+    private Node last;  // link to most recently added node   
+    private int N;      // number of items on the queue   
+    
+    private  class Node   {  
+        // nested class to define nodes      
+        Item item;      
+        Node next;   
+    }   
+    
+    public boolean isEmpty() {  
+        return first == null;  
+    }  
+    // Or: N == 0.   
+    
+    public int size() {  
+        return N;  
+    }   
+    
+    public void enqueue(Item item) {  
+        // Add item to the end of the list.      
+        Node oldlast = last;      
+        last = new Node();      
+        last.item = item;      
+        last.next = null;      
+        if (isEmpty()) first = last;      
+        else           oldlast.next = last;      
+        N++;   
+    }   
+    
+    public Item dequeue() {  
+        // Remove item from the beginning of the list.      
+        Item item = first.item;
+        first = first.next;      
+        if (isEmpty()) last = null;      
+        N--;      
+        return item;   
+    }
+    
+}
+```
+
+## Array vs Linked List
+| Advantages | Disadvantages |
+| ---------- | ------------- |
+| index provides immediate accesss to any item | need to know size on initialisation |
+| uses space proportional to size | need reference to access an item |
 
 ### Maintain Linked List Tail Pointer
 
 **Problem:** head and tail are global pointers to the first and last element, respectively, of a singly linked list of integers. Implement C functions for the  following prototypes:
-bool delete( Element *elem ); 
-bool insertAfter( Element *elem, int data ); 
+- `bool delete( Element *elem ); `
+- `bool insertAfter( Element *elem, int data );`  
+
 Your functions must keep the head and tail pointers current.
 
 We can break this down into cases for:
@@ -672,6 +568,7 @@ For delete:
 - start by checking the head
 - loop through the middle of the list
 - if the next elem is the elem to delete then free elem, If next is null then update tail.
+
 ```cpp
 bool delete( Element *elem ){    
 	Element *curPos = head;
@@ -733,23 +630,12 @@ bool insertAfter( Element *elem, int data ){
 }
 ```
 
-
-### Checking for bugs in code
-Four common problem areas for any function:
-1. Check that the data comes into the function properly.
-    - accessing a variable you don't have
-    - reading as an int and should be a long
-2. Check that each line of the function works correctly
-3. Check that the data comes out fo the function correctly
-4. Check common error conditions
-    - empty data structures, null, etc.
-
 ### Mth-to-last Element of a linked list
-**Problem:** Given a singly linked list, devise a time- and space-efficient algorithm to find the mth-to-last element of the list. Implement your algorithm, taking care to handle relevant error conditions. Define mth to last such that when m = 0 the last element of the list is returned.
+**Problem:** Given a singly linked list, devise a time- and space-efficient algorithm to find the mth-to-last element of the list. Implement your algorithm, taking care to handle relevant error conditions. Define `m`<sup>th</sup> to last such that when `m = 0` the last element of the list is returned.
 
-Keep a pointer m spaces ahead or behind.  
+Keep a pointer `m` spaces ahead or behind.  
 Worth mentioning to the interviewer that array or doubly linked list would be better suited.  
-Check if list is < m length  
+Check if list is `< m` length  
 ```cpp
 ListElement *findMToLastElement( ListElement *head, int m ){
 	ListElement *current, *mBehind;
@@ -910,101 +796,7 @@ bool determineTermination( Node *head ){
 	} 
 }
 ```
-## Using a linked list for Stack
-Linked List achieves optimum design goals:
-- Use for any type
-- Space required is always proportional to the size of the collection
-- Time is independent of size
-This is all better than an array, because you don't need to resize.
-```java
-public class  Stack<Item> implements Iterable<Item> {           private Node first; // top of stack (most recently added node)   
-    private int N;      // number of items   
-    private  class Node {  
-        // nested class to define nodes      
-        Item item;      
-        Node next;   
-    }   
-    
-    public boolean isEmpty() {  
-        return first == null; 
-    }  
-    // Or: N == 0.   
-    
-    public int size() {  
-        return N; 
-    }   
-    
-    public void push(Item item) {  
-        // Add item to top of stack.      
-        Node oldfirst = first;      
-        first = new Node();      
-        first.item = item;      
-        first.next = oldfirst;      
-        N++;   
-    }   
-    
-    public Item pop() {  
-        // Remove item from top of stack.      
-        Item item = first.item;      
-        first = first.next;      
-        N--;      
-        return item;   
-    }   
-}
-```
 
-## Using a Linked List for a Queue
-Linked list is also good for a queue
-```java
-public class  Queue<Item> implements Iterable<Item> {           
-    private Node first; // link to least recently added node   
-    private Node last;  // link to most recently added node   
-    private int N;      // number of items on the queue   
-    
-    private  class Node   {  
-        // nested class to define nodes      
-        Item item;      
-        Node next;   
-    }   
-    
-    public boolean isEmpty() {  
-        return first == null;  
-    }  
-    // Or: N == 0.   
-    
-    public int size() {  
-        return N;  
-    }   
-    
-    public void enqueue(Item item) {  
-        // Add item to the end of the list.      
-        Node oldlast = last;      
-        last = new Node();      
-        last.item = item;      
-        last.next = null;      
-        if (isEmpty()) first = last;      
-        else           oldlast.next = last;      
-        N++;   
-    }   
-    
-    public Item dequeue() {  
-        // Remove item from the beginning of the list.      
-        Item item = first.item;
-        first = first.next;      
-        if (isEmpty()) last = null;      
-        N--;      
-        return item;   
-    }
-    
-}
-```
-
-
-## Array vs Linked List
-| Advantages | Disadvantages |
-| ---------- | ------------- |
-| index provides immediate accesss to any item | need to know size on initialisation |
-| uses space proportional to size | need reference to access an item |
 
 
 
@@ -1246,9 +1038,9 @@ public class MyArrayList<T> {
 
 
 # Queues
-A priority queue allows you to assign a priority to elements. If you insert an element with a higher priority, it will move to its proper place in the queue. You'll usually need to define a comparator for comparing elements. Java has its own implementation, PriorityQueue. 
+A **priority queue** allows you to assign a priority to elements. If you insert an element with a higher priority, it will move to its proper place in the queue. You'll usually need to define a comparator for comparing elements. Java has its own implementation, PriorityQueue. 
 
-Deque is a double ended queue and works either like a stack or a queue. Can add and remove from both ends. Linked list implements deque.
+A **Deque** is a double ended queue and works either like a stack or a queue. Can add and remove from both ends. Linked list implements deque.
 
 ### Queue with a linked list
 ```java
@@ -1421,17 +1213,16 @@ The two problems you have to solve when you use a hash table are:
 
 ### Chaining
 To solve the big array problem, we can use what's called chaining. Here we use a prehash function to convert each key to a number, then we use some algorithm like `k mod m` where `k` is the key and `m` in the length of the array.
-
-Load factor is the expected size of the linked list.
-
- There are other algorihms but mod is the easiest.
+- Load factor is the expected size of the linked list.
+- There are other algorithms but mod is the easiest.
 
  With chaining, if you have two values map to the same key you store the values in a linked list. If you want to look up a value you need to get the list by the key and go through the linked list until you find the element.  
- WHen we havea table of size `m` and `n` elements, we want `m >= n`. if `n > m` then we want to resize the table. Table doubling is where we resize the table to be `2m`. When we rebuild the table we need to resize the table, then rehash all of the elements using a new hash function (as our hash function was built on the notion of the table being size m).
+ 
+ When we have a table of size `m` and `n` elements, we want `m >= n`. if `n > m` then we want to resize the table. Table doubling is where we resize the table to be `2m`. When we rebuild the table we need to resize the table, then rehash all of the elements using a new hash function (as our hash function was built on the notion of the table being size `m`).
 
- If we double the table we only to rebuild on inserting  the log n element.  
+ If we double the table we only have to rebuild on inserting  the `log n` element.  
 
- Amortisation: spread out the high cost, so it's cheap on average.
+ **Amortisation**: spread out the high cost, so it's cheap on average.
 
 ```java
 import java.util.ArrayList;
@@ -1539,6 +1330,7 @@ public class HashTableChaining<K,V> {
 In this we don't use a linked list, but instead if the prehash function maps to a slot which is already filled then we use the next slot. When we go to find an element then we look at the element that the prehash function points to. If the hashes don't match we look at the next slot, and keep going until we find either null or the element.  
 When deleting an element we need to set a flag on that position to say "there was an element here" so that when we're searching we skip over this position and don't incorrectly think it's an empty slot so we can stop scanning.
 
+Here we use an array list, so the element is removed and isn't left with an empty space.
  ```java
 import java.util.ArrayList;
 import java.util.List;
@@ -1655,197 +1447,48 @@ public class HashTableOpenAddressing<K, V> {
 }
  ```
 
-### Python
-In python e use open addressing, To keep collisions rare, dictionaries resize when they are 2/3s full.
-When < 50k entries, resize to 4 times the size
-> 50k entries resize to 2 times the size.
-
-Linear probing is fast, most of the time it doesn't even need to compare the strings, just the hash values. 
-
-Baal, which was 16 probes deep, was not even double the time for the best case of one probe.
-
 ### Other Notes
 
-Hash tables trade space for time. 
-
-Need both hash and equals method, because once we've compared hashes, we need to then compare equals.
-
-Hash functions are one way - they are not invertible, they lose information.
-
-Two equals objects shoudl return the same hash, two hashes might not be the same object. 
-
-The order of a hash map is not insertion order, it is hash order.
-
-When we add: run element through hash function
-When we get: run key through hash function, get hash, go to element.
-
-Default hash code is based off memory location.
-
-Also known as associative arrays.
-
-In java, a hash table is synchronised, a hash map is not. Should probably use ConcurrentHashMap instead.
-
-### Chaining
-add impl for this and open addressing
-
-### Hash Tables
-We reference key-value pairs using arrays by doing arithmetic operations to transform keys into array indices.
-Two parts:
-- Compute hash function that transforms the search key into an array index.
-- Collision-resolution process that deals with this situation.
-Time-space trade off:
-- no memory limitation, use key as index
-- no time limitation, min amount of memory by using sequential search in unordered arra
-If we have an array that can hold M key-value pairs, then we need a hash function that can transform any given key into an index in that array. Every int should be equally likely.   
-Most common method: Size M is prime, compute remainder when dividing key k by M.   
-Requirement for good hash function
-- consistent
--effeciient to compute
-- uniformly distributes keys
-Seperate chaining (collision resolution): For each array index build a linked list of the key-value pairs whose keys hash to that index. Search is two step, hash to find list, search through list for key.
-```java
-Look this up online
-```
-Linear probing (CR): store N key-value pairs in a hash table of size M > N. Called open addressing hashing methods. Liner probing, if there is a collision then go to the next entry.
-- key equal to search keyt: search hit
-- Empty position (null key at index position): search miss
-- Key not equal to search key: try next entrym till found or empty.
-```java
-Look this up online
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Hash tables trade space for time. 
+- Need both hash and equals method, because once we've compared hashes, we need to then compare equals.
+- Hash functions are one way - they are not invertible, they lose information.
+- Two equals objects should return the same hash, two hashes might not be the same object. 
+- The order of a hash map is not insertion order, it is hash order.
+- When we add: run element through hash function
+- When we get: run key through hash function, get hash, go to element.
+- Default hash code is based off memory location.
+- Also known as associative arrays.
+- In java, a hash table is synchronised, a hash map is not. Should probably use ConcurrentHashMap instead.
 
 # Trees
+Trees are made up of nodes with zero, one, or several references to other nodes. Each node has only one other node referencing it.
+
 A binary tree is complete if all its levels are filled, except possibly the last one which is filled from left to right. A complete binary tree with n nodes has height at most O(log n).  
-A complete binary tree can be stored in an array. The first (or last) element will contain the root. The children of the node at position n will be at positions 2n +1 and 2n+2.  
-Parent element is at (n-1)/2 position (floored).  
+A complete binary tree can be stored in an array. The first (or last) element will contain the root. The children of the node at position n will be at positions `2n+1` and `2n+2`.  
+Parent element is at `(n-1)/2` position (floored).  
 
 ## Breadth first search
-level order
+Start with the root, move left to right across second level, etc.
+- level order
+- We use a queue
+- time compelxity: O(n)
+- space complexity: best: O(1), worst O(n)
 
-We use a queue
+Good for social networks, how closely are you connected to person D.
 
-time compelxity: O(n)
-space complexity: best: O(1), worst O(n)
-
-Social network, how closely are you connected to person D, benefits from breadth first search.
+Uses additional memory because it is necessary to track the child nodes for all nodes on a given level whilst searching that level
 
 ## Depth First Search
-time compelxity: O(n)
-space complexity: best: O(log n) (average height of tree), worst O(n)
-in order: left, self, right
-post-order: left right self
-pre-order: self left right
+- in order: left, self, right
+- post-order: left right self
+- pre-order: self left right
+- time complexity: O(n)
+- space complexity: best: O(log n) (average height of tree), worst O(n)
 
-maze traversal benefits from depth=first search traversal, as you want to go until you get to a dead end and then back track your way out.
+
+maze traversal benefits from depth-first search traversal, as you want to go until you get to a dead end and then back track your way out.
+
+Follows one branch down till we reach the bottom or found the node. Continues at the nearest ancestor with unexplored children. It has lower memory requirements than BFS. It doesn't need to store all the child pointers at each level.
 
 ## Deleting
 To delete from a binary tree we need to:
@@ -1854,9 +1497,13 @@ To delete from a binary tree we need to:
 - replace the data in the node to be deleted with the node we found in the previous step
 - we then need to go and delete the node whose data we stole
 
-If you have duplicate values, bes tto place them in the right child because then you'll have a stable sort.
+If you have duplicate values, best to place them in the right child because then you'll have a stable sort.
 
 Like linked lists, trees have a linked structure.
+
+Deletion and insertion are O(logn).
+
+Worst case is O(n) where inserting sorted nodes (only 2 child per node).
 
 ## Vs arrays
 Sorted arrays are good for searching but bad for add and remove. Binary search trees are good at both.
@@ -1871,21 +1518,54 @@ In a balanced BST the `|leftHeight - rightHeight| <= 1`
 
 Tree set in java is a balanced binary search tree.
 
-### Find Height
-```cpp
-struct Node {
-    int data;
-    struct Node *left;
-    struct Node *right;
-};
+### Problems
+</br>
 
-int FindHeight(struct Node *root) {
-    if(root == NULL) return -1;
-    return max(FindHeight(root0>left), FindHeight(root->right)) + 1;
+#### Find Node
+
+```java
+Node findNode( Node root, int value ){
+	while( root != null ){
+		int currval = root.getValue();
+		if( currval == value ) break;
+		if( currval < value ){
+			root = root.getRight();
+		} else { // currval > value
+			root = root.getLeft();
+		}
+	}
+
+	return root; 
+}
+```
+This is O(log n).
+
+##### Recursive
+```java
+Node findNode( Node root, int value ){
+	if( root == null ) return null;
+	int currval = root.getValue();
+		
+	if( currval == value ) return root;
+		
+	   if( currval < value ){
+		return findNode( root.getRight(), value );
+	} else { // currval > value
+		return findNode( root.getLeft(), value );
+	}  
 }
 ```
 
-### Check if a binary tree is a binary search tree
+#### Find Height
+```java
+public static int treeHeight( Node n ){
+    if( n == null ) return 0;
+    return 1 + Math.max( treeHeight( n.getLeft() ),
+						 treeHeight( n.getRight() ) ); 
+}
+```
+
+#### Check if a binary tree is a binary search tree
 We have to check:
 - for the left sub tree, that ALL nodes are lesser than parent
 - for the right sub tree, that ALL nodes are greater than parent
@@ -2005,7 +1685,7 @@ private static boolean nodeIsWithinBounds(int minValue, int maxValue, TreeNode n
 }
 ```
 
-### Find In-Order successor
+#### Find In-Order successor
 ```java
 public class InorderSuccessor {
     public static class TreeNode {
@@ -2073,6 +1753,124 @@ public class InorderSuccessor {
         System.out.println("Successor of node 12? " + getSuccessor(root, 12).data);
     }
 }
+```
+
+#### Pre-order Traversal
+**Problem:** Informally, a preorder traversal involves walking around the tree in a counter-clockwise manner starting at the root, sticking close to the edges, and printing out the nodes as you encounter them. Perform a preorder traversal of a binary search tree, printing the value of each node.
+
+We can solve this by:
+1. Print out the root (or the subtree root) value.
+2. Do a preorder traversal on the left sub-tree.
+3. Do a preorder traversal om the right sub-tree.
+
+```java
+void preorderTraversal( Node root ){
+	if( root == null ) return;
+	root.printValue();
+	preorderTraversal( root.getLeft() );
+	preorderTraversal( root.getRight() ); 
+} 
+```
+
+This is O(n)
+
+The inorder and post order traversals are almost identical:
+```java
+void inorderTraversal( Node root ){
+	if( root == null ) return;
+	inorderTraversal( root.getLeft() );
+	root.printValue();
+	inorderTraversal( root.getRight() ); 
+}
+	
+void postorderTraversal( Node root ){
+	if( root == null ) return;
+	postorderTraversal( root.getLeft() );
+	postorderTraversal( root.getRight() );
+	root.printValue(); 
+}
+```
+##### Pre-order traversal, no recursion
+Recursion implicitly uses a stack data structure by placing data on the call stack. That means there should be an equivalent solution that avoids recursion by explicitly using a stack.
+
+The recursive call serves to implicitly store the address of the right subtree on the stack, so it can be travesed after the left subtree traversal is complete. Each time you print a node and move onto its left child, the right child is first stored on an implicit stack. Whnever there is no child you return from a recrusive call, effectively popping a right child node off the implicit stack, so you can carry on traversing.
+
+Push both children onto the stack so you don't have to do the ligc seperately for the left child.
+
+The algorithm can be summarised as follows:
+- Create the stack
+- Push the root node onto the stack
+- While the stack is not empty
+    - Pop a node
+    - print its value
+    - if right child exists, push the node's right child
+    - if the left child exists, push the node's left child.
+
+```java
+void preorderTraversal( Node root ){
+	NodeStack stack = new NodeStack();
+	stack.push( root );
+	while( stack.size() > 0 ){
+		Node curr = stack.pop();
+		curr.printValue();
+		Node n = curr.getRight();
+		if( n != null ) stack.push( n );
+		n = curr.getLeft();
+		if( n != null ) stack.push( n );
+	} 
+}
+```
+
+You don't have the overhead of many recursive function calls in this implementation. But the stack used here probably requires dynamic memory allocation, so unclear which is better. 
+time is O(n).
+
+#### Lowest Common Ancestor
+**Problem:**  Given the value of two nodes in a binary search tree, find the lowest (nearest) common ancestor. You may assume that both values already exist in the tree. 
+
+An intuitive solution is to make lists of all the ancestorys of both nodes and then search through tee two lists to find the first node where they differ. The node immediately above thhis divergence is hte lowest common ancestor.  
+There is one property of a binary tree which makes this easier: the lowest common ancestor will be the first number you find which is inbetween both nodes.
+
+This algorithm can be summarised as:
+- Examine the current node If value1 and value2 are both less than the current node's value
+    - Examine the left child If value1 and value2 are both greater than the current node's value
+    - Examine the right child Otherwise
+    - The current node is the lowest common ancestor
+
+And can be implemented like this:
+```java
+Node findLowestCommonAncestor( Node root, int value1, int value2 ){
+	while( root != null ){
+		int value = root.getValue();
+			
+	if( value > value1 && value > value2 ){
+			root = root.getLeft();
+		} else if( value < value1 && value < value2 ){
+			root = root.getRight();
+		} else {
+			return root;
+		}
+	}
+
+	return null; // only if empty tree 
+} 
+```
+
+Running time?  
+Recall that travelking a path to any one node takes O(log n). In addition, this is slightly more efficient than a similar recursive solution because you don’t have the overhead of repeated function calls.
+
+#### Unbalanced binary search tree
+**Problem:** Given an unbalanced binary search tree with more nodes in the left subtree than the right, reorganize the tree to improve its balance while maintaining the properties of a binary search tree
+
+The solution is to take a new root. If we're in a sub-tree we would need to make sure we update the parent with the new root. To rebalance a whole tree would we need to rotate the tree at each level all the way down to the "new" root?
+
+The algorithm for this is:
+```java
+public static Node rotateRight( Node oldRoot ){
+	Node newRoot = oldRoot.getLeft();
+	oldRoot.setLeft( newRoot.getRight() );
+	newRoot.setRight( oldRoot );
+	return newRoot; 
+} 
 ```
 
 ### Code a for a binary tree
@@ -2243,7 +2041,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
 ```
 
 ## Tries
-A BST doesn't take advantage or shared structure.
+A BST doesn't take advantage of shared structure.
 For example, if we have elements: ear, east, and eat, they all share the same first 2 letters.
 
 In a trie:
@@ -2265,353 +2063,10 @@ public class trieNode {
 
 If we want to autocomplete a word then we first first go down the tree to the node which represents that stem, then we can do a depth-first or breadth-first traversal.
 
-# Trees
-Trees are made up of nodes with zero, one, or several references to other nodes.
-Each node has only one other node referencing it.
-
-Usually you will define a class for the common parts of the node and subclasses for the data held by each node.
-```cpp
-public class Node {
-    public Node[] children;
-}
-
-public class IntNode : Node {
-    public int value;
-}
-```
-Why is this better than using generics? So you can hold nodes of any type in one tree?
-
-## Binary Trees
-THe most common trees are binary trees.  
-Has no more than 2 children, referenced as left and right.
-
-The most common way to store ordered data in a tyree is to use a special tree called a binary search tree (BST).
-
-All desendants to the left of a noe are less than or equal to the node, and all decendants to the right of the node are greater than or equal to the node.
-
-One advantage of a BST is that the loojk up operation is fast and simple.
-```java
-Node findNode( Node root, int value ){
-	while( root != null ){
-		int currval = root.getValue();
-		if( currval == value ) break;
-		if( currval < value ){
-			root = root.getRight();
-		} else { // currval > value
-			root = root.getLeft();
-		}
-	}
-
-	return root; 
-}
-```
-This is O(log n).  
-
-Deletion and insertion are also O(logn).
-
-Worst case is O(n) where inserting sorted nodes (only 2 child per node).
-
-You can find the smallest element by following all the left children.
-
-Great for recursion, as each node in a tree is the root of a subtree beginning at that node.  
-In tree recursion you start with a root, perform an action, then move to the left or right subtree. The process continues until you reach a null reference, which is the end of a tree, and a good base case.
-
-Recursion involves solving a problem in terms of similar sub-problems and a base case.
-
-Find node can be reimplemented as a recursive algorithm:
-```java
-Node findNode( Node root, int value ){
-	if( root == null ) return null;
-	int currval = root.getValue();
-		
-	if( currval == value ) return root;
-		
-	   if( currval < value ){
-		return findNode( root.getRight(), value );
-	} else { // currval > value
-		return findNode( root.getLeft(), value );
-	}  
-}
-```
-
-## Common Searchs for unordered trees
-
-IF your node is likely to be in upper levels of the tree, BFS is most efficient. If the target node is likely to be in the lower levels of the tree, DFS has the advatnage that it doesn't exampine any single level last.
-
-### Breadth First Search
-Start wit hthe root, move left to right across second level, etc.  
-Uses additional memory because it is necessary to track the child nodes for allndoes on a given level whilst searching that level
-
-### Depth-Frist Search
-Follows one branch down till we reach the bottom or found the node. Continues at the nearest ancestor with unexplored children. It has lower memory requirements than BFS. It doesn't need to storea ll the child pointers at each level.
-
-## Traversals
-
-### Pre Order
-Performs the operation first on the node itself, then on its left descendents, then on its right descendents.
-
-### In Order
-Performs the op on left descendents, then the node, then the right descendents.
-
-### Post Order
-Performs the operation on the left, then the right, then the descendents, then the node itself.
-
-# Problems
-### Height of a tree
-**Problem:**: The height of a tree (binary or not) is defined to be the maximum distance from the root node to any leaf node. Write a function to calculate the height of an arbitrary binary tree.
-
-The height of a tree is the height of its tallest sub-tree + 1.
-
-```java
-public static int treeHeight( Node n ){
-    if( n == null ) return 0;
-    return 1 + Math.max( treeHeight( n.getLeft() ),
-						 treeHeight( n.getRight() ) ); 
-}
-```
-
-### Pre-order traversal
-**Problem:** Informally, a preorder traversal involves walking around the tree in a counter-clockwise manner starting at the root, sticking close to the edges, and printing out the nodes as you encounter them. Perform a preorder traversal of a binary search tree, printing the value of each node.
-
-We can solve this by:
-1. Print out the root (or the subtree root) value.
-2. Do a preorder traversal on the left sub-tree.
-3. Do a preorder traversal om the right sub-tree.
-
-```java
-void preorderTraversal( Node root ){
-	if( root == null ) return;
-	root.printValue();
-	preorderTraversal( root.getLeft() );
-	preorderTraversal( root.getRight() ); 
-} 
-```
-
-This is O(n)
-
-The inorder and post order traversals are almost identical:
-```java
-void inorderTraversal( Node root ){
-	if( root == null ) return;
-	inorderTraversal( root.getLeft() );
-	root.printValue();
-	inorderTraversal( root.getRight() ); 
-}
-	
-void postorderTraversal( Node root ){
-	if( root == null ) return;
-	postorderTraversal( root.getLeft() );
-	postorderTraversal( root.getRight() );
-	root.printValue(); 
-}
-```
-### Pre-order traversal, no recursion
-Recursion implicitly uses a stack data structure by placing data on the call stack. That means there should be an equivalent solution that avoids recursion by explicitly using a stack.
-
-The recursive call serves to implicitly store the address of the right subtree on the stack, so it can be travesed after the left subtree traversal is complete. Each time you print a node and move onto its left child, the right child is first stored on an implicit stack. Whnever there is no child you return from a recrusive call, effectively popping a right child node off the implicit stack, so you can carry on traversing.
-
-Push both children onto the stack so you don't have to do the ligc seperately for the left child.
-
-The algorithm can be summarised as follows:
-- Create the stack
-- Push the root node onto the stack
-- While the stack is not empty
-    - Pop a node
-    - print its value
-    - if right child exists, push the node's right child
-    - if the left child exists, push the node's left child.
-
-```java
-void preorderTraversal( Node root ){
-	NodeStack stack = new NodeStack();
-	stack.push( root );
-	while( stack.size() > 0 ){
-		Node curr = stack.pop();
-		curr.printValue();
-		Node n = curr.getRight();
-		if( n != null ) stack.push( n );
-		n = curr.getLeft();
-		if( n != null ) stack.push( n );
-	} 
-}
-```
-
-You don't have the overhead of many recursive function calls in this implementation. But the stack used here probably requires dynamic memory allocation, so unclear which is better. 
-time is O(n).
-
-### Lowest Common Ancestor
-**Problem:**  Given the value of two nodes in a binary search tree, find the lowest (nearest) common ancestor. You may assume that both values already exist in the tree. 
-
-An intuitive solution is to make lists of all the ancestorys of both nodes and then search through tee two lists to find the first node where they differ. The node immediately above thhis divergence is hte lowest common ancestor.  
-There is one property of a binary tree which makes this easier: the lowest common ancestor will be the first number you find which is inbetween both nodes.
-
-This algorithm can be summarised as:
-- Examine the current node If value1 and value2 are both less than the current node's value
-    - Examine the left child If value1 and value2 are both greater than the current node's value
-    - Examine the right child Otherwise
-    - The current node is the lowest common ancestor
-
-And can be implemented like this:
-```java
-Node findLowestCommonAncestor( Node root, int value1, int value2 ){
-	while( root != null ){
-		int value = root.getValue();
-			
-	if( value > value1 && value > value2 ){
-			root = root.getLeft();
-		} else if( value < value1 && value < value2 ){
-			root = root.getRight();
-		} else {
-			return root;
-		}
-	}
-
-	return null; // only if empty tree 
-} 
-```
-
-Running time?  
-Recall that travelking a path to any one node takes O(log n). In addition, this is slightly more efficient than a similar recursive solution because you don’t have the overhead of repeated function calls.
-
-### Unbalanced binary search tree
-**Problem:** Given an unbalanced binary search tree with more nodes in the left subtree than the right, reorganize the tree to improve its balance while maintaining the properties of a binary search tree
-
-The solution is to take a new root. If we're in a sub-tree we would need to make sure we update the parent with the new root. To rebalance a whole tree would we need to rotate the tree at each level all the way down to the "new" root?
-
-The algorithm for this is:
-```java
-public static Node rotateRight( Node oldRoot ){
-	Node newRoot = oldRoot.getLeft();
-	oldRoot.setLeft( newRoot.getRight() );
-	newRoot.setRight( oldRoot );
-	return newRoot; 
-} 
-```
-
-### Binary Search Tree
-Is a binary tree where each node has a Comparable key and an associated value and satisfies the restriction that the key in any node is larger than the keys in all nodes to the left and smaller than the keys in all ndoes to the right.
-```java
-public class  BST<Key extends Comparable<Key>, Value> {
-    private Node root; // root of BST
-    private class  Node   {
-        private Key key;              // key
-        private Value val;            // associated value
-        private Node left, right;     // links to subtrees
-        private int N;                // # nodes in subtree rooted here
-
-        public Node(Key key, Value val, int N)      {
-            this.key = key; this.val = val; this.N = N;
-        }
-    }
-
-    public int size()   {
-        return size(root);
-    }
-
-    int size(Node x)   {
-        if (x == null) return 0;
-        else
-            return x.N;
-    }
-
-    public  Value get(Key key) {
-        return get(root, key);
-    }
-
-    private Value get(Node x, Key key) {
-        // Return value associated with key in the subtree rooted at x;
-        // return null if key not present in subtree rooted at x.
-        if (x == null) return null;   int cmp = key.compareTo(x.key);
-        if      (cmp < 0) return get(x.left, key);
-        else if (cmp > 0) return get(x.right, key);
-        else return x.val;
-    }
-
-    public void put(Key key, Value val) {
-        // Search for key. Update value if found; grow table if new.
-        root = put(root, key, val);
-    }
-
-    private Node put(Node x, Key key, Value val) {
-        // Change key’s value to val if key in subtree rooted at x.
-        // Otherwise, add new node to subtree associating key with val.
-        if (x == null) return new Node(key, val, 1);
-        int cmp = key.compareTo(x.key);
-        if      (cmp < 0) x.left  = put(x.left,  key, val);
-        else if (cmp > 0) x.right = put(x.right, key, val);
-        else x.val = val;   x.N = size(x.left) + size(x.right) + 1;
-        return x;
-    }
-
-    public Key min() {
-        return min(root).key;
-    }
-
-    private Node min(Node x) {
-        if (x.left == null)
-            return x;
-        return min(x.left);
-    }
-
-    public Key floor(Key key) {
-        Node x = floor(root, key);
-        if (x == null) return null;
-        return x.key;
-    }
-
-    private Node floor(Node x, Key key) {
-        if (x == null) return null;
-        int cmp = key.compareTo(x.key);
-        if (cmp == 0) return x;
-        if (cmp < 0)  return floor(x.left, key);
-        Node t = floor(x.right, key);
-        if (t != null) return t;
-        else return x;
-    }
-
-    public Key select(int k) {     
-        return select(root, k).key; 
-    } 
-        
-    private Node select(Node x, int k) {   
-        // Return Node containing key of rank k.    
-        if (x == null) return null;    
-        int t = size(x.left);    
-        if      (t > k) return select(x.left,  k);    
-        else if (t < k) return select(x.right, k-t-1);    
-        else            return x; 
-    } 
-        
-    public int rank(Key key) {  
-        return rank(key, root);  
-    } 
-    
-    private int rank(Key key, Node x) {  
-        // Return number of keys less than x.key in the subtree rooted at x.   
-        if (x == null) return 0;   
-        int cmp = key.compareTo(x.key);   
-        if      (cmp < 0) return rank(key, x.left);   
-        else if (cmp > 0) return 1 + size(x.left) + rank(key, x.right);   
-        else              return size(x.left);
-    }
-}
-```
-
-### Balanced search trees
-These are trees where we want the height to be logN.
-
-### 2-3 Search Trees
-Is empty or:
-- A 2-node, with 1 key and associated value and two links, a left link to a 2-3 tree with smaller keys and a right link to a 2-3 tree with larger keys
-- A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
-
-### Red-Black trees
-Need to look this up.
-
-### Tries
 Is a search tree.  
 Each node has R links, where R is the alphabet size. We can view each link as pointing to a trie. Composed of nodes that contain links that are either null or references to other nodes.  
 Each link corresponds to a chracter value - since each link points to exactly one node, we label each node with the chracter value corresponding to the link that points to it. Each node has a value which may be null or the vaslue associated with one of the string keys in the symbol table. We store the value assoicated with each key in the node corresponding to its last character.
+
 | Key    | Value |
 |--------|-------|
 | by     | 4     |
@@ -2624,6 +2079,7 @@ Each link corresponds to a chracter value - since each link points to exactly on
 Seach hits take time proportional to the legnth of the search key.  
 Search misses involve examining only a few chracters.   
 The vlaue of non-terminating nodes is null, so we known that a substring isn't a valid search term.
+
 ```java
 public class  TrieST<Value> {   
     private static int R = 256; // radix   
@@ -2664,111 +2120,24 @@ public class  TrieST<Value> {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Extra Notes
+- You can find the smallest element by following all the left children.
+-Great for recursion, as each node in a tree is the root of a subtree beginning at that node.
+- In tree recursion you start with a root, perform an action, then move to the left or right subtree. The process continues until you reach a null reference, which is the end of a tree, and a good base case.
+
+## Balanced search trees
+These are trees where we want the height to be logN.
+
+## 2-3 Search Trees
+Is empty or:
+- A 2-node, with 1 key and associated value and two links, a left link to a 2-3 tree with smaller keys and a right link to a 2-3 tree with larger keys
+- A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
 
 # Heaps
+Heaps are trees (usually binary trees) where (in a max-heap) each child of a node has a value less than or rqual to the node's own value. The root node alwayus has the largest value in the tree.
+
 Is a specialized tree-based data structure.
-The heap is one maximally efficient implementation of an abstract data type calle da priority queue, and in fact, priority queues are oftne referred to as "heaps", regardless of how they may be implemented.  
+The heap is one maximally efficient implementation of an abstract data type called a priority queue, and in fact, priority queues are often referred to as "heaps", regardless of how they may be implemented.  
 In a heap, the highest or lower priority element is always stored at the root. However, a heap is not a sorted structure; it can be regarded as being partially ordered. A heap is a useful data structure when it is necessary to repeatedly remove the object with highest (or lowest) priority.
 
 Binary max-heap is a binary tree where the value of each node is at least the value of its children.
@@ -3048,10 +2417,7 @@ public class ArrayHeap<T extends Comparable<T>> implements Heap<T> {
 }
 ```
 
-## Heaps
-Heaps are trees (usually binary trees) where (in a max-heap) each child of a node has a value less than or rqual to the node's own value. The root node alwayus has the largest value in the tree.
-
-### Binary Tree to Heap
+## Binary Tree to Heap
 
 A Binary Heap is a Binary Tree with following properties.
 1) It’s a complete tree (All levels are completely filled except possibly the last level and the last level has all keys as left as possible). This property of Binary Heap makes them suitable to be stored in an array.
@@ -3061,6 +2427,7 @@ A Binary Heap is a Binary Tree with following properties.
 A Binary Heap is a Complete Binary Tree. A binary heap is typically represented as an array.
 
 The root element will be at Arr[0].
+
 For the rest of the elements:
 | Index        | Node                         |
 |--------------|------------------------------|
@@ -3110,102 +2477,21 @@ public static int traverse( Node node, int count, Node[] arr ){
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Graphs
+Graphs are like trees. They consist of nodes with children - a tree is actually a special case of a graph.
+
+Graph nodes = vertices.
+The links between nodes as well the nodes themselves may have values or weights. These are called edges.
+one way edges = direct graph
+two way edges = undirected graph
+
+We can represent a graph where aech node has an adjacency list of references to toher nodes.
+Another way is an adjacency matrix, which is a square matrix with dimensions equal to the number of nodes.
+
+The matrix element at position i, j represents the number of edges extending from node i to j.
 
 ## Adjacency matrix
-We can hold a matrix which represents connections (edges) between vertices. The size of the matrix is V x V, where V is the number of vertices. The vlaue is either 0 or 1, depending if there is a connection.
+We can hold a matrix which represents connections (edges) between vertices. The size of the matrix is `V x V`, where `V` is the number of vertices. The value is either 0 or 1, depending if there is a connection.
 
 ### pros
 adding, removing, and checking edges is constant time.  
@@ -3430,18 +2716,8 @@ public class GraphAdjLists {
 }
 ```
 
-# Graphs
-Graphs are like trees. They consist of nodes with children - a tree is actually a special case of a graph.
-
-Graph nodes = vertices.  
-The lniks between nodes as well the nodes themselves may have values or weights. These are called edges.  
-one way edges = direct graph  
-two way edges = undirected graph
-
-We can represent a graph where aech node has an adjacency list of references to toher nodes.  
-Another way is an adjacency matrix, which is a square matrix with dimensions equal to the number of nodes.  
-
-The matrix element at position i, j represents the number of edges extending from node i to j.  
+## Problems
+</br>
 
 ### Six degrees of Kevin Bacon
 **Problem:** The game “Six Degrees of Kevin Bacon” involves trying to find the shortest connection between an arbitrarily selected actor and Kevin Bacon. Two actors are linked if they appeared in the same movie. The goal of the game is to connect the given actor to Kevin Bacon using the fewest possible links. Given a list of all major movies in history and their casts (assume that the names of movies and actors are unique identifiers), describe a data structure that could be constructed to efficiently solve Kevin Bacon problems. Write a routine that uses your data structure to determine the Bacon number (the minimum number of links needed to connect to Kevin Bacon) for any actor.
@@ -3519,153 +2795,6 @@ public void setBaconNumbers(){
 ```
 
 The runtime for this is O(m + n) where m is the number of nodes, and n is the edges. We expect n >>m, so this reduces to O(n)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Arrays and Strings
-
-
-## Strings
-
-
-## Array and String problems
-Many array and string problems require the use of additional temporary data structures to acheive the most efficient solution. In languages where strings are objects, it may be more efficient to convert the string to an array than to process it directly as a string.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Recursion
 
@@ -3766,88 +2895,6 @@ static public void main (String[] args)
 	System.out.println(fact(5)); 
 } 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Data Structures
-### Synbol Table
-A data structure for key-value pairs that support two operations:;
-- insert (put) a new pair into the table ans search for (get) the value associated with a given key.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

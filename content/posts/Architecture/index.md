@@ -12,44 +12,78 @@ Here is a good diagram showing the different things I need to know:
 ![system design](https://camo.githubusercontent.com/e45e39c36eebcc4c66e1aecd4e4145112d8e88e3/687474703a2f2f692e696d6775722e636f6d2f6a6a3341354e382e706e67)
 This section mostly relates to how you can scale your application to run for your desired userbase.
 
+This is another good one:
+![roadmap](https://roadmap.sh/roadmaps/backend.png)
+
 # How to approach a system design interview question
 1. Outline use cases, constraints, and assumptions
-    - Gather requirements and scope the problem. Ask questions to clarify use cases and constraints. Ask things like, who is going to use it, how many users are there, how many requests per second do we expect?
-2. Create a high level design
+    - Gather requirements and scope the problem. 
+    - Ask questions to clarify use cases and constraints. 
+    - Ask things like, who is going to use it, how many users are there, how many requests per second do we expect?
+    - remove items that interviewer deems out of scope
+    - assume high availability is required, add as use case
+2. Think about constraints:
+    - ask how many requests per month
+    - ask how many request per second (they may volunteer it or make you do the math)
+    - estimate reads vs. writes percentage
+    - keep 80/20 rule in mind whne estimating
+    - how much data written per second
+    - total storage required over 5 years
+    - how much data read per second
+3. Create a high level design
     - sketch the main components and connections and justify them
-3. Design core components
+    - layers (service, data, caching)
+    - infrastructure: load balancing, messaging
+    - rough overview of any key algorithm that drives the service
+    - consider bottlenecks and determine solutions
+4. Design core components
     - For example if you were asked to design a url shortening service, 
         - discuss how you would generate and store the hash, e.g. MD5, hash collisions, SQL or no SQL, schema, etc.
         - translate a hashed url to the full url e.g. db look up
         - API and object-oriented design
-4. Scale the design
-    - idetify and address bottleencks, given the constraints. Do you need a load balancer, horizontal scaling ,caching, db sharding. Discuss potential solutions and trade-offs.
+5. Scale the design
+    - idetify and address bottleencks, given the constraints. Do you need a load balancer, horizontal scaling, caching, db sharding. Discuss potential solutions and trade-offs.
 
-# System Design Answer Flow
-1. Understand the problem and scope:
-  - define the use cases, with interviewer's help
-  - suggest additional features
-  - remove items that interviewer deems out of scope
-  - assume high availability is required, add as use case
-2. Think about constraints:
-  - ask how many requests per month
-  - ask how many request per second (they may volunteer it or make you do the math)
-  - estimate reads vs. writes percentage
-  - keep 80/20 rule in mind whne estimating
-  - how much data written per second
-  - total storage required over 5 years
-  - how much data read per second
-3. Abstract design:
-  - layers (service, data, caching)
-  - infrastructure: load balancing, messaging
-  - rough overview of any key algorithm that drives the service
-  - consider bottlenecks and determine solutions
 
-## Tackling a System Design Question
-The idea of these questions is to have a discussion about the problem at hand. What’s important for the interviewer is the process, which you use to tackle the problem. The typical outcome of such a discussion is a high-level architecture addressing the goals and constraints in the question. Perhaps the interviewer will choose one or more areas where they will want to discuss bottlenecks and other common problems.
+# Crack the system design interview
+Four steps:
+1.	Clarify requirements and specs. Ultimate goals should always be clear.
+2.	Sketch out high level design
+3.	Discuss individual components and how they interact in detail
+  -	Load balances
+  -	Reverse proxy: good to centralised internal services and provided unified interfaces to the public. Can also help with caching and load 3alancing.
+  -	Front end web tier Must be stateless to scale out. Feature toggles or config should be centralised.
+  -	Mvc or mvvc  is dominant pattern for this layer. Traditionsllyvrendered on server. People believe that the API can be shared by clients and browsers so SPA web apps are becoming more popular.
+  -	Bottlenecks are requests per second and bandwidth. Could improve this using frameworks with asynchronous and non blocking reactor pattern and or scaling up or scaling out.
+  -	App service tier: SRP 
+  -	Service discovery: zookeeper good choice. Instances with bane, address, port, etc. Are registered into the path in ZooKeeper for each service. Zookeepr is CA in CAP. In contrast, uber is doing work on hyperbahn  which works in decentralised way.  Check out Amazon dynamo which is AP with eventual consistency.
+  -	Pick the right db for the job. Don’t store images in relational. For feeds HBase or Cassandra might good for timestamp indexes.
+Back of the envelope calculations. The cost is a function of CPU, RAM, storage, bandwidth, number and size of the images uploaded each day.
+When we want components to communicate with each other we can use HTTP or RPC. RPC is an application later protocol. Is an interprocess communication that allows s computer program to cause s subroutibe or procedure to execute in another address space, without the programmer explicitly coding the details for this remote interaction. That is, the programmer writes essentially the same code whether the sub routine is local to the executing program or remote. In OOO RPC is also called remote invocation or remote method invocation.
+Some RPC protocol frameworks:
+-	Google protobuf
+-	Facebook thrift
+-	Apache avro 
+Often used internally but is hard to debug and not flexible.  For public APIs we tend to use HTTP.
+If we use MySQL  we can use a db proxy to distribute data, either by clustering or by sharding. 
+Clustering is a decentralised solution. Everything is automatic. Data is distributed, moved, rebalance automatically. Nodes talk to each other.
+Sharding is a centralised solution. Data is distributed manually and does not move. Nodes are not aware of each other.
+Regular internet service has read write
+Look these up:
+http://puncsky.github.io/images/crack-the-system-design-interview/pinterest-arch-overview.png
+
+## What you need to know before a System Design Interview
+Some things you need to be good at:
+- Abstraction. It’s a very important topic for system design interview. You should be clear about how to abstract a system, what is visible and invisible from other components, and what is the logic behind it. Object oriented programming is also important to know.
+- Database. You should be clear about those basic concepts like relational database. Knowing about No-SQL might be a plus depends on your level (new grads or experienced engineers).
+- Network. You should be able to explain clearly what happened when you type “gainlo.co” in your browser, things like DNS lookup, HTTP request should be clear.
+- Concurrency. It will be great if you can recognize concurrency issue in a system and tell the interviewer how to solve it. Sometimes this topic can be very hard, but knowing about basic concepts like race condition, dead lock is the bottom line.
+- Operating system. Sometimes your discussion with the interviewer can go very deeply and at this point it’s better to know how OS works in the low level.
+Machine learning (optional). You don’t need to be an expert, but again some basic concepts like feature selection, how ML algorithm works in general are better to be familiar with.
+
+Make sure you list pros and cons and any constraints that you have assumed.
 
 ### Constraints and Use Cases
-
 The very first thing you should do with any system design question is to clarify the system's constraints and to identify what use cases the system needs to satisfy.
 
 Usually, part of what the interviewer wants to see is if you can gather the requirements about the problem at hand, and design a solution that covers them well. Never assume things that were not explicitly stated.
@@ -60,6 +94,7 @@ Does it need to provide statistics?
 
 What are the use cases?
 
+#### For Bitly
 The use cases for bitly are:
 1. Shortening: take a url and return a much shorter URL
 2. Redirection: take a short url and point it to the original url.
@@ -85,22 +120,22 @@ both per month
 Want to scale these down to per second
 
 Facebook has 1.3 billion active users.
-Twitter has 650 million
-500 million tweets per day
+Twitter has 650 million active users.
+  - 500 million tweets per day
 
 Twitter was a huge driver for URL shortening, but won't be the only consumer.
 
 15 billion tweets per month
 say that 1 in 20 or 1 in 10 tweets have a shortened url that is 750 million to 1.5 billion urls per month
 
-If the interview says that the site is not within the top 3 bit shortening, say that top 30 take 80% of traffic, and the rest take the 20%, so we'll say that a site below top 3 will shorten 300 million per month.
+If the interview says that the site is not within the top 3 bit shortening, say that top 3 take 80% of traffic, and the rest take the 20%, so we'll say that a site below top 3 will shorten 300 million per month.
 
 We can say that we'll be shortening a 100 million each month as 1 company below top 3.
 
- the average time span of a URL (1-2 weeks, let's take the average ~ 10 days). Then he assumed 1 click per day, keeping in mind that the top 20% got much more traffic than the rest 80%. This makes 100 mln * 10 days * 1 click per day = 1 bln.
+ the average time span of a URL (1-2 weeks, let's take the average ~ 10 days). Then he assumed 1 click per day, keeping in mind that the top 20% got much more traffic than the rest 80%. This makes 100 million * 10 days * 1 click per day = 1 billion.
 
 For usage of urls:
-go with assumption that urls ar elike news, and people click them between start date + 2 weeks. That equates to roughly 1 billion requests per month.
+- go with assumption that urls are like news, and people click them between start date + 2 weeks. That equates to roughly 1 billion requests per month.
 
 10% requests come from shortening, 90% come from URL usage.
 
@@ -124,7 +159,7 @@ Design:
 2. Data storage layer (Keeps track of the hash -> url mappings)
     - Acts like a big hash table, stores new mappings, and retrieves a value given a key.
 
-hashed_url = convert_to_base62(md5(original_url + random_salt))[:6]
+`hashed_url = convert_to_base62(md5(original_url + random_salt))[:6]`
 
 ### Understanding Bottlenecks
 Most likely your high-level design will have one or more bottlenecks given the constraints of the problem.
@@ -148,36 +183,34 @@ Once you're ready with your high-level design and have made sure that the interv
 Should talk abouit caching, vertical scaling, horizontal scaling, load balancing, replication, etc.
 
 ### Twitter
-“Design a simplified version of Twitter where people can post tweets, follow other people and favorite* tweets.”
+“Design a simplified version of Twitter where people can post tweets, follow other people and favorite tweets.”
 
 #### Clarifying the problem
 We should ask how many users do we expect. Interviewer says:  
-“well… to make things interesting, let’s aim for 10 million users generating around 100 million requests per day”
+“well... to make things interesting, let’s aim for 10 million users generating around 100 million requests per day”
 
 How connected are users? Interviewer says:
 “we expect that each user will be following 200 other users on average, but expect some extraordinary users with tens of thousands of followers”
 
 We have another dimension in the application: tweets. Producing new tweets and favoriting them should be the most common write operations in the application. But how many requests will that generate? Our interviewer says:
-“Hm, that’s hard to say… we expect that there will be a maximum of 10 million tweets per day and each tweet will probably be favorited twice on average but again, expect some big outliers.”
+“Hm, that’s hard to say... we expect that there will be a maximum of 10 million tweets per day and each tweet will probably be favorited twice on average but again, expect some big outliers.”
 
 Let’s make a few very simple calculations with the information we just received. We will have around 10 million users. Average number of followed other users is 200. This means that the network of users will have about 200 * 10 million edges. This makes 2 billion edges. If the average number of tweets per day is 10 million the number of favorites will then be 20 million.
 
- In addition to the expected size of different things, for a system like that it will be important to know what availability is expected and what response times are tolerable. Naturally, our interviewer wants to have a system, which loads pretty quickly. None of the operations described above should take more than a few hundred milliseconds. The system should be online all of the time. It is not good to design into this application any downtimes.
+In addition to the expected size of different things, for a system like that it will be important to know what availability is expected and what response times are tolerable. Naturally, our interviewer wants to have a system, which loads pretty quickly. None of the operations described above should take more than a few hundred milliseconds. The system should be online all of the time. It is not good to design into this application any downtimes.
 
- interview time is very limited and you need to find the balance. This session where you ask questions and get answers should probably not last more than just a few minutes assuming your interview lasts 40-45 minutes and especially if this is not the only problem you get in it. Keep that in mind and practice will let you find your sweet spot.
+To summarise:
+- 10 million users
+- 10 million tweets per day
+- 20 million tweet favourites per day
+- 100 million HTTP requests to the site
+- 2 billion "follow" relations
+- Some users and tweets could generate an extraordinary amount of traffic
 
- To summarise:
- - 10 million users
- - 10 million tweets per day
- - 20 million tweet favourites per day
- - 100 million HTTP requests to the site
- - 2 billion "follow" relations
- - Some users and tweets could generate an extraordinary amount of traffic
-
- #### High Level Design
- As it is often the case, we can divide our architecture in two logical parts:
- 1. the logic, which will handle all incoming requests to the application and
- 2. the data storage that we will use to store all the data that needs to be persisted.
+#### High Level Design
+As it is often the case, we can divide our architecture in two logical parts:
+1. the logic, which will handle all incoming requests to the application and
+2. the data storage that we will use to store all the data that needs to be persisted.
 
 At this point it has become obvious that our application will need to handle requests for:
 - posting new tweets
@@ -194,23 +227,19 @@ We know that the expected daily load is 100 million requests. This means that on
 
 One aspect is the complexity of the requests that the application receives. For example, one request could require just one simple query to a database. It could also need a few heavier queries to be run and some CPU-intensive computations to be performed by the application.
 
-Another aspect could be the technologies used to implement the application. Some solutions are better at concurrency and use less memory than others. In a situation like this one you should have some common knowledge about what kind of load can be handled by a single machine for sure and what is load that definitely needs more computing power. To build that it would help to spend some time reading about different real-life examples. Some people also compare the throughput they have achieved in different setups using different web frameworks, hosting services and so on. Any information like that could help you build better instincts about this matter. Finally, your personal work experience is always the best way to learn about these things.
-
-When the expected load seems nontrivially high you can always consider scaling up or out. Scaling up would be an approach in which you decide to get a beefier and more expensive server, which is capable of handling the expected load. This approach has a natural limit for its scalability because after a given point the hardware of one machine just isn’t capable of handling all the requests. In some cases doing that makes sense.
-
-Scaling out would involve designing your architecture in a way that spreads the computations over a number of machines and distributes the load across them. This approach is better at scaling if your load grows significantly. However, it involves some other complications.
+Another aspect could be the technologies used to implement the application. Some solutions are better at concurrency and use less memory than others. In a situation like this one you should have some common knowledge about what kind of load can be handled by a single machine for sure and what is load that definitely needs more computing power. 
 
 One more advantage of using more than one server for your application is the resilience that you add to your whole system. If you only have one machine and it goes down your whole application is down. However, if there are 10 servers handling requests and one or two go down the others will be able to handle at least part of the load if not all of it.
 
 In our particular problem we would definitely suggest using a load balancer, which handles initial traffic and sends requests to a set of servers running one or more instances of the application.
 
-One argument is the resilience that we gain as mentioned above. Another one is that our application doesn’t seem to have any special requirements in terms of very high memory or CPU usage. All requests should be serviceable with code that runs on regular commodity machines. Using many such machines in parallel should give us the flexibility to scale out a lot.
+One argument is the resilience that we gain as mentioned above. Another one is that our application doesn't seem to have any special requirements in terms of very high memory or CPU usage. All requests should be serviceable with code that runs on regular commodity machines. Using many such machines in parallel should give us the flexibility to scale out a lot.
 
 How many servers we should have is something that can probably be determined experimentally with time. Also, if we set things up properly it should be fairly easy to add new servers if that is needed.
 
 Behind the load balancer we will be running a set of servers that are running our application and are capable of handling the different requests that arrive.
 
-The application logic itself will most likely be implemented using some web framework, which in general allows us to write apps handling HTTP requests, talking to a database and rendering the appropriate HTML pages requested by the user. The details of which technology will be used are most likely not going to be important for this type of interview question. Nevertheless, it’s strongly advised that you get a good understanding of the different types of modern web frameworks and how they work. This book does not cover such material but some things to look at are Node.js, Ruby on Rails, Angular.js, Ember.js. React.js, etc. This does not mean that you need to get down to learning these in detail but rather to take a look at the existing ecosystem of technologies, how they interact with each other and what are the pros and cons.
+The application logic itself will most likely be implemented using some web framework, which in general allows us to write apps handling HTTP requests, talking to a database and rendering the appropriate HTML pages requested by the user. The details of which technology will be used are most likely not going to be important for this type of interview question. Nevertheless, it’s strongly advised that you get a good understanding of the different types of modern web frameworks and how they work.
 
 Now we have a load balancer and a set of application servers running behind it. The load balancer routes requests to the servers using some predefined logic and the application servers are able to understand the requests and return the proper data back to the user’s browser. There is one more major component for our high-level architecture to be complete - the storage.
 
@@ -397,6 +426,7 @@ Now, let’s continue with some possible scenarios that the interview could foll
 They may want to test your ability to spot bottlenecks and to handle the need to scale your system. Probably one could think of many complications to add to the problem statement and to lead the discussion in various directions. We will cover a few things that seem quite normal to consider and likely to happen in a typical interview.
 
 #### Additional Considerations
+</br>
 
 ##### Increased Number of Read Requests
 We have our implementation of the system and it handles everything perfectly. But what would happen if suddenly we got lucky and people started visiting our application 5 times more often generating 5 times more read requests caused by viewing posts and user profiles. What would be the first place that will most likely become a bottleneck?
@@ -424,135 +454,9 @@ As we mentioned earlier this could increase the load on our database. In such a 
 We could also experience unusual peaks in the requests hitting our application servers. If they are not enough to respond quickly enough to all requests this could cause timeout to occur for some of the users. In such situations solutions that offer auto-scaling of the available computing nodes could save the day. Some companies offering such services are Amazon and Heroku and they were already mentioned in this example. You can take the time to investigate what is out there on the market, so that you can have a discussion about possible ways to handle peaks in traffic.
 
 
-# Crack the system design interview
-Four steps:
-1.	Clarify requirements and specs. Ultimate goals should always be clear.
-2.	Sketch out high level design
-3.	Discuss individual components and how they interact in detail
-a.	Load balances
-b.	Reverse proxy: good to centralised internal services and provided unified interfaces to the public. Can also help with caching and load balancing.
-c.	Front end web tier Must be stateless to scale out. Feature toggles or config should be centralised.
-i.	Mvc or mvvc  is dominant pattern for this layer. Traditionsllyvrendered on server. People believe that the API can be shared by clients and browsers so SPA web apps are becoming more popular.
-d.	Bottlenecks are requests per second and bandwidth. Could improve this using frameworks with asynchronous and non blocking reactor pattern and or scaling up or scaling out.
-e.	App service tier: SRP 
-f.	Service discovery: zookeeper good choice. Instances with bane, address, port, etc. Are registered into the path in ZooKeeper for each service. Zookeepr is CA in CAP. In contrast, uber is doing work on hyperbahn  which works in decentralised way.  Check out Amazon dynamo which is AP with eventual consistency.
-g.	Pick the right db for the job. Don’t store images in relational. For feeds HBase or Cassandra might good for timestamp indexes.
-Back of the envelope calculations. The cost is a function of CPU, RAM, storage, bandwidth, number and size of the images uploaded each day.
-When we want components to communicate with each other we can use HTTP or RPC. RPC is an application later protocol. Is an interprocess communication that allows s computer program to cause s subroutibe or procedure to execute in another address space, without the programmer explicitly coding the details for this remote interaction. That is, the programmer writes essentially the same code whether the sub routine is local to the executing program or remote. In OOO RPC is also called remote invocation or remote method invocation.
-Some RPC protocol frameworks:
--	Google protobuf
--	Facebook thrift
--	Apache avro 
-Often used internally but is hard to debug and not flexible.  For public APIs we tend to use HTTP.
-If we use MySQL  we can use a db proxy to distribute data, either by clustering or by sharding. 
-Clustering is a decentralised solution. Everything is automatic. Data is distributed, moved, rebalance automatically. Nodes talk to each other.
-Sharding is a centralised solution. Data is distributed manually and does not move. Nodes are not aware of each other.
-Regular internet service has read write
-Look these up:
-http://puncsky.github.io/images/crack-the-system-design-interview/pinterest-arch-overview.png
 
-## What you need to know before a System Design Interview
-Some things you need to be good at:
-- Abstraction. It’s a very important topic for system design interview. You should be clear about how to abstract a system, what is visible and invisible from other components, and what is the logic behind it. Object oriented programming is also important to know.
-- Database. You should be clear about those basic concepts like relational database. Knowing about No-SQL might be a plus depends on your level (new grads or experienced engineers).
-- Network. You should be able to explain clearly what happened when you type “gainlo.co” in your browser, things like DNS lookup, HTTP request should be clear.
-- Concurrency. It will be great if you can recognize concurrency issue in a system and tell the interviewer how to solve it. Sometimes this topic can be very hard, but knowing about basic concepts like race condition, dead lock is the bottom line.
-- Operating system. Sometimes your discussion with the interviewer can go very deeply and at this point it’s better to know how OS works in the low level.
-Machine learning (optional). You don’t need to be an expert, but again some basic concepts like feature selection, how ML algorithm works in general are better to be familiar with.
 
-Make sure you list pros and cons and any constraints that you have assumed.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Scalability Recap video
+# Scalability Video
 FTP sends username and password in plain text? SFTP is better.
 
 VPS = YOu get a virtual machine, meaning you get your own copy of the OS. USe hypervisor.
@@ -678,37 +582,6 @@ Somewhere down the road your application gets slower and slower and finally brea
 2. Denormalise right from the beginning and include no more joins in any database query. You can stay with MySQL and use it like a NoSQL database, or you can switch t oa better and easier to scale NoSQL db like MongoDB or CouchDB. Eventually you'll need to introduce a cache though.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Caching
 Do in-memory caches, like memcached or Redis, don't do file-based caching, it makes cloning and autoscaling of your servers just a pain.
 
@@ -724,7 +597,6 @@ Ideas of objects to cache:
 - activity streams
 - user<->friend relationships
 
-# Caching
 Caching consists of: precalculating results, pre-generating expensive indexes, and storing copies of frequently accessed data in a faster backend (e.g. Memcache instead of postresQL).
 
 In practice, caching is important earlier in the development process than load-balancing, and starting with a consistent caching strategy will save you time later on.  It also ensures you don't optimize access patterns which can't be replicated with your caching mechanism or access patterns where performance becomes unimportant after the addition of caching.
@@ -741,14 +613,14 @@ The best performance is in-memory caches. However you won't have enough RAM to h
 ## CDNs
 Some consider CDNs caches as they take the burden of serving static media off your app servers (which are typically optimized for serving dynamic pages rather than static media), and provide geographic distribution. 
 
-# Cache invalidation
+## Cache invalidation
 Solving the problem of maintaining consistency in caches is know as cache invalidation.
 Easy to introduce errors if you have multiple code paths writing to do abs cache. More likely to happend if you don’t go into writing the application with s caching strategy already in mind.
 Write through cache: each time a value changes, write the new value into the cache.
 Ready through cache: if value changes delete in cache and populate it later on a read.
 Invalidation becomes more challenging when you have fuzzy queries, e.g. trying to add application level caching up-front of a full-term search engine like SOLR or modifications to an unknown number of elements, e.g. deleting all objects created more than a week a go.
 
-# Cache
+# Caching2
 ![Cache](https://camo.githubusercontent.com/7acedde6aa7853baf2eb4a53f88e2595ebe43756/687474703a2f2f692e696d6775722e636f6d2f51367a32344c612e706e67)
 
 Caching improves page load times and can reduce the load on your servers and databases. In this model, the dispatcher will first lookup if the request has been made before and try to find the previous result to return, in order to save the actual execution.
@@ -917,35 +789,11 @@ Need to make application changes such as adding Redis or memcached.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Asynchronism
 Two ways of doing it:
-1. Doing the time-consuming work in advance and server the finished work with a low request time. E.g. pages of a website, maybe built with a massive framework, can be pre-rendered and locally stored as staticHTML on every change.
-2. User comes to your website and starts a very computing intensive task which would take several minutes to finish. Frontend of your website sends a job onto a job queue and immediately signals back to the user: your job is in work, please continue to browse the page. The job queue is constantly checked by a bunch of workers for new jobs. If there is a new job then the worker does the job and after some minutes sends a signal that the job was done. The frontend, which constantly checks for new “job is done” - signals, sees that the job was done and informs the user about it.
+1. Doing the time-consuming work in advance and server the finished work with a low request time. E.g. pages of a website, maybe built with a massive framework, can be pre-rendered and locally stored as staticH TML on every change.
+2. User comes to your website and starts a very computationally intensive task which would take several minutes to finish. Frontend of your website sends a job onto a job queue and immediately signals back to the user: your job is in work, please continue to browse the page. The job queue is constantly checked by a bunch of workers for new jobs. If there is a new job then the worker does the job and after some minutes sends a signal that the job was done. The frontend, which constantly checks for new “job is done” - signals, sees that the job was done and informs the user about it.
 
-# Asynchronism
 ![asynchronism](https://camo.githubusercontent.com/c01ec137453216bbc188e3a8f16da39ec9131234/687474703a2f2f692e696d6775722e636f6d2f353447597353782e706e67)
 
 Asynchronous workflows help reduce request times for expensive operations that would otherwise be performed in-line. They can also help by doing time-consuming work in advance, such as periodic aggregation of data.
@@ -995,38 +843,6 @@ You need to consider the whole end-to-end service.  What if a client is very slo
 Use cases such as inexpensive calculations and realtime workflows might be better suited for synchronous operations, as introducing queues can add delays and complexity.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Performance vs scalability
 A service is scalable if it results in increased performance in a manner proportional to resources added. Generally, increasing performance means serving more units of work, but it can also be to handle larger units of work, such as when datasets grow.
 
@@ -1045,72 +861,12 @@ General recommendations for scalability:
 In functional programming, referential transparency is generally defined as the fact that an expression, in a program, may be replaced by its value (or anything having the same value) without changing the result of the program. This implies that methods should always return the same value for a given argument, without having any other effect.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Latency vs throughput
 Latency is the time to perform some action or to produce some result.
 
 Throughput is the number of such actions or results per unit of time.
 
 Generally, you should aim for maximal throughput with acceptable latency.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # CAP theorem
@@ -1150,40 +906,6 @@ Responses return the most recent version of the data available on a node, which 
 
 AP is a good choice if the business needs allow for eventual consistency or when the system needs to continue working despite external errors.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Consistency Patterns
 
 ## Weak Consistency
@@ -1200,40 +922,6 @@ This approach is seen in systems such as DNS and email. Eventual consistency wor
 After a write, reads will see it. Data is replicated synchronously.
 
 This approach is seen in file systems and RDBMSes. Strong consistency works well in systems that need transactions.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Availability Patterns
 
@@ -1288,74 +976,6 @@ Availability (Total) = 1 - (1 - Availability (Foo)) * (1 - Availability (Bar))
 ```
 If both Foo and Bar each had 99.9% availability, their total availability in parallel would be 99.9999%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # CDN
 Content delivey networks.
 
@@ -1386,46 +1006,6 @@ Sites with heavy traffic work well with pull CDNs, as traffic is spread out more
 - CDN costs could be significant depending on traffic, although this should be weighed with additional costs you would incur not using a CDN.
 - Content might be stale if it is updated before the TTL expires it.
 - CDNs require chaning URLs for static content to point to the CDN.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Load Balancer
 ![load balancer](https://camo.githubusercontent.com/21caea3d7f67f451630012f657ae59a56709365c/687474703a2f2f692e696d6775722e636f6d2f6838316e39694b2e706e67)
@@ -1471,54 +1051,6 @@ A smart client is a client which takes a pool of service hosts and balances load
 
 HAProxy is a good smart client. It runs locally on each of your boxes, and each service you want to load-balace has a locally bound port.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Reverse Proxy (Web Server)
 A reverse proxy is a web server that centralises internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfil it before the reverse proxy returns the server's respone the the client. 
 
@@ -1550,43 +1082,6 @@ Forward proxy can also act as a cache server in an internal network. If a resour
 
 Reverse proxy is mainly used by server admins to achieve load balancing and high availability. A website may have several web servers behind the reverse proxy. The reverse proxy server takes requests from the Internet and forward these requests to one of the web servers.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Difference between an application server and a web server
 Used interchangeably.
 
@@ -1599,47 +1094,6 @@ Most of the application servers have a web server as an integral part of them. T
 As web servers are well suited for static content and app servers for dynamic content, most of the production environments have web servers acting as a reverse proxy to the application server. That means while servicing a page request, static content is server by the web server that interprets the request. Using some kind of filtering technique the web serve identifies dynamic content requests and transparently forwards to the application server.
 
 A web server would be Apache HTTP and an application server would be Apache Tomcat.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Application layer
 ![Application Layer](https://camo.githubusercontent.com/feeb549c5b6e94f65c613635f7166dc26e0c7de7/687474703a2f2f692e696d6775722e636f6d2f7942355359776d2e706e67)
@@ -1665,72 +1119,6 @@ Need to look this up
 - Adding an application layer with loosely coupled services requires a different approach from an architectural, operations, and process viewpoint (vs a monolithic system). 
 - Microservices can add complexity in terms of deployment and operations.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Servlets
 
 the user/client can only request static webpage from the server. This is not good enough, if the user wants to read the web page based on his input. The basic idea of Servlet container is using Java to dynamically generate the web page on the server side. So servlet container is essentially a part of a web server that interacts with the servlets.
@@ -1749,34 +1137,6 @@ Apache Tomcat is an implementation of the java servlet and a servlet container.
 6. Web server return the dynamically generated results to the correct location
 
 Using servlets allows the JVM to handle each request within a separate Java thread, and this is one of the key advantage of Servlet container. Each servlet is a Java class with special elements responding to HTTP requests. The main function of Servlet contain is to forward requests to correct servlet for processing, and return the dynamically generated results to the correct location after the JVM has processed them.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Databases
 
@@ -1801,50 +1161,6 @@ No multi-valued dependency
 
 If you have two records that need to change in a table if some data changes, it's not 4NF.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Offline processing
 Processing that can’t be performed in-line with a client’s request because it creates unacceptable latency (e.g. you want to propagate a user's action across a social graph) or because it needs to occur pperiodically.
 Message queues
@@ -1855,62 +1171,11 @@ For the split of offline and online work:
 The other benefit is take burden off web apps as you can have separate machine pool for performing offline processing.
 For scheduled jobs, can use cron jobs to send messages to queue.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Map reduce
 If your app is dealing with large quantity of data youlllikely add support for map reduce, probably using Hadoop and maybe give or HBase.
 Adding a map reduce layer makes it possible to perform data and or processing intensive operations in a reasonable amount of time.
 Could use it for calculating suggested users in a social graph, or for generating analytics reports.
 For small queries can often get away with adhoc queries on sql server, but wont scale up trivial once the quantity of data stored or write load requires sharing your db.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Platform layer
 Web apps communicates with platform layer, which in turn communicates with your db. 
@@ -1919,32 +1184,6 @@ Allows you to scale both independently.
 Adding a platform layer can be a way to reuse your infrastructure for multiple products or interfaces es (a web app, an API, an iPhone app, etc.).
 A platform should expose a crisp product-agnostic interface which masks implementation details.
 If done well, this utilizes the platform's capabilities, as well as another team implementing/optimizing the platform itself.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Relational Database Management System
 ACID is a set of properties of relational database transactions.
@@ -2076,47 +1315,6 @@ They might point you to the following optimisations:
 
 ### Tune the query cache
 - In some cases, the query cache could lead to performance issues.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # NoSQL
 A collection of data items rperesented in a key-value store, document store, wide column store, or a graph database. 
@@ -2402,79 +1600,6 @@ Two types of consistency:
 - replication: 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Communication
 ![Communication](https://camo.githubusercontent.com/1d761d5688d28ce1fb12a0f1c8191bca96eece4c/687474703a2f2f692e696d6775722e636f6d2f354b656f6351732e6a7067)
 
@@ -2638,61 +1763,6 @@ REST is more predictable than RPC as it relies on the shared semantic of HTTP ve
 ## Hypermedia-Driven RESTful Web Service
 Needs filling in
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Security
 - Encrypt in transit and at rest.
 - Sanitize all user inputs or any input parameters exposed to user to prevent XSS and SQL injection.
@@ -2710,236 +1780,6 @@ Needs filling in
 8. **Insecure Deserialization.** Insecure deserialization often leads to remote code execution. Even if deserialization flaws do not result in remote code execution, they can be used to perform attacks, including replay attacks, injection attacks, and privilege escalation attacks.
 9. **Using Components with Known Vulnerabilities.** Components, such as libraries, frameworks, and other software modules, run with the same privileges as the application. If a vulnerable component is exploited, such an attack can facilitate serious data loss or server takeover. Applications and APIs using components with known vulnerabilities may undermine application defenses and enable various attacks and impacts.
 10. **Insufficient Logging & Monitoring.** Insufficient logging and monitoring, coupled with missing or ineffective integration with incident response, allows attackers to further attack systems, maintain persistence, pivot to more systems, and tamper, extract, or destroy data. Most breach studies show time to detect a breach is over 200 days, typically detected by external parties rather than internal processes or monitoring.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Numbers
-
-## Powers of Two
-| Power | Exact Value       | Approx Value | Bytes             |
-|-------|-------------------|--------------|-------------------|
-| 7     | 128               |              |                   |
-| 8     | 256               |              |                   |
-| 10    | 1024              | 1 thousand   | 1 KB              |
-| 16    | 65,536            | 64 KB        |                   |
-| 20    | 1,048,576         | 1 million    | 1 MB              |
-| 30    | 1,073,741,824     | 1 billion    | 1 GB              |
-| 32    | 4,294,967,296     | 4 GB         |                   |
-| 40    | 1,099,511,627,776 | 1 trillion   | 1 TB              |
-
-## Latency Numbers Every Programmer Should Know
-
-| Action                              | Nanoseconds | Microseconds | Milliseconds | Notes                       |
-|-------------------------------------|-------------|--------------|--------------|-----------------------------|
-| L1 cache reference                  | 0.5         |              |              |                             |
-| Branch mispredict                   | 5           |              |              |                             |
-| L2 cache reference                  | 7           |              |              | 14x L1 cache                |
-| Mutex lock/unlock                   | 25          |              |              |                             |
-| Main memory reference               | 100         |              |              | 20x L2 cache, 200x L1 cache |
-| Compress 1K bytes with Zippy        | 10,000      | 10           |              |                             |
-| Send 1 KB bytes over 1 Gbps network | 10,000      | 10           |              |                             |
-| Read 4 KB randomly from SSD*        | 150,000     | 150          |              | ~1GB/sec SSD                |
-| Read 1 MB sequentially from memory  | 250,000     | 250          |              |                             |
-| Round trip within same datacenter   | 500,000     | 500          |              |                             |
-| Read 1 MB sequentially from SSD*    | 1,000,000   | 1,000        | 1            | ~1GB/sec SSD, 4X memory     |
-| Disk seek                           | 10,000,000  | 10,000       | 10           | 20x datacenter roundtrip    |
-| Read 1 MB sequentially from 1 Gbps  | 10,000,000  | 10,000       | 10           | 40x memory, 10X SSD         |
-| Read 1 MB sequentially from disk    | 30,000,000  | 30,000       | 30           | 120x memory, 30X SSD        |
-| Send packet CA->Netherlands->CA     | 150,000,000 | 150,000      | 150          |                             |
-
-```
-1 ns = 10^-9 seconds
-1 us = 10^-6 seconds = 1,000 ns
-1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
-```
-
-Handy metrics based on numbers above:
-- Read sequentially from disk at 30 MB/s
-- Read sequentially from 1 Gbps Ethernet at 100 MB/s
-- Read sequentially from SSD at 1 GB/s
-- Read sequentially from main memory at 4 GB/s
-- 6-7 world-wide round trips per second
-- 2,000 round trips per second within a data center
-
-# Topics
-- Concurrency. Do you understand threads, deadlock, and starvation? Do you know how to parallelize algorithms? Do you understand consistency and coherence?
-Networking. Do you roughly understand IPC and TCP/IP? Do you know the difference between throughput and latency, and when each is the relevant factor?
-- Abstraction. You should understand the systems you’re building upon. Do you know roughly how an OS, file system, and database work? Do you know about the various levels of caching in a modern OS?
-- Real-World Performance. You should be familiar with the speed of everything your computer can do, including the relative performance of RAM, disk, SSD and your network.
-- Estimation. Estimation, especially in the form of a back-of-the-envelope calculation, is important because it helps you narrow down the list of possible solutions to only the ones that are feasible. Then you have only a few prototypes or micro-benchmarks to write.
-- Availability and Reliability. Are you thinking about how things can fail, especially in a distributed environment? Do know how to design a system to cope with network failures? Do you understand durability?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Raft
-Raft is a protocol for implementing distributed consensus.
-
-A node can be in one of three states:
-- The Follower state
-- The Candidate state
-- The leader state
-
-All start as followers.  
-If followers don't hear from a leader then they can become a candidate.  
-The candidate then requests votes from other nodes.  
-Nodes will reply with their vote.  
-The candidate becomes the leader if it gets votes from a majority of nodes.  
-This process is called Leader Election.
-
-All changes to the system now go through the leader.  
-Each change is added as an entry in the node's log.  
-This log entry is currently uncommitted so it won't update the node's value.  
-To commit the entry the node first replicates it to the follower nodes...
-then the leader waits until a majority of nodes have written the entry.  
-The entry is now committed on the leader node and the node state is "5".  
-The leader then notifies the followers that the entry is committed.  
-The cluster has now come to consensus about the system state.  
-This process is called Log Replication.
-
-In Raft there are two timeout settings which control elections.
-First is the election timeout.
-The election timeout is the amount of time a follower waits until becoming a candidate.
-The election timeout is randomized to be between 150ms and 300ms.
-After the election timeout the follower becomes a candidate and starts a new election term... votes for itself...and sends out Request Vote messages to other nodes.  
-If the receiving node hasn't voted yet in this term then it votes for the candidate...
-...and the node resets its election timeout.
-Once a candidate has a majority of votes it becomes leader.
-The leader begins sending out Append Entries messages to its followers.
-These messages are sent in intervals specified by the heartbeat timeout.
-Followers then respond to each Append Entries message.
-This election term will continue until a follower stops receiving heartbeats and becomes a candidate.
-Requiring a majority of votes guarantees that only one leader can be elected per term.
-If two nodes become candidates at the same time then a split vote can occur.
-
-
-Once we have a leader elected we need to replicate all changes to our system to all nodes.
-This is done by using the same Append Entries message that was used for heartbeats.
-First a client sends a change to the leader.
-The change is appended to the leader's log...
-...then the change is sent to the followers on the next heartbeat.
-An entry is committed once a majority of followers acknowledge it...
-...and a response is sent to the client.
-Now let's send a command to increment the value by "2".
-Our system value is now updated to "7".
-Raft can even stay consistent in the face of network partitions.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Scalable Web Architecture and Distributed Systems
 Below are some of the key principles that influence the design of large-scale web systems:
@@ -2983,6 +1823,12 @@ If a system only has a couple of a nodes, systems like round robin DNS may make 
 ## Queues
 In the cases where writes, or any task for that matter, may take a long time, achieving performance and availability requires building asynchrony into the system; a common way to do that is with queues.
 
+
+# SOA
+
+# CQRS and Event Sourcing
+
+# Serverless
 
 
 

@@ -6,29 +6,30 @@ published: true
 date: "2020-04-07"
 ---
 
-This sections discusses networking.
-
 # Internet
-The internet is a distributed packet-switched network. No one person is in charge of it, it is a distributed network.
-
-Bandwidth is the maximum transmission capacity of a device.
-
-Bit Rate: Number of bits that we can send over a given period of time.
-
-Latency: Time it takes for a bit to travel from one place to another.
-
-Ethernet cables have real measurable signal loss over a few hundred feet.
-
-A better way is through light, using fiber optic cables. Send bits as light beams. Fiber optic cable is a thread of glass engineered to reflect light. Depending on the bounce angle we can actually send multiple bits simultaneously all of them travelling at the speed of light. The signal doesn't degrade over long distances, no signal loss. We use fiber optic cables across the ocean floors to connect one continent to another. At one point there was a cable that was cut near egypt that disrupted the intenet for most of the middle east and india. Unfortunately fiber optic is really expensive and hard to work with. Most of the time we'll see copper cable.
-
-Wireless bit-sending machines use radio signals to send bits from one place to another. The machines have to translate the ones and zeroes into radio waves of different frequencies. The receiving machines reverse the process. A radio signal can't travel far before it gets garbled. If you're using wifi, you'll send your bits over radio to the wireless router and that uses a physical wire to travel the really long distances of the internet.
-
-ISP connects you to billions of devices around the world through hundres of thousands of networks.
-
-The internet is a design philosophy expressed in a set of protocols.
+The internet is a distributed packet-switched network. No one person is in charge of it, it is a distributed network. It is a design philosphy expressed in a set of protocols.
 
 A protocol is a well known set of rules and standards used to communicate between machines.
 
+Bandwidth is the maximum transmission capacity of a device.
+
+- **Bit Rate**: Number of bits that we can send over a given period of time.
+- **Latency**: Time it takes for a bit to travel from one place to another.
+
+Your ISP connects you to billions of devices around the world through hundres of thousands of networks.
+
+
+## Fiber Optic
+Ethernet cables have real measurable signal loss over a few hundred feet.
+
+A better way is through light, using fiber optic cables. Send bits as light beams. 
+
+A fiber optic cable is a thread of glass engineered to reflect light. Depending on the bounce angle we can actually send multiple bits simultaneously all of them travelling at the speed of light. The signal doesn't degrade over long distances, no signal loss. We use fiber optic cables across the ocean floors to connect one continent to another. At one point there was a cable that was cut near egypt that disrupted the intenet for most of the middle east and india. Unfortunately fiber optic is really expensive and hard to work with. Most of the time we'll see copper cable.
+
+## Wireless 
+Wireless bit-sending machines use radio signals to send bits from one place to another. The machines have to translate the ones and zeroes into radio waves of different frequencies. The receiving machines reverse the process. A radio signal can't travel far before it gets garbled. If you're using wifi, you'll send your bits over radio to the wireless router and that uses a physical wire to travel the really long distances of the internet.
+
+## IP
 All device on the internet has a distinct IP
 
 Traditional IP addresses are 32 bits - 8 bits per part of the addresses.  
@@ -36,15 +37,7 @@ An IP address is made up of a network and sub-network. This is IPv4. 4 billion u
 
 Transition to IPv6, 128 bits, 340 undecillion addresses.
 
-DNS associates names with addresses. Computer uses DNS name to look up address. Asks DNS server.
-
-DNS Servers are connected in a distributed hierarchy and are divided into zones. Splitting up responsibilties for different domains, .org, .com, etc.
-
-Created to be a open and public communication protocol. Susspectible to DNS spoofing.
-
-Traffic on the internet doesn't travel on a direct line - this doesn't scale, instead it travels in a much less direct fashion.
-The path may change in the midts of computer to computer conversation.
-
+## Information flow
 Information goes from one pc to another in a packet of information.
 
 Info needs to be broken down into packets. THey may get to their destination at different times. Packets don't decide their route, they only know where they came from and where they're going.
@@ -53,45 +46,6 @@ Special computers on the internet called routers act like traffic managers to ke
 
 Cheapest is not cost, but time, politics, and relationships between companies. Having options make the network fault tolerant.
 
-Transmission control protocol
-
-manages the sending and receiving of all all data by packets.
-
-TCP does an inventory and sends bac kacknowledgements of each packet received. If all packets are there TCP will sign off the delivery and you're done. If TCP finds some packets are missing, it won't sign. For each missing or incomplete packet, spotify will resend then. Once TCP verifies the delivery for many packets for that one delivery your song will start to play.
-
-Routers and TCP are built to scale. The more routers, the more reliable the internet becomes. We can grow and scale without interrupting the internet for anyone.
-
-Packets are reassembled in order.
-
-When you request a website, the server starts to talk to your computer in language called HTTP
-
-HyperText Transfer Protocol.
-
-How does port forwarding work?
-
-Safe websites prevent snooping and tampering by asking your web browser to communicate on a secure channel using Secure Sockets Layer, and its successor Transport Layer Security. They are a layer of security wrapped around your communications.
-
-When a website asks your browser to engage in a secure connection, it first provides a digital certificate, proving that it is the website it claims to be. Certificates are provided by certificate authorities. Which are trusted entities that verify identities of websites and issues certificates for them.
-
-If you try to set up a secure connection without a valid certificate, your browser will warn you.
-
-Todays secure communications are encrpyted using 256 bit keys. That is a lot of different possible keys. We predict that in a few hundred years, 256 bits won't be enough to be safe.
-
-Increasing the size of a key doesn't make encrpytion much harder, but it exponentially increases the number of guesses needed to crack a cipher.
-
-When the sender and the receiver uses the same key to encrypt and decrypt a message, it's called symmetric encryption.
-
-It's impossible for two computers on the internet to meet in private to exchange a key. Instead computers use asymmetric keys: a public key which can be exchanged with anybody, and a private key that is not shared. 
-
-The public key is used to encrypt data and anybody  can use it to create a secret message. The secret can only be decrypted by a computer with access to the private key. 
-
-Public key cryptography is the foundation of all secure mesasging on the internet. Including SSL and TLS.
-
-Using viruses, hackers cna take over millions of computers world wide and then use them as a digital army, known as a botnet, to attack and take down websites. This is a DDoS.
-
-90% of the time a system gets hacked due to a human error. 
-
-## Packet Transmission across the internet
 Packets can take different routes - this is packet switching.
 
 Circuit switching - used by POTS plain old telephone systems. One path all packets take. Path set up prior to any communication.
@@ -109,24 +63,6 @@ Repeat this till you get to the host (destination IP).
 Routers look in their routing table to see what the next hop is.
 
 When host seems IP address in datagram is its own it removes network header. Then passes up to the transport layer and looks at port, removes header, goes to application layer, and data is passed to app running on that port.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # UDP and TCP
@@ -197,37 +133,22 @@ Multimedia streaming can use either UDP or TCP:
 
 TCP looks at all the packets whne they are received to make sure all packets are there and will sign if all are there ,else it won't sign and they need to be sent asgain. - Routes and TCp are scalable. The more routes, the more reliable.
 
+### TCP2
 
+manages the sending and receiving of all all data by packets.
 
+TCP does an inventory and sends bac kacknowledgements of each packet received. If all packets are there TCP will sign off the delivery and you're done. If TCP finds some packets are missing, it won't sign. For each missing or incomplete packet, spotify will resend then. Once TCP verifies the delivery for many packets for that one delivery your song will start to play.
 
+Routers and TCP are built to scale. The more routers, the more reliable the internet becomes. We can grow and scale without interrupting the internet for anyone.
 
+Packets are reassembled in order.
 
+When you request a website, the server starts to talk to your computer in language called HTTP
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+HyperText Transfer Protocol.
 
 # OSI and TCP/IP
-Bakc in the past, every operating system had their own way to communicate over a network.  
+Back in the past, every operating system had their own way to communicate over a network.  
 This was chaos, so the International Standards Origanisation (ISO) created a model called Open Systems Interconnect (OSI) to solve this interoperability problem. It doesn't really exist, it is used to describe how networks work.
 
 Around the year 200, the network works ended and TCP/IP won.
@@ -266,19 +187,6 @@ Internet Layer protocols are IP, ICMP, ARP. Ping uses ICMP
 
 Network Access protocols are ethernet, WiFI, Fiber Optics, microwave, etc.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Sockets
 When establishing connectivity, the client and server each bind a "socket" to their end of the connection. Once a connection has been established the client and sever both read from and writre to the socket when communicating.
 
@@ -295,6 +203,7 @@ Stream (connection-oriented) sockets use TCP or SCTP.
 Raw sockets typically available in routers and other network equipment. Here the trasnport layer is bypassed, adn the packet headers are made accessible to the application.
 
 famous port numbers:
+
 | Port | Service | Transport Protocol |
 |------|---------|--------------------|
 | 21   | FTP     | TCP, UDP, SCTP     |
@@ -321,41 +230,6 @@ The client already knows the port and ip to connect to.
  When tcp does the handskae, each time a number is incremented as the acknowledgement.
 
  Wireshark is a packet sniffer, how does that work?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # SSL
 Facebook had a problem where they didn't encrypt their traffic after sign in, so anyone could sniff your packets.
@@ -420,26 +294,29 @@ SSL 3.0     TLS 1.1
 etc.
 
 
+## SSL
 
+Safe websites prevent snooping and tampering by asking your web browser to communicate on a secure channel using Secure Sockets Layer, and its successor Transport Layer Security. They are a layer of security wrapped around your communications.
 
+When a website asks your browser to engage in a secure connection, it first provides a digital certificate, proving that it is the website it claims to be. Certificates are provided by certificate authorities. Which are trusted entities that verify identities of websites and issues certificates for them.
 
+If you try to set up a secure connection without a valid certificate, your browser will warn you.
 
+Todays secure communications are encrpyted using 256 bit keys. That is a lot of different possible keys. We predict that in a few hundred years, 256 bits won't be enough to be safe.
 
+Increasing the size of a key doesn't make encrpytion much harder, but it exponentially increases the number of guesses needed to crack a cipher.
 
+When the sender and the receiver uses the same key to encrypt and decrypt a message, it's called symmetric encryption.
 
+It's impossible for two computers on the internet to meet in private to exchange a key. Instead computers use asymmetric keys: a public key which can be exchanged with anybody, and a private key that is not shared. 
 
+The public key is used to encrypt data and anybody  can use it to create a secret message. The secret can only be decrypted by a computer with access to the private key. 
 
+Public key cryptography is the foundation of all secure mesasging on the internet. Including SSL and TLS.
 
+Using viruses, hackers cna take over millions of computers world wide and then use them as a digital army, known as a botnet, to attack and take down websites. This is a DDoS.
 
-
-
-
-
-
-
-
-
-
+90% of the time a system gets hacked due to a human error. 
 
 
 
@@ -468,53 +345,8 @@ For HTTP2 to be successful we need to have smarter servers who are going to unde
 One RPC stack to rule them all - standardised high performance RPC protocol stack. No longer need gRPC and protobuf?
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Network Performance
-**Problem:** What are the two major issues in networking performance?
-
-Any network can be measured by two major characteristics: latency and bandwidth. Latency refers to the time it takes a given bit of information to get from one point to another on the network. 
-
-Bandwidth refers to the rate at which data moves through the network once communication is established. The perfect network would have infinite bandwidth and no latency. 
-
-A pipe is a useful analog for a network. The time it takes for a molecule of water to go through the whole pipe is related to the length; this is analogous to the latency. The width of the pipe determines the bandwidth: how much water can pass in a given time. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# HTTP 3
+Fill in
 
 # DNS
 DNS is hierarchical, has few authoritative servers at the top level.
@@ -564,17 +396,24 @@ This figure shows how Microsoft is assigned authority by the Internet root serve
 
 Any DNS domain name used in the tree is technically a domain. Most DNS discussions, however, identify names in one of five ways, based on the level and the way a name is commonly used. For example, the DNS domain name registered to Microsoft (microsoft.com.) is known as a second-level domain. This is because the name has two parts (known as labels) that indicate it is located two levels below the root or top of the tree. Most DNS domain names have two or more labels, each of which indicates a new level in the tree. Periods are used in names to separate labels.
 
+## DNS2
+DNS associates names with addresses. Computer uses DNS name to look up address. Asks DNS server.
 
+DNS Servers are connected in a distributed hierarchy and are divided into zones. Splitting up responsibilties for different domains, .org, .com, etc.
 
+Created to be a open and public communication protocol. Susspectible to DNS spoofing.
 
+Traffic on the internet doesn't travel on a direct line - this doesn't scale, instead it travels in a much less direct fashion.
+The path may change in the midts of computer to computer conversation.
 
+# Network Performance Questions
+**Problem:** What are the two major issues in networking performance?
 
+Any network can be measured by two major characteristics: latency and bandwidth. Latency refers to the time it takes a given bit of information to get from one point to another on the network. 
 
+Bandwidth refers to the rate at which data moves through the network once communication is established. The perfect network would have infinite bandwidth and no latency. 
 
-
-
-
-
+A pipe is a useful analog for a network. The time it takes for a molecule of water to go through the whole pipe is related to the length; this is analogous to the latency. The width of the pipe determines the bandwidth: how much water can pass in a given time. 
 
 Image by <a href="https://pixabay.com/users/TheAndrasBarta-2004841/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1264062">TheAndrasBarta</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1264062">Pixabay</a>
 

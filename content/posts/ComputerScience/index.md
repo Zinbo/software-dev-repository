@@ -7,7 +7,7 @@ date: "2020-04-07"
 ---
 
 # Bit manipulation
-Left shift is the equivlent of multiplying by 2, unless there is an overflow.
+Left shift is the equivalent of multiplying by 2, unless there is an overflow.
 
 ## Setting a bit
 ```python
@@ -50,24 +50,21 @@ The state is 1s complement.
 ```
 If something is a power of 2 then it will only have 1 bit set.
 
-
-
-
-
 # 1s and 2s complement
 In 1s complement, we negate all of the bits (the first bit is the sign bit). However this still leaves us with 2 numbers for 0. In 2s complement we negate all of the bits and add one, meaning that we only have one zero.
 
 Bit manipulation is the act of algorithmically manipulating bits or other pieces of data shorter than a word.
 
+## What is two's complement? 
+With n bits we can only represent 2<sup>n</sup>  different objects. With n bits we can represent signed values in the range of -2<sup>n-1</sup> to +2<sup>n-1</sup>-1.   
+We use the HO (most significant) bit as the sign bit 0 = positive, 1 = negative.   
 
+## How to negate a two's complement number?
+1. Invert all the bits in tyhe number.
+2. Add one to inverted result (ignoring any overflow). You cannot negate the smallest negative value in two's complement numbering system.   
 
-
-
-
-
-
-
-
+## What is extension and subtraction?   
+With two's complement you cannot arbitrarily add a 8 bit and a 16 bit number. Converting an 8-bit number to a 16-bit number is calleld sign extension and the inverse is called contraction.
 
 
 # Concurrency
@@ -76,6 +73,8 @@ Bit manipulation is the act of algorithmically manipulating bits or other pieces
 A thread is a fundamental uinit of execution within an application: A running application consists of at least one thread. Each thread has its own stack and runs independently from the application’s other threads. By default, threads share their resources, such as file handles or memory. Problems can occur when access to shared resources is not properly controlled. Data corruption is a common side effect of having two threads simultaneously write data to the same block of memory, for example. On most systems, threads are created and managed by the operating system: These are called native threads or kernel-level threads. 
 
 Because the number of threads that can be executed at any given instant is limited by the number of cores in the computer, the operating system rapidly switches from thread to thread,  giving each thread a small window of time to run. This is known as preemptive threading, because the operating system can suspend a thread’s execution at any point to let another thread run. (A cooperative model requires a thread to explicitly take some action to suspend its own execution and let other threads run.) Suspending one thread so another can start to run is referred to as a context switch.
+
+Threads in Java have their own stack but they share the same heap, so we can share data between them - in that sense when using the observer pattern an object doesn't have a "thread" or a "heap", they will be changed by the thread executing that code.
 
 ### System vs User
 A system thread is created and managed by the system. The first (main) thread of an application is a system thread, and the application often exits when the first thread terminates.
@@ -747,27 +746,7 @@ int main() {
 ```
 You can try lock a unique lock. `try_lock()` will try to lock and return if it immediately can't. `try_lock_for(time)` will try and wait for `time` to get the lock. If it can't it will return.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Caching 
+# CPU and Memory 
 Memory is:
 - main memory; billion 32 bit words, RAM
 - Register file: in CPU
@@ -791,7 +770,93 @@ The machine can take advantage of the fact that most data lives togehter if you 
 
 Building a high performance multicore app is harder - need to keep cache well populated for all cores.
 
+## What is packing?   
+CPUs generally work must efficiently on byte, word, and double word data. You may be able to save some memory by packing different strings of bits together as compactly as possible, without wasting any bits to align a particular data field on a byte or other boundary.
+Alothough they are space efficient they are computationally inefficient as it takes time to unpack them. More info on this needed.
 
+## What are the different types of busus?   
+Address, data, control. A bus is a collection of wires on which electrical signals pass between components of the system (CPU, I/O, memory).
+The bus size is one of the main attributes that define the size of procerssor 32-bit wide vs 64-bit wide..
+
+## What is the data bus?   
+Shuffles data between component. They can process data blocks up to the bit width of the bus.
+
+## Address bus?   
+When software wants to access a particular memory location or I/O device, it places the corresponding address on the bus. With n address lines, the processor can access 2<sup>n</sup> unique addresses. The number of bits on a bus will determine the max number of addressable memory and I/O locations.
+
+## Control bus?
+Controls how the processor communicates with the rest of the system. There is a read and write line, which says whether the data is going to or from memory.   
+Has system clock lines, interrupt lines, byte enable lines, and status lines.
+
+## What is memory?   
+Can think of it like an array of bytes. The address of the first byte is 0 and the last byte is 2<sup>-1</sup>.   
+To execute Memory[125] := 0 you do:
+- data bus = 0
+- address bus = 125
+- write line = 1
+
+## What is the system clock?  
+Serves as the timing standard within the system. It is an electrical signal on the control bus that alternates between 0 and 1 at a periodic rate. All activity within the CPU is synchronized with the edge of this clock signal.  
+The frequency it alternates between 0 and 1 is the clock frequency. THe time it takes for the system to switch from 0 -> 1 -> is a clock period, also called a clock cycle.   
+Hz is 1 cycle per second.  
+TO ensure synchronisation, most CPUs start any operation on an edge. The CPU cannot perform any task faster than the clock runs. 
+The clock ensures statements are executed in a serialised order.
+
+## What is cache memory?
+- Sits between CPU and main meory
+- Small amount, very fast
+- Bytes do not have fixed addresses, can dynamically reassign addresses.
+
+## How to determine memory usage of an object?
+Add amout of memory used by each instance variable to the overhead associated with each object. Typically 16 byte. The overhead includes a reference to the class, garabage collection info, and sync info.   
+The object will usually be padded to be a multiple of 8.
+- A reference to an object is typically 8 bytes.  
+A nested non-static class requires an extra 8 bytes for a reference to the enclosing instance.
+
+## How does a CPU work?
+- Two main components, Control Unit and Arithmetric and logical unit.
+- CU: Uses a special register, the instruction pointer, that holds the address of an instructions numerical code (opcode). Fetches the opcode from meory and places it in instruction decoding register for execution. After execution the CU increments the instruction pointer and fetches the next instruction.
+- ALU: Consists of logic gates to perform arithmetic operations.
+CPU has registers to store the data of output.  
+Instructions are hardwired inside the CPU.
+
+## What is instruction pipelining?  
+Parallelisation in instruction execution  
+The stages of execution are: fetch, decode, execute.  
+When one instruction is in decode phase the CPU can fetch another.  
+CPU execute instructions which are not dependent and is different order.  
+
+## Memory Expense?  
+Registers > L1 Cache > L2 Cache > main memory > NUMA > virtual memory > file storage   
+NUMA = things like memory on video display card.   
+THe whole point of having a memory hierarchy is to enable us to take advantage of the principles of spatial locality of reference and temporality of reference.
+
+## What is virtual memory?
+Gives each process its own 32 bit address space. $1000 in one program is physically different from address $1000 in a different program. CPU maps virtual addrresses used by programs to different physical address. It does this by paging.
+
+## What is paging?
+Break up memory into blocks of bytes called pages. Use a look up table to map the HO bits of a virtual address to the HO of the physical address, and LO bits as an index into that page.  
+You can move unused pages to disk. 
+
+## When does thrashing occur?
+- Insufficient memory at a given level in the memory hierarchy to properly contain the program working sets of cache lines or pages.
+- A program that does not exhibit locality of refernece
+
+## What are machine data types?
+All data in computers based on digital electronics is represented as bits (alternatives 0 and 1) on the lowest level. The smallest addressable unit of data is usually a group of bits called a byte (usually an octet, which is 8 bits). The unit processed by machine code instructions is called a word (as of 2011, typically 32 or 64 bits). Most instructions interpret the word as a binary number, such that a 32-bit word can represent unsigned integer values from 0 to {\displaystyle 2^{32}-1}2^{{32}}-1 or signed integer values from {\displaystyle -2^{31}}-2^{{31}} to {\displaystyle 2^{31}-1}2^{{31}}-1. Because of two's complement, the machine language and machine doesn't need to distinguish between these unsigned and signed data types for the most part.
+
+
+
+## Size of array
+Implemeent5ed as objects, with overhead for length.
+For a primitive type:
+- 24 bytes for header info (16 bytes overhead, 4 bytes for length, 4 bytes for padding) + memory used to store values, e.g. for int then it's + 4N
+For objects:
+- Same but 8N for 8 bytes for reference.
+
+## Memory for strings
+- Aliasing is common
+- Space needed for the characters is accounted for seperately because a char array is often shared among strings.
 
 
 # Floating Point Numbers
@@ -839,41 +904,16 @@ Side note: double and floats will always have accuracy issues with numbers which
 
 To work out the mantissa, minus 1 from the mantissa, and then divide by 2. if the number is 1. something then add 1 to that slot in the mantissa, else add 0. Keep dividing by 2 and adding a 1 or a zero until you fill all 23 bits.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## What is the problem with floating point numbers?
+Some numbers cannot be accurately represented, e.g. 0.3. This canm result in rounding errors.
+They can be used to represent big numbers but with limited precision.
+![alt](https://wikimedia.org/api/rest_v1/media/math/render/svg/8573a801876eeb57196afa082267ede480c64cbb)
+There is:
+- 1 sign bit
+- 23 bit mantissa
+- 8 bit exponent
+Single precision is float, double precision is double. The HO is always assumed to be 1. The mantissa uses a 1's complement format (is unsigned). 
+More clarification on this is needed.
 
 # Unicode
 ASCII is able to represent every character using a number between 32 and 127. This could conveniently be stored in 7 bits. Codes below 32 were used for control characters. Anything bigger than 127 became a free for all of different companies and countries.
@@ -905,6 +945,8 @@ There Ain’t No Such Thing As Plain Text.
 
 If you have a string, in memory, in a file, or in an email message, you have to know what encoding it is in or you cannot interpret it or display it to users correctly.
 
+## What is ASCII?
+Is a character set which maps 128 chars to the unsigned ionteger values 0..127. It is the standard for data integerchange across systerms and programs.
 
 ## Emails
 How do we preserve this information about what encoding a string uses? Well, there are standard ways to do this. For an email message, you are expected to have a string in the header of the form
@@ -982,9 +1024,6 @@ If you save something as Japanese Shift-JIS encoding, then resave it as UTF-8, y
 The ingenious thing about UTF-8 is that it's binary compatible with ASCII, which is the de-facto baseline for all encodings. All characters available in the ASCII encoding only take up a single byte in UTF-8 and they're the exact same bytes as are used in ASCII. In other words, ASCII maps 1:1 unto UTF-8. Any character not in ASCII takes up two or more bytes in UTF-8. For most programming languages that expect to parse ASCII, this means you can include UTF-8 text directly in your program.
 
 
-
-
-
 # Endian
 In its most common usage, endianness indicates the ordering of bytes within a multi-byte number. A big-endian ordering places the most significant byte first and the least significant byte last, while a little-endian ordering does the opposite.
 
@@ -1010,45 +1049,13 @@ In little endian, you store the least significant byte in the smallest address.
 Opposite to above.
 
 ## Memory
-This only makes sense when talking about breaking a number into bytes, so its relvant when talking about storing a 32 bit integer in memory, as each slot in memory can only hold a byte, but it makes no sense when talking about storing in a 32 bit register. It's least significant byte, not bit.
+This only makes sense when talking about breaking a number into bytes, so its relevant when talking about storing a 32 bit integer in memory, as each slot in memory can only hold a byte, but it makes no sense when talking about storing in a 32 bit register. It's least significant byte, not bit.
 
 A registry is simply a 32 bit quantity, b31..b0, and endianness does not apply to it.
 
 Watch video
 
 Why would a 32 bit system be more performant than a 64 bit system?
-
-
-# Threading
-Threads in Java have their own stack but they share the same heap, so we can share data between them - in that sense when using the observer pattern an object doesn't have a "thread" or a "heap", they will be changed by the thread executing that code.
-
-
-## How to determine memory usage of an object?
-Add amout of memory used by each instance variable to the overhead associated with each object. Typically 16 byte. The overhead includes a reference to the class, garabage collection info, and sync info.   
-The object will usually be padded to be a multiple of 8.
-- A reference to an object is typically 8 bytes.  
-A nested non-static class requires an extra 8 bytes for a reference to the enclosing instance.
-
-## Size of array
-Implemeent5ed as objects, with overhead for length.
-For a primitive type:
-- 24 bytes for header info (16 bytes overhead, 4 bytes for length, 4 bytes for padding) + memory used to store values, e.g. for int then it's + 4N
-For objects:
-- Same but 8N for 8 bytes for reference.
-
-## Memory for strings
-- Aliasing is common
-- Space needed for the characters is accounted for seperately because a char array is often shared among strings.
-
-
-
-
-
-
-
-
-
-
 
 
 # Hexadecimal
@@ -1079,62 +1086,11 @@ For objects:
 | 1111   | F   |
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Little Notes
 Nibble? 4 bits    
 Byte? 8 bits, smallest addressable data item on many CPUs.
 
 What is a word? Depends on the CPU, 16-bit, 32-bit, 64-bit. Most CPUs efficient hbandle objects up to a certain size. Typically programs handle numeric objects no longer than 128 or 256 bits
-
-What is two's complement? With n bits we can only represent 2<sup>n</sup>  different objects. With n bits we can represent signed values in the range of -2<sup>n-1</sup> to +2<sup>n-1</sup>-1.   
-We use the HO (most significant) bit as the sign bit 0 = positive, 1 = negative.   
-
-How to negate a two's complement number?
-1. Invert all the bits in tyhe number.
-2. Add one to inverted result (ignoring any overflow). You cannot negate the smallest negative value in two's complement numbering system.   
 
 Facts about binary numbers:
 1. If first bit is 0, the number is even, else it's odd. 
@@ -1143,77 +1099,6 @@ Facts about binary numbers:
 4. Shift all the bits to the left by 1 multiplies the number by 2.
 5. Shifting all the bits of an unsigned interger divides it by 2 (and rounds it down).
 
-What is extension and subtraction?   
-With two's complement you cannot arbitrarily add a 8 bit and a 16 bit number. Converting an 8-bit number to a 16-bit number is calleld sign extension and the inverse is called contraction.
-
-What is packing?   
-CPUs generally work must efficiently on byte, word, and double word data. You may be able to save some memory by packing different strings of bits together as compactly as possible, without wasting any bits to align a particular data field on a byte or other boundary.
-Alothough they are space efficient they are computationally inefficient as it takes time to unpack them. More info on this needed.
-
-What is the problem with floating point numbers?
-Some numbers cannot be accurately represented, e.g. 0.3. This canm result in rounding errors.
-They can be used to represent big numbers but with limited precision.
-![alt](https://wikimedia.org/api/rest_v1/media/math/render/svg/8573a801876eeb57196afa082267ede480c64cbb)
-There is:
-- 1 sign bit
-- 23 bit mantissa
-- 8 bit exponent
-Single precision is float, double precision is double. The HO is always assumed to be 1. The mantissa uses a 1's complement format (is unsigned). 
-More clarification on this is needed.
-
-
-What is ASCII?
-Is a character set which maps 128 chars to the unsigned ionteger values 0..127. It is the standard for data integerchange across systerms and programs.
-
-What are control characters?
-THe firrst 32 cahracters from a specicial set of non-rpinting chars. They perform various printer and display control operations, e.g. carriage return. There is very little
-standardisation among output devises.
-
-What is unicode?
-16-bit word to rerpesent each character. Is upward comptabile with ASCII.   
-Only half of the 65536 possible character codes have been defined. RTest is reserved for expansion.
-
-
-What is a zero-terminated string?
-"abc", if ASCII, requires 4 bytes, a, b, c, and 0.
-
-What are the different types of busus?   
-Address, data, control. A bus is a collection of wires on which electrical signals pass between components of the system (CPU, I/O, memory).
-The bus size is one of the main attributes that define the size of procerssor 32-bit wide vs 64-bit wide..
-
-What is the data bus?   
-Shuffles data between component. They can process data blocks up to the bit width of the bus.
-
-Address bus?   
-When software wants to access a particular memory location or I/O device, it places the corresponding address on the bus. With n address lines, the processor can access 2<sup>n</sup> unique addresses. The number of bits on a bus will determine the max number of addressable memory and I/O locations.
-
-Size of a process?   
-Smaller of:
-1. number of data lines on the processor.
-2. Size of largest general purpose integer register.
-
-Control bus?
-Controls how the processor communicates with the rest of the system. There is a read and write line, which says whether the data is going to or from memory.   
-Has system clock lines, interrupt lines, byte enable lines, and status lines.
-
-What is memory?   
-Can think of it like an array of bytes. The address of the first byte is 0 and the last byte is 2<sup>-1</sup>.   
-To execute Memory[125] := 0 you do:
-- data bus = 0
-- address bus = 125
-- write line = 1
-
-What is the system clock?  
-Serves as the timing standard within the system. It is an electrical signal on the control bus that alternates between 0 and 1 at a periodic rate. All activity within the CPU is synchronized with the edge of this clock signal.  
-The frequency it alternates between 0 and 1 is the clock frequency. THe time it takes for the system to switch from 0 -> 1 -> is a clock period, also called a clock cycle.   
-Hz is 1 cycle per second.  
-TO ensure synchronisation, most CPUs start any operation on an edge. The CPU cannot perform any task faster than the clock runs. 
-The clock ensures statements are executed in a serialised order.
-
-What is cache memory?
-- Sits between CPU and main meory
-- Small amount, very fast
-- Bytes do not have fixed addresses, can dynamically reassign addresses.
 
 What is a pointer?   
 A memory variable whose value is the address of some other memory object.  
@@ -1227,39 +1112,6 @@ THe fields are stored together in memory
 Union?
 - Simlar to a record, but each field has the same offset and all overlap
 - You can only use one field at a time.
-
-How does a CPU work?
-- Two main components, Control Unit and Arithmetric and logical unit.
-- CU: Uses a special register, the instruction pointer, that holds the address of an instructions numerical code (opcode). Fetches the opcode from meory and places it in instruction decoding register for execution. After execution the CU increments the instruction pointer and fetches the next instruction.
-- ALU: Consists of logic gates to perform arithmetic operations.
-CPU has registers to store the data of output.  
-Instructions are hardwired inside the CPU.
-
-What is instruction pipelining?  
-Parallelisation in instruction execution  
-The stages of execution are: fetch, decode, execute.  
-When one instruction is in decode phase the CPU can fetch another.  
-CPU execute instructions which are not dependent and is different order.  
-
-Memory Expense?  
-Registers > L1 Cache > L2 Cache > main memory > NUMA > virtual memory > file storage   
-NUMA = things like memory on video display card.   
-THe whole point of having a memory hierarchy is to enable us to take advantage of the principles of spatial locality of reference and temporality of reference.
-
-What is virtual memory?
-Gives each process its own 32 bit address space. $1000 in one program is physically different from address $1000 in a different program. CPU maps virtual addrresses used by programs to different physical address. It does this by paging.
-
-What is paging?
-Break up memory into blocks of bytes called pages. Use a look up table to map the HO bits of a virtual address to the HO of the physical address, and LO bits as an index into that page.  
-You can move unused pages to disk. 
-
-When does thrashing occur?
-- Insufficient memory at a given level in the memory hierarchy to properly contain the program working sets of cache lines or pages.
-- A program that does not exhibit locality of refernece
-
-What are machine data types?
-All data in computers based on digital electronics is represented as bits (alternatives 0 and 1) on the lowest level. The smallest addressable unit of data is usually a group of bits called a byte (usually an octet, which is 8 bits). The unit processed by machine code instructions is called a word (as of 2011, typically 32 or 64 bits). Most instructions interpret the word as a binary number, such that a 32-bit word can represent unsigned integer values from 0 to {\displaystyle 2^{32}-1}2^{{32}}-1 or signed integer values from {\displaystyle -2^{31}}-2^{{31}} to {\displaystyle 2^{31}-1}2^{{31}}-1. Because of two's complement, the machine language and machine doesn't need to distinguish between these unsigned and signed data types for the most part.
-
 
 
 
@@ -1564,34 +1416,6 @@ Need to use:
 SELECT * FROM Address WHERE apartment IS NULL; 
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Knowledge-Based Questions
 
 ## Problems
@@ -1608,66 +1432,6 @@ In Java, all objects are passed by reference, whereas in C++, the default behavi
  In Java, all methods are virtual, meaning the implementation for a method is selected according to the type of the object as opposed to the type of the reference. In C++, methods must be explicitly declared as virtual. Java has defined sizes for primitive data types, whereas type sizes are implementation-dependent in C++. 
 
 In situations in which there is legacy C code and a great need for performance, C++ has certain benefits, especially when low-level system access is required. In situations in which portability, security, and speed of development are emphasized, Java (or a similar language such as C#) may be a better choice.
-
-## Friend classes
-**Problem:** Discuss friend classes in C++ and give an example of when you would use one.
-
-Can be applied to either a function or a class. It gives the friend function or friend class access to the private members of the class in which the delcaration occurs.
-
-Some feel this vilates the principles of OO because it allows a class to operate on another class's private members. 
-
-In some cases, however, the benefits of a friend class outweigh its drawbacks. For example, suppose you implemented a dynamic array class. Imagine that you want a separate class to iterate through your array. The iterator class would probably need access to the dynamic array class’s private members to function correctly. It would make sense to declare the iterator as a friend to the array class. The workings of the two classes are inextricably tied together already, so it probably doesn’t make sense to enforce a meaningless separation between the two. 
-
-Java and C# do not support the concept of friend classes. The closest match these languages have to friends is to omit the access modifiers, thereby specifying “default” access (in Java) or use the “internal” access modifier (in C#) for member data. However, this makes every class in the package (Java) or assembly (C#) equivalent to a friend. In some cases, it may be possible to use a nested class to accomplish a similar design to that achieved with friend classes in C++.
-
-## Argument Passing
-**Problem:**  Consider the following C++ function prototypes for a function, foo, which takes an object of class Fruit as an argument:
-```cpp
-void foo(Fruit bar);        // Prototype 1 
-void foo(Fruit* bar);       // Prototype 2 
-void foo(Fruit& bar);       // Prototype 3 
-void foo(const Fruit* bar); // Prototype 4 
-void foo(Fruit*& bar);      // Prototype 5
-```
-1. passed by value, changes to bar won't be reflected outside the method
-2. passes pointer, changes to bar will be reflected outside the method
-3. passes reference, changes to bar will be reflected outside the method, don't have to use pointer syntax `->`
-4. passes const pointer, can't change bar, can only use const methods
-5. passes reference to a pointer, we can change the fruit pointed to by bar and we can change what fruit bar points to, which will be reflected outside the method.
-
-## Macros and Inline Functions
-**Problem:** In C++ and C99, compare and constrast macros and inline functions.
-
-Macros are implemented with simple text replacement in the preprocessor. For example, if you define the macro:
-```c
-#define AVERAGE(a, b) ((a + b) / 2)
-```
-then the preprocessor replaces any occurrences of AVERAGE(foo, bar) in your code with ((foo + bar) / 2).  
-You commonly use macros in places where the thing that you’re substituting  is ugly and used often enough that it warrants abstraction behind a pretty name, but is too simple to be worth the overhead of a function call. 
-
-Inline functions are declared and defined much like regular functions. Unlike macros, they are handled by the compiler directly. An inline function implementation of the AVERAGE macro would look like:
-```cpp
-inline int Average(int a, int b) {    
-	return (a + b)/2; 
-}
-```
-
-Inline functions have better type safety, byt you can use a single definition of the amcro for any type that has addition and division operators defined.  
-From the compiler's perspective, when it encounters a call to an inline function, it writes a copy of the compiled function definition instead of generating a function call.
-
-Macros can create bugs due to unexpected behaviour. This:
-```c
-#define CUBE(x) x * x * x
-
-int foo, bar = 2; 
-foo = CUBE(++bar); 
-```
-Will get replaced with this:
-```c
-foo = ++bar * ++bar * ++bar; 
-```
-
-When you use macros, the code that is compiled is not visible in the source, which makes debugging difficult. 
 
 ### Garbage Collection
 **Problem:** What is garbage collection? What are some of the different implementations of garbage collection, and what are the trade-offs between them?
