@@ -1,7 +1,7 @@
 ---
-path: "/skills"
-cover: "./fractal-1119594_640.jpg"
-title: "Skills"
+path: "/languages-and-technologies"
+cover: "./chris-ried-ieic5Tq8YMk-unsplash.jpg"
+title: "Languages and Technologies"
 published: true
 date: "2020-04-07"
 ---
@@ -1164,3 +1164,6 @@ Selector	Description
 # Git
 
 # RxJava
+
+
+Photo by Chris Ried on Unsplash
