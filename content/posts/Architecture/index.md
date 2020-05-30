@@ -995,6 +995,13 @@ Adding a new API results in adding application servers without necessarily addin
 
 Workers in the application layer also help enable asynchronism.
 
+Web apps communicates with platform layer, which in turn communicates with your db. 
+Allows you to scale both independently. 
+
+Adding a platform layer can be a way to reuse your infrastructure for multiple products or interfaces (a web app, an API, an iPhone app, etc.).
+A platform should expose a crisp product-agnostic interface which masks implementation details.
+If done well, this utilizes the platform's capabilities, as well as another team implementing/optimizing the platform itself.
+
 ## Microservices
 A suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal.
 
@@ -1025,65 +1032,108 @@ Apache Tomcat is an implementation of the java servlet and a servlet container.
 Using servlets allows the JVM to handle each request within a separate Java thread, and this is one of the key advantage of Servlet container. Each servlet is a Java class with special elements responding to HTTP requests. The main function of Servlet contain is to forward requests to correct servlet for processing, and return the dynamically generated results to the correct location after the JVM has processed them.
 
 # Databases
+<br/>
+
+## 1NF
+- Eliminate repeating groups in individual tables.
+- Create a separate table for each set of related data.
+- Identify each set of related data with a primary key.
+
+## 2NF
+- Create separate tables for sets of values that apply to multiple records.
+- Relate these tables with a foreign key.
+
+## 3NF
+- Eliminate fields that do not depend on the key.
+
+## Example
+<br/>
+
+### Unnormalised
+
+| Student# | Advisor | Adv-Room | Class1 | Class2 | Class3 |
+|----------|---------|----------|--------|--------|--------|
+| 1022     | Jones   | 412      | 101-07 | 143-01 | 159-02 |
+| 4123     | Smith   | 216      | 201-01 | 211-02 | 214-01 |
 
 ### 1NF
-- Each cell to be single valued
-- entry in a column are same time
-- rows uniquely identified
+
+| Student# | Advisor | Adv-Room | Class# |
+|----------|---------|----------|--------|
+| 1022     | Jones   | 412      | 101-07 |
+| 1022     | Jones   | 412      | 143-01 |
+| 1022     | Jones   | 412      | 159-02 |
+| 4123     | Smith   | 216      | 201-01 |
+| 4123     | Smith   | 216      | 211-02 |
+| 4123     | Smith   | 216      | 214-01 |
 
 ### 2NF
-- All attributes (non-key columns) dependent on the key
-- if we have the price of an xbox in the same table containing customer info (with key customer id), then we need to move this out to be 2NF
+Students:
 
-Can link tables with compound (look up) key
+| Student# | Advisor | Adv-Room |
+|----------|---------|----------|
+| 1022     | Jones   | 412      |
+| 4123     | Smith   | 216      |
+
+Registration:
+
+| Student# | Class# |
+|----------|--------|
+| 1022     | 101-07 |
+| 1022     | 143-01 |
+| 1022     | 159-02 |
+| 4123     | 201-01 |
+| 4123     | 211-02 |
+| 4123     | 214-01 |
 
 ### 3NF
-- All fields (columns) can be determined only by the key in the table and no other column
-- would move repeating columns out to seperate table
-- have foreign keys
 
-### 4NF
-No multi-valued dependency
+Students:
 
-If you have two records that need to change in a table if some data changes, it's not 4NF.
+| Student# | Advisor |
+|----------|---------|
+| 1022     | Jones   |
+| 4123     | Smith   |
 
-# Offline processing
-Processing that can’t be performed in-line with a client’s request because it creates unacceptable latency (e.g. you want to propagate a user's action across a social graph) or because it needs to occur pperiodically.
-Message queues
-Easiest solution is to create a message queues.
-For the split of offline and online work:
-1.	Perform almost no work in the consumer and inform your user that the task will occur offline
-2.	Perform enough work to make it appear to the user that the task has completed and tie up hanging ends afterwards. E.g. post a tweet, update your timeline, return, after update other users timelines
-The other benefit is take burden off web apps as you can have separate machine pool for performing offline processing.
-For scheduled jobs, can use cron jobs to send messages to queue.
+Registration:
+
+| Student# | Class# |
+|----------|--------|
+| 1022     | 101-07 |
+| 1022     | 143-01 |
+| 1022     | 159-02 |
+| 4123     | 201-01 |
+| 4123     | 211-02 |
+| 4123     | 214-01 |
+
+Faculty:
+
+| Name  | Room | Dept |
+|-------|------|------|
+| Jones | 412  | 42   |
+| Smith | 216  | 42   |
 
 # Map reduce
-If your app is dealing with large quantity of data youlllikely add support for map reduce, probably using Hadoop and maybe give or HBase.
-Adding a map reduce layer makes it possible to perform data and or processing intensive operations in a reasonable amount of time.
+If your app is dealing with large quantity of data youll likely add support for map reduce, probably using Hadoop and maybe Hive or HBase.  
+Adding a map reduce layer makes it possible to perform data and or processing intensive operations in a reasonable amount of time.  
 Could use it for calculating suggested users in a social graph, or for generating analytics reports.
 For small queries can often get away with adhoc queries on sql server, but wont scale up trivial once the quantity of data stored or write load requires sharing your db.
-
-# Platform layer
-Web apps communicates with platform layer, which in turn communicates with your db. 
-Allows you to scale both independently. 
-
-Adding a platform layer can be a way to reuse your infrastructure for multiple products or interfaces es (a web app, an API, an iPhone app, etc.).
-A platform should expose a crisp product-agnostic interface which masks implementation details.
-If done well, this utilizes the platform's capabilities, as well as another team implementing/optimizing the platform itself.
 
 # Relational Database Management System
 ACID is a set of properties of relational database transactions.
 
 - Atomicity - Each Transaction is all or nothing
-- Consistency - Any transaction will birng the database from one valid state to anotehr
+- Consistency - Any transaction will bring the database from one valid state to another
 - Isolation - Executing transactions concurrently has the same results as if the transactions were executed serially
-- Durability - Oncea transaction has been committed, it will remain so.
+- Durability - Once a transaction has been committed, it will remain so.
 
 There are many techniques to scale a relational database: master-slave replication, master-master replication, federation, sharding, denormalization, and SQL tuning.
 
 ## Replication 
-###  Master-Slave Replication
-The master servers reads and writes, replicating writes to one or more slaves, which serve only reads.
+<br/>
+
+###  Master-Slave
+The master serves reads and writes, replicating writes to one or more slaves, which serve only reads.
 
 Slaves can also replicate to additional slaves.
 
@@ -1092,7 +1142,7 @@ If the master goes offline, the system can continue to operate in read-only mode
 Disadvantages:
 - Additional logic is needed to promote a slave to a master.
 
-### Master-Master Replication
+### Master-Master
 Both masters serve reads and writes and coordinate with each other on writes. If either master goes down, the system can continue to operate with both reads and writes.
 
 The primary purposes of multi-master replication are increased availability and faster server response time.
@@ -1105,18 +1155,18 @@ Many directory servers are based on LDAP and implement multi-master replicarion
 
 Disadvantages:
 - You'll need a load balancer or you'll need to make changes to your app logic to determine where to write.
-- Most master-master sustems are either loosely consistent (violating ACID) or have increased write latency due to synchronisation
-- COnflict resolution comes more into play as more nodes are added and as latency increases.
+- Most master-master systems are either loosely consistent (violating ACID) or have increased write latency due to synchronisation
+- Conflict resolution comes more into play as more nodes are added and as latency increases.
 
 ### Replication Disadvantages
 - Potential for loss of data if the master fails before any newly written data can be replication to other notes. 
-- write sare replayed to the read replicas. If there are a lot of writes, the read replicas can't do as many reads.
-- THe more read slaves, the more you have to replicate, the more replication lag.
+- writes are replayed to the read replicas. If there are a lot of writes, the read replicas can't do as many reads.
+- The more read slaves, the more you have to replicate, the more replication lag.
 - adds more hardware and additional complexity
 
 ## Federation (Functional Partitioning)
 Splits up dbs by function. E.g. Users db, products db, forums db.
-Results in less read and write traffic to each db and therefore less replicarion lag. 
+Results in less read and write traffic to each db and therefore less replication lag. 
 
 Smaller databases result in more data that can fit in memory, which in turn results in more cache hits due to improved cache locality. 
 
@@ -1127,15 +1177,7 @@ Smaller databases result in more data that can fit in memory, which in turn resu
 - Adds more hardware and additional complexity
 
 ## Sharding
-Distributes data across different databases such that each database can only manage a subset of the data. taking a users database as an example, as the number of users increases, more shards are added to  the cluster. 
-
-Advantages:
-- less read and write traffic
-- less replication
-- more cache hits
-- index size reduced
-- can write in parallel
-- faster querying
+Distributes data across different databases such that each database can only manage a subset of the data. Taking a users database as an example, as the number of users increases, more shards are added to  the cluster. 
 
 Still need to add some form of replication to avoid data loss. No single central master serialising writes.
 
@@ -1143,6 +1185,14 @@ Common ways to shard a table of users is either through the user's last name ini
 
 Data is denormalised. You store together data that are used together. 
 - you can replicate data, e.g. if you need comments by user and by photos, you can store comments on both tables. This can cause problems with inconsistency though.
+
+### Advantages
+- less read and write traffic
+- less replication
+- more cache hits
+- index size reduced
+- can write in parallel
+- faster querying
 
 
 ### Disadvantages
@@ -1155,46 +1205,44 @@ Data is denormalised. You store together data that are used together.
 - maintaining referential integrity is hard. Often have to enforce it in application code and run regular SQL jobs to clean up dangling references once they move to using database shards.
 
 ## Denormalisation
-Attempts to improve read performance at the expense of some write performance. redundant coipies of the data are written in multiple tables to avoid expensive joins. Some
+Attempts to improve read performance at the expense of some write performance. redundant copies of the data are written in multiple tables to avoid expensive joins.
 
 Can use views.
 
 Might circumvent the need for such complex joins.
 
-In most systems, reads can heavily outnumber writes 100:1 or even 1000:1. A read resulting in a complex database join can be very expensive, spendiing a significant amount of time on disk operations.
+In most systems, reads can heavily outnumber writes 100:1 or even 1000:1. A read resulting in a complex database join can be very expensive, spending a significant amount of time on disk operations.
 
 Disavantages:
 - Data is duplicated
-- Constraints can hlep redundant cipies of information stay in sync, which increases complexity of the database design.
+- Constraints can help redundant copies of information stay in sync, which increases complexity of the database design.
 
 ## SQL Tuning
 Very broad topic.
 
 Important to benchmark and profile to simulate and uncover bottlenecks.
-- Benchmark - Simulate high-load situations with tools such as ab(?)
+- Benchmark - Simulate high-load situations with tools
 - Profile - Enable tools such as the slow query log to help track performance issues.
 
 They might point you to the following optimisations:
 
 ### Tighten up the schema
 - use CHAR instead of VARCHAR for fixed-length fields.
-    - effecitvely allows for fast, random access, whereas with VARCHAR you mudy find the end of a string before moving onto the next one
+    - effectively allows for fast, random access, whereas with VARCHAR you must find the end of a string before moving onto the next one
 - use TEXT for large blocks of text such as blog posts. Allows for boolean searches. results in storing a pointer on disk that is used to locate the text block.
 - Use INT for larger numbers up to 4 billion.
 - DECIMAL for currency
 - Avoid storing large BLOBS, store the location instead.
-- VARCHAR(255) is the largest number of characters that can be counte din an 8 bit number, often maximising the use of a byte in some RDBMS.
+- VARCHAR(255) is the largest number of characters that can be counted in an 8 bit number, meaning that the DBMS can choose to use a single byte to indicate the length of the data in the field.
 - Set the NOT NULL constraint where applicable to improve search performance.
 
 ### Use good indices
 - Columns that you are querying could be faster with indices.
-- Use represented as a self-balancing B-tree.
-- Placing an index can keep the data in memory, requiring more space.
 - Writes could also be slower since the index also needs to be updated.
 - When loading large amounts of data, it might be faster to disable indices, load the data, then rebuild the indices.
 
 ### Avoid expensive joins
-- Denormalisae where performance demands it
+- Denormalise where performance demands it
 
 ### Partition tables
 - Break up a table by putting hot spots in a separate table to help keep it in memory.
@@ -1203,7 +1251,7 @@ They might point you to the following optimisations:
 - In some cases, the query cache could lead to performance issues.
 
 # NoSQL
-A collection of data items rperesented in a key-value store, document store, wide column store, or a graph database. 
+A collection of data items represented in a key-value store, document store, wide column store, or a graph database. 
 
 Data is denormalised and joins are generally done in the application code.
 
@@ -1211,7 +1259,7 @@ Most NoSQL stores lack true ACID transaction and favour eventual consistency.
 
 BASE is often used to describe the properties of NoSQL databases. In comparison with the CAP theorem, BASE chooses availablity over consistency.
 - Basically Available - the system guarantees availability
-- Soft state - the state of the system masy change over time, even without input.
+- Soft state - the state of the system may change over time, even without input.
 - Eventual Consistency - the system will become consistent over a period of time, given that the system doesn't receive input during that period.
 
 ## Key-value store
@@ -1252,7 +1300,7 @@ Document stores provide high flexibility and are often used for working with occ
 
 Document-oriented databases are inherently a subclass of the key-value store, another NoSQL database concept. The difference lies in the way the data are processed; in a key-value store, the data are considered to be inherently opaque to the database, whereas a document-oriented system relies on internal structure in the document in order to extract metadata that the database engine uses for further optimization.
 
-Document databases[ contrast strongly with the traditional relational database (RDB). Relational databases generally store data in separate tables that are defined by the programmer, and a single object may be spread across several tables. Document databases store all information for a given object in a single instance in the database, and every stored object can be different from every other. This eliminates the need for object-relational mapping while loading data into the database.
+Document databases contrast strongly with the traditional relational database (RDB). Relational databases generally store data in separate tables that are defined by the programmer, and a single object may be spread across several tables. Document databases store all information for a given object in a single instance in the database, and every stored object can be different from every other. This eliminates the need for object-relational mapping while loading data into the database.
 
 ## Wide Column Store
 
@@ -1276,22 +1324,7 @@ Neo4j is graph db.
 ![graph db](https://camo.githubusercontent.com/bf6508b65e98a7210d9861515833afa0d9434436/687474703a2f2f692e696d6775722e636f6d2f664e636c3635672e706e67)
 
 ## NoSQL Patterns
-
-### API Model
-Underlying data model can be considered as a large hash table.
-
-has:
-- get
-- put
-- delete 
-
-Might aslo have
-
-- execute - invoke an operation to the value given its key which is a special data structure
-- mapreduce - invoke a map reduce function across a key range?
-
-### Machines Layout
-underlying infra composed of large number of cheap, commoditized, unreliable machines connected throug ha network. 
+<br/>
 
 ### Data Partitioning (Consistent Hashing)
 ![ashing](http://1.bp.blogspot.com/_j6mB7TMmJJY/SwohQZ9HTAI/AAAAAAAAAXM/X9CAGfpnL2o/s1600/p1.png)
@@ -1435,7 +1468,7 @@ Sample data well-suited for NoSQL:
 - Frequently accessed ('hot') tables
 - Metadata/lookup tables
 
-# Introduction to NoSQL
+## Extra notes on  NoSQL
 The biggest problem with relational database is that you need to seperate out your data into tables. Referred to as the impedance mismatch problem.
 
 SQL was designed to run on big boxes - hard to spread.
@@ -1489,6 +1522,8 @@ Two types of consistency:
 # Communication
 ![Communication](https://camo.githubusercontent.com/1d761d5688d28ce1fb12a0f1c8191bca96eece4c/687474703a2f2f692e696d6775722e636f6d2f354b656f6351732e6a7067)
 
+![comm2](https://www.oreilly.com/library/view/http-the-definitive/1565925092/httpatomoreillycomsourceoreillyimages96902.png)
+
 ## HTTP
 Is a method for encoding and transporting data between a client and a server. It is a request/response protocol: clients issue requests and servers issue responses with relevant content and completion status info about the request. HTTP is self-contained, allowing requests and responses to flow through many intermediate routers and servers that perform load balancing, caching, encryption, and compression.
 
@@ -1498,9 +1533,9 @@ HTTP doesn’t map 1:1 to REST, it’s an implementation of REST. REST is a set 
 
 ## TCP
 TCP is a connection-oriented protocol over an IP network. Connection is established and terminated using a handshake. All packets sent are guaranteed to reach the destination in the original order and without corruption through:
+- Sequence numbers and checksum fields for each packet
+- Acknowledgement packets and automatic retransmission
 
-Sequence numbers and checksum fields for each packet
-Acknowledgement packets and automatic retransmission
 If the sender does not receive a correct response, it will resend the packets. If there are multiple timeouts, the connection is dropped. TCP also implements flow control and congestion control. These guarantees cause delays and generally result in less efficient transmission than UDP.
 
 To ensure high throughput, web servers can keep a large number of TCP connections open, resulting in high memory usage. It can be expensive to have a large number of open connections between web server threads and say, a memcached server. Connection pooling can help in addition to switching to UDP where applicable.
@@ -1513,7 +1548,7 @@ Use TCP over UDP when:
 
 UDP is connectionless. Datagrams (analogous to packets) are guaranteed only at the datagram level. Datagrams might reach their destination out of order or not at all. UDP does not support congestion control. Without the guarantees that TCP support, UDP is generally more efficient.
 
-UDP can broadcast, sending datagrams to all devices on the subnet. This is useful with DHCP because the client has not yet received an IP address, thus preventing a way for TCP to stream without the IP address.
+UDP can broadcast, sending datagrams to all devices on the subnet.
 
 UDP is less reliable but works well in real time use cases such as VoIP, video chat, streaming, and realtime multiplayer games.
 
@@ -1556,7 +1591,7 @@ Choose a native library (aka SDK) when:
 
 HTTP APIs following REST tend to be used more often for public APIs.
 
-(RPC) is way to describe a mechanism that lets you call a procedure in another process and exchange data by message passing. It typically involves generating some method stubs on the client process that makes making the call appear local, but behind the stub is logic to marshall the request and send it to the server process. The server process then unmarshalls the request and invokes the desired method before repeating the process in reverse to get whatever the method returns back to the client. HTTP is sometimes used as the underlying protocol for message passing, but nothing about RPC is inherently bound to HTTP. Remote Method Invocation (RMI) is closely related to RPC, but it takes remote invocation a step further by making it object oriented and providing the capability to keep references to remote objects and invoke their methods.
+(RPC) is a way to describe a mechanism that lets you call a procedure in another process and exchange data by message passing. It typically involves generating some method stubs on the client process that makes making the call appear local, but behind the stub is logic to marshall the request and send it to the server process. The server process then unmarshalls the request and invokes the desired method before repeating the process in reverse to get whatever the method returns back to the client. HTTP is sometimes used as the underlying protocol for message passing, but nothing about RPC is inherently bound to HTTP. Remote Method Invocation (RMI) is closely related to RPC, but it takes remote invocation a step further by making it object oriented and providing the capability to keep references to remote objects and invoke their methods.
 
 Disadvantage(s): RPC
 - RPC clients become tightly coupled to the service implementation.
@@ -1600,10 +1635,6 @@ There are no particular rules for this style but generally:
 - The endpoint contains the name of the operation you want to invoke.
 - This type of API generally only uses GET and POST HTTP verbs.
 
-How do people choose between GET and POST?
-- For those who care a little about HTTP protocol this type of API tends to use GET for operations that don’t modify anything and POST for other cases.
-- For those who don’t care much about HTTP protocol, this type of API tends to use GET for operations that don’t need too much parameters and POST for other cases.
-- Those who really don’t care or who don’t even think about it choose between GET and POST on a random basis or always use POST.
 
 With a REST API you expose data as resources that you manipulate through HTTP protocol using the right HTTP verb. The endpoint contains the resource you manipulate.
 
@@ -1645,9 +1676,6 @@ REST is more predictable than RPC as it relies on the shared semantic of HTTP ve
 - REST typically relies on a few verbs (GET, POST, PUT, DELETE, and PATCH) which sometimes doesn't fit your use case. For example, moving expired documents to the archive folder might not cleanly fit within these verbs.
 - Fetching complicated resources with nested hierarchies requires multiple round trips between the client and server to render single views, e.g. fetching content of a blog entry and the comments on that entry. For mobile applications operating in variable network conditions, these multiple roundtrips are highly undesirable.
 - Over time, more fields might be added to an API response and older clients will receive all new data fields, even those that they do not need, as a result, it bloats the payload size and leads to larger latencies.
-
-## Hypermedia-Driven RESTful Web Service
-Needs filling in
 
 # Security
 - Encrypt in transit and at rest.
@@ -1691,36 +1719,6 @@ A key part of service redundancy is creating a shared-nothing architecture. With
 
 There are challenges distributing data or functionality across multiple servers. One of the key issues is data locality; in distributed systems the closer the data to the operation or point of computation, the better the performance of the system. Therefore it is potentially problematic to have data spread across multiple servers, as any time it is needed it may not be local, forcing the servers to perform a costly fetch of the required information across the network.
 
-## Proxies
-At a basic level, a proxy server is an intermediate piece of hardware/software that receives requests from clients and relays them to the backend origin servers. Typically, proxies are used to filter requests, log requests, or sometimes transform requests (by adding/removing headers, encrypting/decrypting, or compression).
-
-It is worth noting that you can use proxies and caches together, but generally it is best to put the cache in front of the proxy, for the same reason that it is best to let the faster runners start first in a crowded marathon race. This is because the cache is serving data from memory, it is very fast, and it doesn't mind multiple requests for the same result. But if the cache was located on the other side of the proxy server, then there would be additional latency with every request before the cache, and this could hinder performance.
-
-Proxies are also immensely helpful when coordinating requests from multiple servers, providing opportunities to optimize request traffic from a system-wide perspective. One way to use a proxy to speed up data access is to collapse the same (or similar) requests together into one request, and then return the single result to the requesting clients. This is known as collapsed forwarding.
-
-What are intermediate indexes and inverse indexes?
-
-## Load Balancers
-
-Like proxies, some load balancers can also route a request differently depending on the type of request it is. (Technically these are also known as reverse proxies.)
-
-If a system only has a couple of a nodes, systems like round robin DNS may make more sense since load balancers can be expensive and add an unneeded layer of complexity. Of course in larger systems there are all sorts of different scheduling and load-balancing algorithms, including simple ones like random choice or round robin, and more sophisticated mechanisms that take things like utilization and capacity into consideration. All of these algorithms allow traffic and requests to be distributed, and can provide helpful reliability tools like automatic failover, or automatic removal of a bad node (such as when it becomes unresponsive). However, these advanced features can make problem diagnosis cumbersome. For example, when it comes to high load situations, load balancers will remove nodes that may be slow or timing out (because of too many requests), but that only exacerbates the situation for the other nodes. In these cases extensive monitoring is important, because overall system traffic and throughput may look like it is decreasing (since the nodes are serving less requests) but the individual nodes are becoming maxed out.
-
-## Queues
-In the cases where writes, or any task for that matter, may take a long time, achieving performance and availability requires building asynchrony into the system; a common way to do that is with queues.
-
-
-# SOA
-
-# CQRS and Event Sourcing
-
-# Serverless
-
-
-
-
-
-
 
 
 
@@ -1746,51 +1744,6 @@ The 8 fallacies of distributed computing:
 6. There is one administrator.
 7. Transport cost is zero.
 8. The network is homogeneous. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1830,53 +1783,6 @@ This model is based on lock-step execution across all workers, coordinated by a 
 ## Execution Orchestrator
 This model is based on an intelligent scheduler / orchestrator to schedule ready-to-run tasks (based on a dependency graph) across a clusters of dumb workers.
 ![Execution Orchestrator](http://3.bp.blogspot.com/_j6mB7TMmJJY/TLlH_a9WOMI/AAAAAAAAAgI/41l0bvV3fkE/s1600/P8.png)
-
-
-
-
-
-
-
-
-
-
-# Lessons from YouTube
-- Tao of YouTube: choose the simplest solution possible with the loosest guarantees that are practical. The reason you want all these things is you need flexibility to solve problems. The minute you over specify something you paint yourself into a corner. You aren’t going to make those guarantees. Your problem becomes automatically more complex when you try and make all those guarantees. You leave yourself no way out.
-- That whole process is what scalability is about. A scalable system is one that’s not in your way. That you are unaware of. It’s not buzz words. It’s a general problem solving ethos.
-- Hallmark of big system design: Every system is tailored to its specific requirements. Everything depends on the specifics of what you are building.
-YouTube is not asynchronous, everything is blocking.
-- Believes more in philosophy than doctrine. Make it simple. What does that mean? You’ll know when you see it. If you do code review that changes thousands of lines of code and many files then there was probably a simpler way. Your first demo should be simple, then iterate.
-- To solve a problem: One word - simple. Look for the most simple thing that will address the problem space. There are lots of complex problems, but the first solution doesn’t need to be complicated. The complexity will come naturally over time.
-- A lot of YouTube systems start as one Python file and become large ecosystems after many many years. All their prototype were written in Python and survived for a surprising amount of time.
-- In a design review:
-    - What’s the first solution?
-    - How are you going to iterate?
-    - What do we know about how this data is going to be used?
-- Things change over time. How YouTube started out has no bearing on what happens later. YouTube started out as a dating site. If they had designed for that they would have different conversation. Stay flexible.
-- YouTube CDN. Originally contracted it out. Was very expensive so they did it themselves. You can build a pretty good video CDN if you have a good hardware dude. You build a very large rack, stick machines in, then take lighttpd, and then override the 404 handler to find the video that you didn’t find. That took two weeks and it’s first day served 60 gigabits. You can do a lot with really simple tools.
-- You have to measure. Vitess swapped out one its protocols for an HTTP implementation. Even though it was in C it was slow. So they ripped out HTTP and did a direct socket call using python and that was 8% cheaper on global CPU. The enveloping for HTTP is really expensive.
-
-## It's All A Numbers Game
-
-Start with domain - DDD, hexagonal design, etc.
-
-Performance tests and profiling is really important:
-- component performance tests
-- production monitoring
-- common performance test mistakes
-- theory of constraints
-- Drives the economics of a development.
-
-Tests need to model realistic scenarios
-- model based on production
-
-Should look at cache oblivious algorithms.
-
-Unbounded queries are very bad. Deal in chinks.
-
-Don't have a single database, a single load balancer that everything goes to, or you'll get contention points, large queues. locking.
-
-
 
 
 Image by <a href="https://pixabay.com/users/jamesmarkosborne-1640589/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1076536">James Osborne</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=1076536">Pixabay</a>
