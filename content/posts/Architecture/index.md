@@ -44,35 +44,7 @@ This is another good one:
 5. Scale the design
     - idetify and address bottleencks, given the constraints. Do you need a load balancer, horizontal scaling, caching, db sharding. Discuss potential solutions and trade-offs.
 
-
-# Crack the system design interview
-Four steps:
-1.	Clarify requirements and specs. Ultimate goals should always be clear.
-2.	Sketch out high level design
-3.	Discuss individual components and how they interact in detail
-  -	Load balances
-  -	Reverse proxy: good to centralised internal services and provided unified interfaces to the public. Can also help with caching and load 3alancing.
-  -	Front end web tier Must be stateless to scale out. Feature toggles or config should be centralised.
-  -	Mvc or mvvc  is dominant pattern for this layer. Traditionsllyvrendered on server. People believe that the API can be shared by clients and browsers so SPA web apps are becoming more popular.
-  -	Bottlenecks are requests per second and bandwidth. Could improve this using frameworks with asynchronous and non blocking reactor pattern and or scaling up or scaling out.
-  -	App service tier: SRP 
-  -	Service discovery: zookeeper good choice. Instances with bane, address, port, etc. Are registered into the path in ZooKeeper for each service. Zookeepr is CA in CAP. In contrast, uber is doing work on hyperbahn  which works in decentralised way.  Check out Amazon dynamo which is AP with eventual consistency.
-  -	Pick the right db for the job. Don’t store images in relational. For feeds HBase or Cassandra might good for timestamp indexes.
-Back of the envelope calculations. The cost is a function of CPU, RAM, storage, bandwidth, number and size of the images uploaded each day.
-When we want components to communicate with each other we can use HTTP or RPC. RPC is an application later protocol. Is an interprocess communication that allows s computer program to cause s subroutibe or procedure to execute in another address space, without the programmer explicitly coding the details for this remote interaction. That is, the programmer writes essentially the same code whether the sub routine is local to the executing program or remote. In OOO RPC is also called remote invocation or remote method invocation.
-Some RPC protocol frameworks:
--	Google protobuf
--	Facebook thrift
--	Apache avro 
-Often used internally but is hard to debug and not flexible.  For public APIs we tend to use HTTP.
-If we use MySQL  we can use a db proxy to distribute data, either by clustering or by sharding. 
-Clustering is a decentralised solution. Everything is automatic. Data is distributed, moved, rebalance automatically. Nodes talk to each other.
-Sharding is a centralised solution. Data is distributed manually and does not move. Nodes are not aware of each other.
-Regular internet service has read write
-Look these up:
-http://puncsky.github.io/images/crack-the-system-design-interview/pinterest-arch-overview.png
-
-## What you need to know before a System Design Interview
+# What you need to know before a System Design Interview
 Some things you need to be good at:
 - Abstraction. It’s a very important topic for system design interview. You should be clear about how to abstract a system, what is visible and invisible from other components, and what is the logic behind it. Object oriented programming is also important to know.
 - Database. You should be clear about those basic concepts like relational database. Knowing about No-SQL might be a plus depends on your level (new grads or experienced engineers).
@@ -457,16 +429,8 @@ We could also experience unusual peaks in the requests hitting our application s
 
 
 # Scalability Video
-FTP sends username and password in plain text? SFTP is better.
-
-VPS = YOu get a virtual machine, meaning you get your own copy of the OS. USe hypervisor.
-on a shared we b host you won't get that.
-
-even if you're using a VPS, your data is secure from othr customers, but not the web hosting company.
-
 Virtual scaling - get more ram, get more disk space, etc. Has limit to how powerful the machine is. Limited by CPU, how powerful can one machine be?
-
-With more cores, this means that we can chop up bigger servers into smaller VMs, as if you have 4 cores, you can truely have 4 things running in parallel.
+- With more cores, this means that we can chop up bigger servers into smaller VMs, as if you have 4 cores, you can truely have 4 things running in parallel.
 
 If you're hard hitting db, you should improve your hard drive - use ssd or saas.
 
@@ -475,13 +439,9 @@ Horizontal scaling - get cheaper servers rather than 1. We will need to use a lo
 
 When you need to return an IP address, could instead return the IP address of the load balancer to get around the problem of which IP to return for which server.
 
-Your load balancer can just be a fancy DNS set up, where instead of returning the address of the load balancer itself, maybe instead the DNS server just returns the IP address of server one the frist time someone asks for something, and the next time someone requests something it returns the ip address of server 2. i.e. round robin. For this we can use something called BIND.
+Your load balancer can just be a fancy DNS set up, where instead of returning the address of the load balancer itself, maybe instead the DNS server just returns the IP address of server one the first time someone asks for something, and the next time someone requests something it returns the ip address of server 2. i.e. round robin. For this we can use something called BIND.
 
-How could we build our own dns server?
-
-WHat is the difference between a reverse proxy and DNS look up?
-
-THe OS and your browser typically will cache the IP address after it has done a DNS look up. That meand if you're doing a lot of work, the next guy will be sent to server 2, not you, as it'll be cached.
+THe OS and your browser typically will cache the IP address after it has done a DNS look up. That means if you're doing a lot of work, the next guy will be sent to server 2, not you, as it'll be cached.
 
 There's typically a TTL associated with an answer from a DNS server. and that's typically between a day or 5 minutes, totally depends on who controls the DNS server what that value is.
 
@@ -491,31 +451,6 @@ However this is a problem with sessions - session recall tends to be for a speci
 This is a problem for logging in, you'd need to log in for each server, meaning you'll have a session cookie on each machine then. However if your website is an e-commerce website, when you add things to your cart, they're going to be associated with different sesisons on different machines. If you had split your services out such that one server was php server, one was gif server, etc. you wouldn't have this problem, but this would mean no redundancy and you can't scale.  
 One way to solve this is to have each server connect to the same seperate hard drive where all session data is stored. You could also put the sessions on the load balancer. But now we have a weakness in our network topology, what is that server breaks?
 
-What happens if the load balancer goes down, do we also have duplicate load balancers?
-
-RAID = Redundant Array of Independent Disks
-RAID0  
-RAID1 
-RAID2
-...
-
-RAID0 = two harddrives with identifical size. You stripe data, you write a bit to hd 1, a bit to hd 2, and so you can write faster as you can write to both at once.
-
-RAID1 = two harddrives, store data on both simultaneously. This means either of your drives can die and you'll have all the data intact. If it dies you plug a new one in, and the RAID array will rebuild itself
-
-RAID10 = four hard drives, do both striping and redundancy.
-
-RAID5 = have 3, 4, or 5 drives, but only one is used for redundancy. In this model any of the drives can die and you haven't lost any data. How does that work? how do you store 4 tb of data with redundancy in one drive?
-
-RAID6 = any two drives can die, 2 for redundancy.
-
-Should use RAID at home?
-
-Even if we use RAID for storing session over multiple drives, if someone trips over the power cord, you're still at the mercy of using 1 machine for storing data.
-
-Other ways to get sticky sessions:
-- shared storage, MySQL, NFS, etc.
-- Cookies? 
 
 Software solutions for load balancers:
 - Amazon's Elastic Load Balancer
@@ -536,13 +471,7 @@ Memcache:
 - memory cache, software, machanism that sotres whatever you want in RAM. Connect with Memcache connect and then set some data. Used by facebook.
 - LRU cache
 
-MySQL:
-- nodb: supports transacctions
-- myisam?: uses full table locks instead, no transactions.
-
-Supports replication
-
-You have a master database which is where you read and write data. ALso have slave databases which get a copy of every row in master. You could have it where reads go to slaves and writes go to master. This is good for read heavy websites. This is good, however if your master goes offline then you can have a period where you can't do writes.
+You have a master database which where you read and write data. Also have slave databases which get a copy of every row in master. You could have it where reads go to slaves and writes go to master. This is good for read heavy websites. This is good, however if your master goes offline then you can have a period where you can't do writes.
 
 Another strategy for replication is master-master. Write to either server 1 or 2 which are both masters. If you write to 1 that query gets replicated to server 2 and vice versa. Either 1 or 2 can go down and you won't have an outage.
 
@@ -559,10 +488,6 @@ In active-passive, all packets come to active, if the passive doesn't hear a hea
 
 Another option you have is partitioning. For example, you could have it where users from A-M go to one half of your servers (one cluster), and uses N-Z go to the other half of your servers. Each can have half the read MySQL slaves, and all use the same master.
 
-High Availability (HA) can be not only for load balances but databases to with master-master where you send heartbeats.
-
-Usually each of your severs would have 2 ethernet cables going connecting to two switches, so you wouldn't have a single point of failure on the switches. these switches then go across the load balancers, dbs, etc.
-
 You need to make sure you don't just have one set of your hardware in one data center. Amazon offers availability zones, different places. If you have multiple zones you'll have to do load balancing at the DNS level. if you do nslookup you'll see lots of differen addresses for google, will be different zones, probably don't share sessions though, you'll stay in the same availability zone.
 
  what is quite common is having SSL termination at the load balancer - everything below is unencrypted. That means you don't have to put your SSL certifiacate on all of your web servers. You can just put them in your load balancers.
@@ -572,10 +497,6 @@ First Golden rule for scalability: every server contains exactly the same codeba
 
 Sessions need to be stored in a centralized data store which is accessible to all your application servers. Could store it in an external persistent cache, like Redis.
 
-You need to make sure a code change is sent to all your servers, without one server still serving old code. Capistrano is a tool for this.
-
-You should createa an image file from one of one web servers and use this as a super-clone that all your new instances are based on.
-
 ## Data slowness
 Somewhere down the road your application gets slower and slower and finally breaks down. This is due to the database. You have two options:
 1. Hire a DBA, get them to do master-slave replication, and upgrade your master server by adding lots of RAM. Eventually your DBA will talk about sharding, denormalisation, and SQL tuning. At this point, every new action to keep your db running will be more expensive and time consuming than the previous one.
@@ -583,6 +504,8 @@ Somewhere down the road your application gets slower and slower and finally brea
 
 
 # Caching
+![Cache](https://camo.githubusercontent.com/7acedde6aa7853baf2eb4a53f88e2595ebe43756/687474703a2f2f692e696d6775722e636f6d2f51367a32344c612e706e67)
+
 Do in-memory caches, like memcached or Redis, don't do file-based caching, it makes cloning and autoscaling of your servers just a pain.
 
 Look for data in cache, if not there, go to db.
@@ -601,57 +524,49 @@ Caching consists of: precalculating results, pre-generating expensive indexes, a
 
 In practice, caching is important earlier in the development process than load-balancing, and starting with a consistent caching strategy will save you time later on.  It also ensures you don't optimize access patterns which can't be replicated with your caching mechanism or access patterns where performance becomes unimportant after the addition of caching.
 
-## Application vs. Database Caching
-Most systems rely on both.
-
-Application caching will check if a value is in the cache, if not it'll retrieve it from the db, and write to cache (very common in LRU cache).
-
-Database caching is on by default using some default config. This will provide some degree of caching. They'll be optimised for a generic use case, and by tweaking them to your system's access patterns you can generally squeeze a great deal of performance improvement. The beauty of database caching is that your application code gets faster "for free", and a talented DBA or operational engineer can uncover quite a bit of performance without your code changing.
-
-The best performance is in-memory caches. However you won't have enough RAM to hold everything so you'll need a strategy for only keeping the host subset of your data in your memory cache.
-
-## CDNs
-Some consider CDNs caches as they take the burden of serving static media off your app servers (which are typically optimized for serving dynamic pages rather than static media), and provide geographic distribution. 
-
-## Cache invalidation
-Solving the problem of maintaining consistency in caches is know as cache invalidation.
-Easy to introduce errors if you have multiple code paths writing to do abs cache. More likely to happend if you don’t go into writing the application with s caching strategy already in mind.
-Write through cache: each time a value changes, write the new value into the cache.
-Ready through cache: if value changes delete in cache and populate it later on a read.
-Invalidation becomes more challenging when you have fuzzy queries, e.g. trying to add application level caching up-front of a full-term search engine like SOLR or modifications to an unknown number of elements, e.g. deleting all objects created more than a week a go.
-
-# Caching2
-![Cache](https://camo.githubusercontent.com/7acedde6aa7853baf2eb4a53f88e2595ebe43756/687474703a2f2f692e696d6775722e636f6d2f51367a32344c612e706e67)
+Caches can be located on the client side (OS or browser), server side, or in a distinct cache layer.
 
 Caching improves page load times and can reduce the load on your servers and databases. In this model, the dispatcher will first lookup if the request has been made before and try to find the previous result to return, in order to save the actual execution.
 
 Databases often benefit from a uniform distribution of reads and writes across its partitions. Popular items can skew the distribution, causing bottlenecks. Putting a cache in front of a database can help absorb uneven loads and spikes in traffic.
 
-## Client Caching
-Caches can be located on the client side (OS or browser), server side, or in a distinct cache layer.
+## Application vs. Database Caching
 
-## CDN Caching
-CDNs are considered a type of cache.
+Most systems rely on both.
 
-## Web server caching
-Reverse proxies and caches such as Varnish can serve static and dynamic content directly. Web servers can also cache requests, returning responses without having to contact application servers.
+Application caching will check if a value is in the cache, if not it'll retrieve it from the db, and write to cache (very common in LRU cache).
 
-## Database caching
-Your database usually includes some level of caching in a default configuration, optimized for a generic use case. Tweaking these settings for specific usage patterns can further boost performance.
+Database caching is on by default using some default config. This will provide some degree of caching. They'll be optimised for a generic use case, and by tweaking them to your system's access patterns you can generally squeeze a great deal of performance improvement. The beauty of database caching is that your application code gets faster "for free", and a talented DBA or operational engineer can uncover quite a bit of performance without your code changing. Whenever you query the database, hash the query as a key and store the result to the cache.
 
-## Application caching
+### Caching at the object level
+See your data as an object, similar to what you do with your application code. Have your application assemble the dataset from the database into a class instance or a data structure(s):
+- Remove the object from cache if its underlying data has changed
+- Allows for asynchronous processing: workers assemble objects by consuming the latest cached object
+
+Suggestions of what to cache:
+- User sessions
+- Fully rendered web pages
+- Activity streams
+- User graph data
+
+### In memory
+
+The best performance is in-memory caches. However you won't have enough RAM to hold everything so you'll need a strategy for only keeping the host subset of your data in your memory cache.
+
 In-memory caches such as Memcached and Redis are key-value stores between your application and your data storage. Since the data is held in RAM, it is much faster than typical databases where data is stored on disk. RAM is more limited than disk, so cache invalidation algorithms such as least recently used (LRU) can help invalidate 'cold' entries and keep 'hot' data in RAM.
 
 Redis has the following additional features:
 - Persistence option
 - Built-in data structures such as sorted sets and lists
 
-There are multiple levels you can cache that fall into two general categories: database queries and objects:
-- Row level
-- Query-level
-- Fully-formed serializable objects
-- Fully-rendered HTML
-Generally, you should try to avoid file-based caching, as it makes cloning and auto-scaling more difficult.
+## CDNs
+Some consider CDNs caches as they take the burden of serving static media off your app servers (which are typically optimized for serving dynamic pages rather than static media), and provide geographic distribution. 
+
+## Web server caching
+Reverse proxies and caches such as Varnish can serve static and dynamic content directly. Web servers can also cache requests, returning responses without having to contact application servers.
+
+## Database caching
+Your database usually includes some level of caching in a default configuration, optimized for a generic use case. Tweaking these settings for specific usage patterns can further boost performance.
 
 ###  LRU Cache
 Least Recently Used.  
@@ -662,13 +577,12 @@ It is a key value store.
 
 It is a bounded container - need to specify size at the start.
 
-For the size - can call getMemoryClass() in andoird, then divide by some multiple of 8.
-
 Need to specify size of cache, size of bit map to place in the cache. If your objects aren't uniform in size, multiple objects could get evicted to make space for the new bit map.
 
 An LRU needs a tag, a value, and an LRU counter per block.
 
 Each blocks counter is initialised to a different value:
+
 | Block Contents | Counter |
 |----------------|---------|
 | A              | 0       |
@@ -685,22 +599,6 @@ If we need to insert into a block we insert into the 0 counter block.
 To summarize: LRU order tracked via keys in a linked list. As a key is used, it is popped to the front of the list. When linked list capacity reached, get the key at the end of the list, remove the key from map and from the linked list
 
 
-
-## Caching at the database query level
-Whenever you query the database, hash the query as a key and store the result to the cache. This approach suffers from expiration issues:
-- Hard to delete a cached result with complex queries
-- If one piece of data changes such as a table cell, you need to delete all cached queries that might include the changed cell
-
-## Caching at the object level
-See your data as an object, similar to what you do with your application code. Have your application assemble the dataset from the database into a class instance or a data structure(s):
-- Remove the object from cache if its underlying data has changed
-- Allows for asynchronous processing: workers assemble objects by consuming the latest cached object
-
-Suggestions of what to cache:
-- User sessions
-- Fully rendered web pages
-- Activity streams
-- User graph data
 
 ## When to update the cache
 Since you can only store a limited amount of data in cache, you'll need to determine which cache update strategy works best for your use case.
@@ -766,7 +664,8 @@ Write-through is a slow overall operation due to the write operation, but subseq
 In write-behind, the application does the following:
 - Add/update entry in cache
 - Asynchronously write entry to the data store, improving write performance
-Disadvantage(s): write-behind
+
+#### Disadvantage(s): write-behind
 - There could be data loss if the cache goes down prior to its contents hitting the data store.
 - It is more complex to implement write-behind than it is to implement cache-aside or write-through.
 
@@ -785,14 +684,10 @@ Need to maintain consistency between caches and the source of truth such as the 
 Cache invalidation is a difficult problem, there is additional complexity associated with when to update the cache.
 Need to make application changes such as adding Redis or memcached.
 
-
-
-
-
 # Asynchronism
 Two ways of doing it:
-1. Doing the time-consuming work in advance and server the finished work with a low request time. E.g. pages of a website, maybe built with a massive framework, can be pre-rendered and locally stored as staticH TML on every change.
-2. User comes to your website and starts a very computationally intensive task which would take several minutes to finish. Frontend of your website sends a job onto a job queue and immediately signals back to the user: your job is in work, please continue to browse the page. The job queue is constantly checked by a bunch of workers for new jobs. If there is a new job then the worker does the job and after some minutes sends a signal that the job was done. The frontend, which constantly checks for new “job is done” - signals, sees that the job was done and informs the user about it.
+1. Doing the time-consuming work in advance and serve the finished work with a low request time. E.g. pages of a website, maybe built with a massive framework, can be pre-rendered and locally stored as static HTML on every change.
+2. User comes to your website and starts a very computationally intensive task which would take several minutes to finish. Frontend of your website sends a job onto a job queue and immediately signals back to the user: your job is in progress, please continue to browse the page. The job queue is constantly checked by a bunch of workers for new jobs. If there is a new job then the worker does the job and after some minutes sends a signal that the job was done. The frontend, which constantly checks for new “job is done” - signals, sees that the job was done and informs the user about it.
 
 ![asynchronism](https://camo.githubusercontent.com/c01ec137453216bbc188e3a8f16da39ec9131234/687474703a2f2f692e696d6775722e636f6d2f353447597353782e706e67)
 
@@ -809,11 +704,6 @@ Redis is useful as a simple message broker but messages can be lost.
 RabbitMQ is popular but requires you to adapt to the 'AMQP' protocol and manage your own nodes.
 
 Amazon SQS is hosted but can have high latency and has the possibility of messages being delivered twice.
-
-## Task Queues
-Tasks queues receive tasks and their related data, runs them, then delivers their results. They can support scheduling and can be used to run computationally-intensive jobs in the background.
-
-Celery has support for scheduling and primarily has python support.
 
 ## Back Pressure
 If queues start to grow significantly, the queue size can become larger than memory, resulting in cache misses, disk reads, and even slower performance. Back pressure can help by limiting the queue size, thereby maintaining a high throughput rate and good response times for jobs already in the queue. Once the queue fills up, clients get a server busy or HTTP 503 status code to try again later. Clients can retry the request at a later time, perhaps with exponential backoff.
@@ -835,28 +725,25 @@ By allowing the queue to be unbounded the latency will continue to increase.  So
 
 By bounding the input queue we block the thread receiving network packets which will apply back pressure up stream.  If the network protocol is TCP, similar back pressure is applied via the filling of network buffers, on the sender. 
 
-When we need to support synchronous protocols like REST then use back pressure, signalled by our full incoming queue at the gateway, to send a meaningful “server busy” message such as the HTTP 503 status code.  The customer can then interpret this as time for a coffee and cake at the café down the road.
-
 You need to consider the whole end-to-end service.  What if a client is very slow at consuming data from your system?  It could tie up a thread in the gateway taking it out of action.  Now you have less threads working the queue so the response time will be increasing.  Queues and threads need to be monitored, and appropriate action needs to be taken when thresholds are crossed.  For example, when a queue is 70% full, maybe an alert should be raised so an investigation can take place?  Also, transaction times need to be sampled to ensure they are in the expected range.
 
 ## Disadvantage(s): asynchronism
 Use cases such as inexpensive calculations and realtime workflows might be better suited for synchronous operations, as introducing queues can add delays and complexity.
-
 
 # Performance vs scalability
 A service is scalable if it results in increased performance in a manner proportional to resources added. Generally, increasing performance means serving more units of work, but it can also be to handle larger units of work, such as when datasets grow.
 
 Patterns are outlined in 3 categories:
 - Scalability: two categories
-    - state: things like ORM, HTPT caching (reverse proxy, CDM), CAP theorem, Concurrency, paritioning, replcation, etc.
-    - behaviour: event-driven architecture (messaging, actors, ESB< domain events, CQRS)
+    - state: things like ORM, HTTP caching (reverse proxy, CDM), CAP theorem, Concurrency, paritioning, replication, etc.
+    - behaviour: event-driven architecture (messaging, actors, ESB, domain events, CQRS)
 - Availibility: replication and fail-over
 - Stability: circuit breaker, timeouts, crash early, throttling.
 
 General recommendations for scalability:
 - immutability as default
 - referential transparency
-0 laziness
+- laziness
 
 In functional programming, referential transparency is generally defined as the fact that an expression, in a program, may be replaced by its value (or anything having the same value) without changing the result of the program. This implies that methods should always return the same value for a given argument, without having any other effect.
 
@@ -876,7 +763,7 @@ In a distributed computer system, you can only support two of the following guar
 - Availability - Every request receives a response, without guarantee that it contains the most recent version of the information
 - Partition Tolerance - The system continues to operate despite arbitrary partitioning due to network failures
 
-In a centralised system we don;t have network paritions, so you get AC.
+In a centralised system we don't have network partitions, so you get AC.
 
 Networks aren't reliable, so you'll need to support partition tolerance. You'll need to make a software tradeoff between consistency and availability.
 
@@ -893,10 +780,9 @@ A) Allow the nodes to get out of sync (giving up consistency), or
 B) Consider the cluster to be "down" (giving up availability)
 
 All the combinations available are:
-
-CA - data is consistent between all nodes - as long as all nodes are online - and you can read/write from any node and be sure that the data is the same, but if you ever develop a partition between nodes, the data will be out of sync (and won't re-sync once the partition is resolved).
-CP - data is consistent between all nodes, and maintains partition tolerance (preventing data desync) by becoming unavailable when a node goes down.
-AP - nodes remain online even if they can't communicate with each other and will resync data once the partition is resolved, but you aren't guaranteed that all nodes will have the same data (either during or after the partition)
+- CA - data is consistent between all nodes - as long as all nodes are online - and you can read/write from any node and be sure that the data is the same, but if you ever develop a partition between nodes, the data will be out of sync (and won't re-sync once the partition is resolved).
+- CP - data is consistent between all nodes, and maintains partition tolerance (preventing data desync) by becoming unavailable when a node goes down.
+- AP - nodes remain online even if they can't communicate with each other and will resync data once the partition is resolved, but you aren't guaranteed that all nodes will have the same data (either during or after the partition)
 
 ## CP
 Waiting for a response from the partitioned node might result in a timeout error. CP is a good choice if your business needs require atomic reads and writes.
@@ -907,6 +793,7 @@ Responses return the most recent version of the data available on a node, which 
 AP is a good choice if the business needs allow for eventual consistency or when the system needs to continue working despite external errors.
 
 # Consistency Patterns
+<br/>
 
 ## Weak Consistency
 After a write, reads may or may not see it. A best effort approach is taken.
@@ -924,8 +811,10 @@ After a write, reads will see it. Data is replicated synchronously.
 This approach is seen in file systems and RDBMSes. Strong consistency works well in systems that need transactions.
 
 # Availability Patterns
+<br/>
 
 ## Fail-over
+<br/>
 
 ### Active-passive
 Heartbeats are sent between the active and the passive server on standby. If the heartbeat is interrupted, the passive server takes over the active's IP address and resumes service. The length of downtime is determined by whether the passive server is already running in 'hot' standby or whether it needs to start up from 'cold' standby. Only the active server handles traffic.
@@ -945,6 +834,7 @@ master-slave or master-master.
 Availablity is genenrally measured in number of 9s - a service with 99.99% availability is described as having four 9s.
 
 99.9% availability - three 9s
+
 | Duration           | Acceptable downtime |
 |--------------------|---------------------|
 | Downtime per year  | 8h 45min 57s        |
@@ -953,6 +843,7 @@ Availablity is genenrally measured in number of 9s - a service with 99.99% avail
 | Downtime per day   | 1m 26.4s            |
 
 99.99% availability - four 9s
+
 | Duration           | Acceptable downtime |
 |--------------------|---------------------|
 | Downtime per year  | 52min 35.7s         |
@@ -979,10 +870,9 @@ If both Foo and Bar each had 99.9% availability, their total availability in par
 # CDN
 Content delivey networks.
 
-IS a globally distributed network of proxy servers, serving content from locations closer to the user.
+They are a globally distributed network of proxy servers, serving content from locations closer to the user.
 
-A CDN helps to spped up static components of your blog by distributing them across a number of servers around the world.
-
+A CDN helps to speed up static components of your blog by distributing them across a number of servers around the world.
 
 Generally static files such as HTML /CSS/Js, photos, and vidoes are served from CDN, although some CDNs such as Amazon's CloudFront support dynamic content.
 
@@ -993,7 +883,7 @@ Can significantly improve performance in two ways:
 ## Push CDNs
 Push CDNs receive new content whenever changes occurs on your server. You take responsiblity for providing content, uploading directly to the CDN and rewriting URLs to point to the CDN.
 
-Sites with a small amount of traffic or sites with content that isn't often updated work well with push CNDs. Content is placed on the CDNs once, instead of being re-pulled at regular intervals.
+Sites with a small amount of traffic or sites with content that isn't often updated work well with push CDNs. Content is placed on the CDNs once, instead of being re-pulled at regular intervals.
 
 ## Pull CDNs
 Grab new content from your server when the first user requests the content. You leave the content on your server and rewrite URLs to point to the CDN. This results in a slower request until the content is cached on the CDN.
@@ -1005,7 +895,7 @@ Sites with heavy traffic work well with pull CDNs, as traffic is spread out more
 ## Disadvantages
 - CDN costs could be significant depending on traffic, although this should be weighed with additional costs you would incur not using a CDN.
 - Content might be stale if it is updated before the TTL expires it.
-- CDNs require chaning URLs for static content to point to the CDN.
+- CDNs require changing URLs for static content to point to the CDN.
 
 # Load Balancer
 ![load balancer](https://camo.githubusercontent.com/21caea3d7f67f451630012f657ae59a56709365c/687474703a2f2f692e696d6775722e636f6d2f6838316e39694b2e706e67)
@@ -1015,7 +905,7 @@ Distribute incoming requests to computing resources such as application servers 
 Good at:
 - preventing requests from going to unhealthy servers
 - preventing overloading resources
-- helping elimiate single points of failure
+- helping eliminate single points of failure
 
 Can be implemented with hardware or with software such as HAProxy.
 
@@ -1023,11 +913,11 @@ Other benefits:
 - SSL Termination - Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations.
 - Session persistence - Issue cookies and route a specific client's requests to same instance if the web apps do not keep track of sessions.
 
-To protect against failures, it's common to set up multiple load balancers, either in active-apssive or active-active mode.
+To protect against failures, it's common to set up multiple load balancers, either in active-passive or active-active mode.
 
-Can route traffic vased on various metrics.
+Can route traffic based on various metrics.
 
-Nginx is best for serving static content - can have node server dynamic content, and get nginx to serve static. Can then also use nginx as a reverse proxy.
+Nginx is best for serving static content - can have node server serve dynamic content, and get nginx to serve static. Can then also use nginx as a reverse proxy.
 
 Load balancers can route traffic based on various metrics, including:
 - Random
@@ -1049,7 +939,7 @@ A moderately large system may balance load at three layers:
 
 A smart client is a client which takes a pool of service hosts and balances load across them, detects downed hosts and avoids sending requests their way.
 
-HAProxy is a good smart client. It runs locally on each of your boxes, and each service you want to load-balace has a locally bound port.
+HAProxy is a good smart client. It runs locally on each of your boxes, and each service you want to load-balance has a locally bound port.
 
 # Reverse Proxy (Web Server)
 A reverse proxy is a web server that centralises internal services and provides unified interfaces to the public. Requests from clients are forwarded to a server that can fulfil it before the reverse proxy returns the server's respone the the client. 
@@ -1058,7 +948,7 @@ Additional benefits include:
 - Increased security - Hide information about backend servers, blacklist IPs, limit number of connections per client
 - Increased scalability and flexibility - Clients only see the reverse proxy's IP, allowing you to scale servers or change their configuration
 - SSL termination - Decrypt incoming requests and encrypt server responses so backend servers do not have to perform these potentially expensive operations
-    - Removes the need to install X.509 certificates on each server
+    - Removes the need to install certificates on each server
 - Compression - Compress server responses
 - Caching - Return the response for cached requests
 - Static content - Serve static content directly
@@ -1074,7 +964,7 @@ Reverse proxies can be useful even with just one web server or application serve
 Solutions such as NGINX and HAProxy can support both layer 7 reverse proxying and load balancing.
 
 ## Difference between a reverse proxy and a forward proxy?
-The main difference between a forward proxy and a reverse proxu is that a forward proxy is used by the client, such as a web browser, whereas a reverse proxy is used by the server such as a web server.
+The main difference between a forward proxy and a reverse proxy is that a forward proxy is used by the client, such as a web browser, whereas a reverse proxy is used by the server such as a web server.
 
 Forward proxy can be used by the client to bypass firewall restrictions in order to visit websites that are blocked by school, government, company etc. If a website blocked an IP range from visiting the website, then a person in that IP range can use forward proxy to hide the real IP of the client so that person can visit the website
 
@@ -1085,35 +975,33 @@ Reverse proxy is mainly used by server admins to achieve load balancing and high
 # Difference between an application server and a web server
 Used interchangeably.
 
-Web server is designed to serve HTTP content. Application server can also server HTTP contnet but it is not limited to just HTTP. It can be provide other protocol support such as RMI/RPC.
+Web server is designed to serve HTTP content. An Application server can also serve HTTP content but it is not limited to just HTTP. It can be provide other protocol support such as RMI/RPC.
 
-Web sever is mostly designed to serve static content, though most web servers have plugins to support scripting languages (e.g. JSP) through which these servers can generate dynamic HTTP content.
+A Web server is mostly designed to serve static content, though most web servers have plugins to support scripting languages (e.g. JSP) through which these servers can generate dynamic HTTP content.
 
 Most of the application servers have a web server as an integral part of them. This means that the app server can do whatever the web server is capable of. Additionally app servers have components and features to support application level services such as connection pooling, object pooling, transaction support, messaging services, etc.
 
-As web servers are well suited for static content and app servers for dynamic content, most of the production environments have web servers acting as a reverse proxy to the application server. That means while servicing a page request, static content is server by the web server that interprets the request. Using some kind of filtering technique the web serve identifies dynamic content requests and transparently forwards to the application server.
+As web servers are well suited for static content and app servers for dynamic content, most of the production environments have web servers acting as a reverse proxy to the application server. That means while servicing a page request, static content is served by the web server that interprets the request. Using some kind of filtering technique the web server identifies dynamic content requests and transparently forwards to the application server.
 
 A web server would be Apache HTTP and an application server would be Apache Tomcat.
 
 # Application layer
 ![Application Layer](https://camo.githubusercontent.com/feeb549c5b6e94f65c613635f7166dc26e0c7de7/687474703a2f2f692e696d6775722e636f6d2f7942355359776d2e706e67)
-Also known as platform layer.
-Seperating out from web layer allows you to scale and configure both layers independently.
 
-Adding a new API results in adding application servers without necessarily adding additional web servers. The single responsibility principle advocates for small and autonomous services tha work together.
+Also known as platform layer.  
+Separating out from the web layer allows you to scale and configure both layers independently.
+
+Adding a new API results in adding application servers without necessarily adding additional web servers. The single responsibility principle advocates for small and autonomous services that work together.
 
 Workers in the application layer also help enable asynchronism.
 
 ## Microservices
-a suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal.
+A suite of independently deployable, small, modular services. Each service runs a unique process and communicates through a well-defined, lightweight mechanism to serve a business goal.
 
 Pinterest, for example, could have the following microservices: user profile, follower, feed, search, photo upload, etc.
 
 ## Service Discovery
-Systems such as Consul, Etcd, and Zoopkeeper can help services find each other by keeping track of registered names, addresses, and ports. Health checks help verify service integrity and are often done using an HTTP endpoint. Both Consil and Etcd have a build in key-value store that can be useful for storing config values and other shared data
-
-## Service Meshes
-Need to look this up
+Systems such as Consul, Etcd, and Zoopkeeper can help services find each other by keeping track of registered names, addresses, and ports. Health checks help verify service integrity and are often done using an HTTP endpoint. Both Consul and Etcd have a build in key-value store that can be useful for storing config values and other shared data
 
 ## Disadvantages
 - Adding an application layer with loosely coupled services requires a different approach from an architectural, operations, and process viewpoint (vs a monolithic system). 
@@ -1121,14 +1009,12 @@ Need to look this up
 
 # Servlets
 
-the user/client can only request static webpage from the server. This is not good enough, if the user wants to read the web page based on his input. The basic idea of Servlet container is using Java to dynamically generate the web page on the server side. So servlet container is essentially a part of a web server that interacts with the servlets.
-
 Servlet is an interface defined in javax.servlet package. It declares three essential methods for the life cycle of a servlet – init(), service(), and destroy(). They are implemented by every servlet(defined in SDK or self-defined) and are invoked at specific times by the server.  
 The service() method is invoked upon each request after its initialization. Each request is serviced in its own separate thread. The web container calls the service() method of the servlet for every request. The service() method determines the kind of request being made and dispatches it to an appropriate method to handle the request.
 
 Apache Tomcat is an implementation of the java servlet and a servlet container.
 
-## How does a servlet contaienr and a web server process a request?
+## How does a servlet container and a web server process a request?
 1. Web server receives HTTP request
 2. Web server forwards the request to servlet container
 3. The servlet is dynamically retrieved and loaded into the address space of the container, if it is not in the container.
@@ -1954,10 +1840,6 @@ This model is based on an intelligent scheduler / orchestrator to schedule ready
 
 
 
-
-
-
-
 # Lessons from YouTube
 - Tao of YouTube: choose the simplest solution possible with the loosest guarantees that are practical. The reason you want all these things is you need flexibility to solve problems. The minute you over specify something you paint yourself into a corner. You aren’t going to make those guarantees. Your problem becomes automatically more complex when you try and make all those guarantees. You leave yourself no way out.
 - That whole process is what scalability is about. A scalable system is one that’s not in your way. That you are unaware of. It’s not buzz words. It’s a general problem solving ethos.
@@ -1973,19 +1855,6 @@ YouTube is not asynchronous, everything is blocking.
 - Things change over time. How YouTube started out has no bearing on what happens later. YouTube started out as a dating site. If they had designed for that they would have different conversation. Stay flexible.
 - YouTube CDN. Originally contracted it out. Was very expensive so they did it themselves. You can build a pretty good video CDN if you have a good hardware dude. You build a very large rack, stick machines in, then take lighttpd, and then override the 404 handler to find the video that you didn’t find. That took two weeks and it’s first day served 60 gigabits. You can do a lot with really simple tools.
 - You have to measure. Vitess swapped out one its protocols for an HTTP implementation. Even though it was in C it was slow. So they ripped out HTTP and did a direct socket call using python and that was 8% cheaper on global CPU. The enveloping for HTTP is really expensive.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## It's All A Numbers Game
 
