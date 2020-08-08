@@ -44,7 +44,7 @@ The state is 1s complement.
 (x & 1) == 0
 ```
 
-## Checkj if power of two
+## Check if power of two
 ```python
 (x & x-1) == 0
 ```
@@ -60,7 +60,7 @@ With n bits we can only represent 2<sup>n</sup>  different objects. With n bits 
 We use the HO (most significant) bit as the sign bit 0 = positive, 1 = negative.   
 
 ## How to negate a two's complement number?
-1. Invert all the bits in tyhe number.
+1. Invert all the bits in the number.
 2. Add one to inverted result (ignoring any overflow). You cannot negate the smallest negative value in two's complement numbering system.   
 
 ## What is extension and subtraction?   
@@ -68,9 +68,10 @@ With two's complement you cannot arbitrarily add a 8 bit and a 16 bit number. Co
 
 
 # Concurrency
+<br/>
 
 ## Threads
-A thread is a fundamental uinit of execution within an application: A running application consists of at least one thread. Each thread has its own stack and runs independently from the application’s other threads. By default, threads share their resources, such as file handles or memory. Problems can occur when access to shared resources is not properly controlled. Data corruption is a common side effect of having two threads simultaneously write data to the same block of memory, for example. On most systems, threads are created and managed by the operating system: These are called native threads or kernel-level threads. 
+A thread is a fundamental unit of execution within an application: A running application consists of at least one thread. Each thread has its own stack and runs independently from the application’s other threads. By default, threads share their resources, such as file handles or memory. Problems can occur when access to shared resources is not properly controlled. Data corruption is a common side effect of having two threads simultaneously write data to the same block of memory, for example. On most systems, threads are created and managed by the operating system: These are called native threads or kernel-level threads. 
 
 Because the number of threads that can be executed at any given instant is limited by the number of cores in the computer, the operating system rapidly switches from thread to thread,  giving each thread a small window of time to run. This is known as preemptive threading, because the operating system can suspend a thread’s execution at any point to let another thread run. (A cooperative model requires a thread to explicitly take some action to suspend its own execution and let other threads run.) Suspending one thread so another can start to run is referred to as a context switch.
 
@@ -129,6 +130,7 @@ Object theLock = new Object();
 ```
 
 ## Concurrency Problems
+</br>
 
 ### Producer/Consumer
 **Problem:** Write a Producer thread and a Consumer thread that share a fixedsize buffer and an index to access the buffer. The Producer should place numbers into the buffer, and the Consumer should remove the numbers. The order in which the numbers are added or removed is not important.
@@ -216,7 +218,7 @@ public static class IntBuffer {
 ```
 
 ### The Dining Philosophers
-Deadlocks occur when locks (forks) are acquired in different orders. philospher 1 will try to get fork 1 then fork 2, but philosopher 2 will try to get fork 2 first and then fork. This is true of every philosopher except the last, which will try to get fork n-1 first and then fork 0. Reversing the order of acquisition for this philospher means that all philosophers acquire forks in the same order from a global perspective: lower number first.
+Deadlocks occur when locks (forks) are acquired in different orders. Philospher 1 will try to get fork 1 then fork 2, but philosopher 2 will try to get fork 2 first and then fork 3. This is true of every philosopher except the last, which will try to get fork n-1 first and then fork 0. Reversing the order of acquisition for this philospher means that all philosophers acquire forks in the same order from a global perspective: lower number first.
 ```java
 public class DiningPhilosophers {    // Each "fork" is just an Object we synchronize on
     private Object[] forks;
@@ -299,11 +301,11 @@ Virtualized memory is associated with the process and not the thread. Thus, thre
 
 The benefits of multithreading are:
 - Programming abstraction dividing up work and assigning each division to a unit of execution (a thread) is a natural approach to many problems.
-- Parallelism: in machiens with multiple processors, threads provide an efficient way to achieve true parallelism. As each thread  receives its own virtualised processor and is an independently-schedulable entity, multiple threads may run on multiple processors at the same time, imrpoving a system's throughput.
-- Blocking I/O: Without threads, blocking I/O halts the whole process. This can be detrimental to both throughput and latency. In a multithreaded process, individual threads may block ,waiting on I/O, while other threads make forward progress. Asynchronous and non-blocking I/O are alternative solutions to threads for this issue.
+- Parallelism: in machines with multiple processors, threads provide an efficient way to achieve true parallelism. As each thread  receives its own virtualised processor and is an independently-schedulable entity, multiple threads may run on multiple processors at the same time, improving a system's throughput.
+- Blocking I/O: Without threads, blocking I/O halts the whole process. This can be detrimental to both throughput and latency. In a multithreaded process, individual threads may block, waiting on I/O, while other threads make forward progress. Asynchronous and non-blocking I/O are alternative solutions to threads for this issue.
 - Memory savings: Threads provide an efficient way to share memory yet utilise multiple units of exection. In this manner they are an alternative to multiple processes.
 
-The costss are:
+The costs are:
 - increased complexity, need mutexes to manage concurrency. 
 
 ### C++ threads
@@ -746,9 +748,6 @@ int main() {
 ```
 You can try lock a unique lock. `try_lock()` will try to lock and return if it immediately can't. `try_lock_for(time)` will try and wait for `time` to get the lock. If it can't it will return.
 
-# LOOK AT THESE
-https://www.educative.io/blog/top-five-concurrency-interview-questions-for-software-engineers
-
 # CPU and Memory 
 Memory is:
 - main memory; billion 32 bit words, RAM
@@ -759,12 +758,12 @@ SRAM: static RAM, used in register file.
 Dynamic RAM: normal RAM
 
 Key idea is to keep the most often-used data in a small, fast SRAM (often local to CPU chip).  
-Refer to amin memory only rarely, for removing data.  
+Refer to main memory only rarely, for removing data.  
 The reason this works is due to locality.
 
 Locality of Reference: Reference to location X at time t implies that reference to location X + deltaX at time t + deltaT becomes more probable as delaX and deltaT apprach 0.
 
-The machine can take advantage of the fact that most data lives togehter if you ask for the start of the foo subroutine, most liekly you'll want all of it so that the amchine can load it all into memory
+The machine can take advantage of the fact that most data lives together if you ask for the start of the foo subroutine, most liekly you'll want all of it so that the machine can load it all into memory
 
 - CPU 
 - SRAM (small) Cache
@@ -777,7 +776,7 @@ Building a high performance multicore app is harder - need to keep cache well po
 CPUs generally work must efficiently on byte, word, and double word data. You may be able to save some memory by packing different strings of bits together as compactly as possible, without wasting any bits to align a particular data field on a byte or other boundary.
 Alothough they are space efficient they are computationally inefficient as it takes time to unpack them. More info on this needed.
 
-## What are the different types of busus?   
+## What are the different types of buses?   
 Address, data, control. A bus is a collection of wires on which electrical signals pass between components of the system (CPU, I/O, memory).
 The bus size is one of the main attributes that define the size of procerssor 32-bit wide vs 64-bit wide..
 

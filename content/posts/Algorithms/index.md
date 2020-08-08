@@ -10,6 +10,7 @@ date: "2020-04-07"
 
 ## Starting A Problem
 <br>
+
 There are a number of steps to follow to solve a problem:
 1. Make sure you understand the problem
 2. When you understand the question, try a simple example
@@ -36,14 +37,14 @@ Four common problem areas for any function:
     - empty data structures, null, etc.
 
 ## Constraints to look out for 
-.  
+<br/>
 
 ### Strings, Arrays and Numbers
 - How many elements can be in the array?
 - How large can each element be? If it’s a string, how long? If it’s a number, what is the minimum and maximum value?
 - What is in each element? If it’s a number, is it an integer or a floating point? If it’s a string, is it single-byte or multibyte (unicode)?
 - If the problem involves finding a subsequence, does “subsequence” mean that the elements must be adjacent, or is there no such requirement?
-- Does the array contain unique numbers or can they be repeated (this is sometimes relevant)?
+- Does the array contain unique numbers or can they be repeated? (This is sometimes relevant)
 
 ### Graphs
 - How many nodes can the graph have?
@@ -119,8 +120,8 @@ time complexity is O(n)<sup>2</sup>
 
 ## Insertion Sort
 - For each `i` from 0 to `N-1`, exchange `a[i]` with entries that are larger in `a[i]` to `a[0]`.
-- As the index travels from left to right the entries to the left of u are in sorted order.
-- This algorithm is much faster array is in order or nearly in order.
+- As the index travels from left to right the entries to the left of `u` are in sorted order.
+- This algorithm is much faster if array is in order or nearly in order.
 
 ```java
 public class  Insertion {
@@ -422,7 +423,7 @@ public class  MSD {
 ```
 
 # Selection Algorithms
-Goal: Given an array of N items, find the Kth largest.
+Goal: Given an array of `N` items, find the `K`th largest.
 
 We can use quick sort for this, but instead of sorting the whole array, we only sort the half of the array that the Kth element will be in.  
 Implementation:
@@ -444,161 +445,8 @@ As an example, if we're looking for the 5th largest element, if j comes back as 
 
 It takes linear time on average.
 
-# Dynamic Programming
-It is a general-purpose algorithm design technique that is most often used to solve combinatorial optimisation problems, where we are looking for the best possible input to some function chosen from an exponentially large search space.
+Another way of doing this is to use a min heap of size `K`. Go through array and add elements if heap isn't full. If its full then add element and remove first element. Take the first element at top of heap and that will be the kth largest. 
 
-There are two parts:
-- **programming technique**: dynamic programming is essentially divide and conquer in reverse. We start from the bottom with the smallest instances of the problem, solving each increasingly large instance in turn and storing the result in a table.
-- **design principle**: in building up our table, we are careful always to preserve alternative solutions we may need later, by delaying commitment to particular choices to the extent that we can.
-
-Bottom up aspect is most useful with recursion that produces many duplicate subproblems.
-
-## Memoization
-With fib sequence, a naive way to solve it is
-
-```c
-int fib(int n)
-{
-    if(n < 2) {
-        return 1
-    } else {
-        return fib(n-1) + fib(n-2);
-    }
-}
-```
-
-Memoization: wrap our recursive solution in a memoiser that stores previously-computed solutions in a hash table. 
-
-```c
-int memoFib(int n)
-{
-    int ret;
-
-    if(hashContains(FibHash, n)) {
-        return hashGet(FibHash, n);
-    } else {
-        ret = memoFib(n-1) + memoFib(n-2);
-        hashPut(FibHash, n, ret);
-        return ret;
-    }
-}
-```
-
-However using a hash table can add overhead rather than using an array. 
-
-## Dynamic programming
-We should instead build an array from the bottom up, and we can then just use that result.
-```c
-int fib2(int n)
-{
-    int *a;
-    int i;
-    int ret;
-    
-    if(n < 2) {
-        return 1;
-    } else {
-        a = malloc(sizeof(*a) * (n+1));
-        assert(a);
-
-        a[1] = a[2] = 1;
-
-        for(i = 3; i <= n; i++) {
-            a[i] = a[i-1] + a[i-2];
-        }
-    }
-
-    ret = a[n];
-    free(a);
-    return ret;
-}
-```
-Now this is linear time rather than the original algorithm, which was exponential.
-
-## Recursion Problems
-
-In many cases, your recursive functions may need additional data structures or an argument that tracks the recursion levle. Often the best solution in such cases is to move the data structure or argument initialisation into a separate function, This wrapper function ,which performs initialisation and then calls the purely recursive function, provides a clea, simple interface to the rest of the program.
-
-Although recursion is a powerful technique, it is not always the best approach, and rarely is it the most efficient approach. This is due to the relatively large overhead for function calls on most platforms. For a simple recursive function like factorial, many computer architectures sped more time on call overhead than on the actual calculation.  Iterative functions, which use looping constructs instead of recursive function calls, do not suffer from this overhead and are frequently more efficient.
-
-Any problem that can be solved recursively can also be solved iteratively. Iterative algorithms are often easy to write, even for tasks that might appear to be fundamentally recursive. As an example, here is how we can do factorial:
-```c
-int factorial( int n ){
-	int i, val = 1;
-	for( i = n; i > 1; i-- )  /* n = 0 or 1 falls through */
-		val *= i;
-	return val; 
-} 
-```
-It is significantly more efficient than the previous recursive implementation because it doesn't make any additional function calls.  
-You can eliminate the need for recursive calls by allocating your own stack and manually storing and retrieving local variable values from this stack.  
-Implementing this type of stack-based iterative function tends to be significantly more complicated than implementing an equivalent function using recursive calls. Furthermore, unless the overhead for the stack you use is significantly less than the function call overhead, a function written this way won't be more efficient than a conventional recursive implementation. Therefore you should implement recursive algorithms with recrusive calls unless instructed otherwise.  
-
-In an interview, a working solution is of primary importance; an efficient solution is secondary.
-
-## Tail recursion
-A recursive function is tail recurisve when the recursive call is the last thing executed by the function. For example the following C++ function print() is tail recurisve.
-```c
-void print(int n) 
-{ 
-    if (n < 0)  return; 
-    cout << " " << n; 
-  
-    // The last executed statement is recursive call 
-    print(n-1); 
-}
-```
-Tail recursive functions are considered better than non-tail recursive functions as tail-recursion can be optimised by the compiler. The idea used by compilers to optimise tail-recursive functions is simple, since the recursive call is the last statmeent, there is nothing left to do in the current function, so saving the current function's stack frame is of no use.
-
-### How to rewrite a non-tail recursive function to be tail-recursive?
-Consuider this algorithm:
-```java
-// A NON-tail-recursive function. 
-// The function is not tail 
-// recursive because the value  
-// returned by fact(n-1) is used 
-// in fact(n) and call to fact(n-1) 
-// is not the last thing done by 
-// fact(n) 
-static int fact(int n) 
-{ 
-	if (n == 0) return 1; 
-	
-	return n*fact(n-1); 
-} 
-	
-// Driver program 
-public static void main(String[] args) 
-{ 
-	System.out.println(fact(5)); 
-} 
-```
-Although it looks tail recursive, we can see that the value returned by `fact(n-1)` is used in `fact(n)`, so the call to `fact(n-1)` is not the last thing done by `fact(n)`.  
-
-We can write this as a tail recursive function, where we use one more argument and accumulate the factorial value in the second algorithm. When `n` reaches 0, return the accumulated value.
-```java
-// A tail recursive function  
-// to calculate factorial 
-static int factTR(int n, int a) 
-{ 
-	if (n == 0)  
-		return a; 
-	
-	return factTR(n - 1, n * a); 
-} 
-	
-// A wrapper over factTR 
-static int fact(int n) 
-{ 
-	return factTR(n, 1); 
-} 
-
-// Driver code 
-static public void main (String[] args) 
-{ 
-	System.out.println(fact(5)); 
-} 
-```
 
 ### Binary Search
 **Problem:** Implement a function to perform a binary search on a sorted array of integer to find the index of a given integer. 
@@ -714,6 +562,43 @@ static void printPermutn(String str, String ans)
     }
 ```
 
+Permutation of numbers in array:
+```java
+class Solution {
+  public void backtrack(int n,
+                        ArrayList<Integer> nums,
+                        List<List<Integer>> output,
+                        int first) {
+    // if all integers are used up
+    if (first == n)
+      output.add(new ArrayList<Integer>(nums));
+    for (int i = first; i < n; i++) {
+      // place i-th integer first 
+      // in the current permutation
+      Collections.swap(nums, first, i);
+      // use next integers to complete the permutations
+      backtrack(n, nums, output, first + 1);
+      // backtrack
+      Collections.swap(nums, first, i);
+    }
+  }
+
+  public List<List<Integer>> permute(int[] nums) {
+    // init output list
+    List<List<Integer>> output = new LinkedList();
+
+    // convert nums into list since the output is a list of lists
+    ArrayList<Integer> nums_lst = new ArrayList<Integer>();
+    for (int num : nums)
+      nums_lst.add(num);
+
+    int n = nums.length;
+    backtrack(n, nums_lst, output, 0);
+    return output;
+  }
+}
+```
+
 ### Combinations of a String
 ```java
 public class Combinations {    
@@ -737,6 +622,27 @@ public class Combinations {
 			out.setLength( out.length() - 1 );        
 		}
 	} 
+}
+```
+
+Combinations of numbers:
+```java
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> combs = new ArrayList<>();
+        if(nums == null || nums.length == 0) return combs;
+        
+        combs.add(new ArrayList<>());
+        for(int num : nums) {
+            int length = combs.size();
+            for(int i = 0; i < length; i++) {
+                List<Integer> copy = new ArrayList<>(combs.get(i));
+                copy.add(num);
+                combs.add(copy);
+            }
+        }
+        return combs;
+    }
 }
 ```
 

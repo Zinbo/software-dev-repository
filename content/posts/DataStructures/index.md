@@ -1372,8 +1372,8 @@ public class HashTableOpenAddressing<K, V> {
 # Trees
 Trees are made up of nodes with zero, one, or several references to other nodes. Each node has only one other node referencing it.
 
-A binary tree is complete if all its levels are filled, except possibly the last one which is filled from left to right. A complete binary tree with n nodes has height at most O(log n).  
-A complete binary tree can be stored in an array. The first (or last) element will contain the root. The children of the node at position n will be at positions `2n+1` and `2n+2`.  
+A binary tree is complete if all its levels are filled, except possibly the last one which is filled from left to right. A complete binary tree with `n` nodes has height at most O(log n).  
+A complete binary tree can be stored in an array. The first (or last) element will contain the root. The children of the node at position `n` will be at positions `2n+1` and `2n+2`.  
 Parent element is at `(n-1)/2` position (floored).  
 
 ## Breadth first search
@@ -1393,7 +1393,6 @@ Uses additional memory because it is necessary to track the child nodes for all 
 - pre-order: self left right
 - time complexity: O(n)
 - space complexity: best: O(log n) (average height of tree), worst O(n)
-
 
 maze traversal benefits from depth-first search traversal, as you want to go until you get to a dead end and then back track your way out.
 
@@ -2037,11 +2036,6 @@ public class  TrieST<Value> {
 ## Balanced search trees
 These are trees where we want the height to be logN.
 
-## 2-3 Search Trees
-Is empty or:
-- A 2-node, with 1 key and associated value and two links, a left link to a 2-3 tree with smaller keys and a right link to a 2-3 tree with larger keys
-- A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
-
 # Heaps
 Heaps are trees (usually binary trees) where (in a max-heap) each child of a node has a value less than or equal to the node's own value. The root node always has the largest value in the tree.
 
@@ -2061,8 +2055,8 @@ The heap relation mentioned above applies only between nodes and their parents/g
 
 Heaps are usually implemented using an array (fixed size or dynamic).
 
-The first (or last) element will contain the root. The children of the node at position n will be at positions 2n +1 and 2n+2.  
-Parent element is at (n-1)/2 position (floored).  
+The first (or last) element will contain the root. The children of the node at position `n` will be at positions `2n+1` and `2n+2`.  
+Parent element is at `(n-1)/2` position (floored).  
 
 Balancing a heap is done by sift-up or sift-down operations (swapping elements which are out of order). As we build a heap from an array without requiring extra memory (for the nodes, for example), heapsort can be used to sort an array in-place.
 
@@ -2338,13 +2332,14 @@ A Binary Heap is a Complete Binary Tree. A binary heap is typically represented 
 The root element will be at Arr[0].
 
 For the rest of the elements:
+
 | Index        | Node                         |
 |--------------|------------------------------|
 | Arr[i-1/2]   | Returns the parent node      |
 | Arr[(2*i)+1] | Returns the left child node  |
 | Arr[(2*i)+2] | Returns the right child node |
 
-The key to constructing the balaced heap from the array is identifying the location of a node's children relative to the node itself. If you arrange the nodes of a binary tree in an array by level, the root node (at index 0) has children at index 1 adnd 2. The node at index 1 has children at 3, and 4, etc.
+The key to constructing the balaced heap from the array is identifying the location of a node's children relative to the node itself. If you arrange the nodes of a binary tree in an array by level, the root node (at index 0) has children at index 1 and 2. The node at index 1 has children at 3, and 4, etc.
 
 As we have to do a sort the complexity is atleast O(n log n).
 
@@ -2722,6 +2717,8 @@ int factorial( int n ){
 }
 ```
 
+## Recursion Problems
+
 In many cases, your recursive functions may need additional data structures or an argument that tracks the recursion levle. Often the best solution in such cases is to move the data structure or argument initialisation into a separate function, This wrapper function ,which performs initialisation and then calls the purely recursive function, provides a clea, simple interface to the rest of the program.
 
 Although recursion is a powerful technique, it is not always the best approach, and rarely is it the most efficient approach. This is due to the relatively large overhead for function calls on most platforms. For a simple recursive function like factorial, many computer architectures sped more time on call overhead than on the actual calculation.  Iterative functions, which use looping constructs instead of recursive function calls, do not suffer from this overhead and are frequently more efficient.
@@ -2740,6 +2737,7 @@ You can eliminate the need for recursive calls by allocating your own stack and 
 Implementing this type of stack-based iterative function tends to be significantly more complicated than implementing an equivalent function using recursive calls. Furthermore, unless the overhead for the stack you use is significantly less than the function call overhead, a function written this way won't be more efficient than a conventional recursive implementation. Therefore you should implement recursive algorithms with recrusive calls unless instructed otherwise.  
 
 In an interview, a working solution is of primary importance; an efficient solution is secondary.
+
 
 ## Tail recursion
 A recursive function is tail recurisve when the recursive call is the last thing executed by the function. For example the following C++ function print() is tail recurisve.
@@ -2805,6 +2803,76 @@ static public void main (String[] args)
 } 
 ```
 
+# Dynamic Programming
+It is a general-purpose algorithm design technique that is most often used to solve combinatorial optimisation problems, where we are looking for the best possible input to some function chosen from an exponentially large search space.
+
+There are two parts:
+- **programming technique**: dynamic programming is essentially divide and conquer in reverse. We start from the bottom with the smallest instances of the problem, solving each increasingly large instance in turn and storing the result in a table.
+- **design principle**: in building up our table, we are careful always to preserve alternative solutions we may need later, by delaying commitment to particular choices to the extent that we can.
+
+Bottom up aspect is most useful with recursion that produces many duplicate subproblems.
+
+## Memoization
+With fib sequence, a naive way to solve it is
+
+```c
+int fib(int n)
+{
+    if(n < 2) {
+        return 1
+    } else {
+        return fib(n-1) + fib(n-2);
+    }
+}
+```
+
+Memoization: wrap our recursive solution in a memoiser that stores previously-computed solutions in a hash table. 
+
+```c
+int memoFib(int n)
+{
+    int ret;
+
+    if(hashContains(FibHash, n)) {
+        return hashGet(FibHash, n);
+    } else {
+        ret = memoFib(n-1) + memoFib(n-2);
+        hashPut(FibHash, n, ret);
+        return ret;
+    }
+}
+```
+
+However using a hash table can add overhead rather than using an array. 
+
+## Dynamic programming
+We should instead build an array from the bottom up, and we can then just use that result.
+```c
+int fib2(int n)
+{
+    int *a;
+    int i;
+    int ret;
+    
+    if(n < 2) {
+        return 1;
+    } else {
+        a = malloc(sizeof(*a) * (n+1));
+        assert(a);
+
+        a[1] = a[2] = 1;
+
+        for(i = 3; i <= n; i++) {
+            a[i] = a[i-1] + a[i-2];
+        }
+    }
+
+    ret = a[n];
+    free(a);
+    return ret;
+}
+```
+Now this is linear time rather than the original algorithm, which was exponential.
 
 
 Image by <a href="https://pixabay.com/users/Manuchi-1728328/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2462436">Денис Марчук</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=2462436">Pixabay</a>
