@@ -6,7 +6,8 @@ published: true
 date: "2020-04-07"
 ---
 # Data Structure Terminology
-.
+</br>
+
 ## What is a data type?
 A data type is a set of values and a set of operations on those values.  
 Most programming languages support common data types of real, integer, boolean, floating-point numbers, strings.   
@@ -26,13 +27,13 @@ The different data types are:
 
 ## What is an abstract data type?
 An abstract data type is a data type whose representation is hidden from the client. We use an API to specify behaviour.   
-Exampels of ADTs: Integer, Date, Stack, Queue, Bag, Tree, Graph, List, Hash, Smart Pointer
+Examples of ADTs: Integer, Date, Stack, Queue, Bag, Tree, Graph, List, Hash, Smart Pointer
 
 Any type that does not specify an implementation is an abstract data type. For instance, a stack (which is an abstract type) can be implemented as an array or as a linked list.
 
 Abstract types can be handled by code that does not know or "care" what underlying types are contained in them. Arrays and records can also contain underlying types, but they are considered concrete because they specify how their contents or elements are laid out in memory.
 
-This contrasts with data structures, which are concrete reprensentations of data, and are the point of view of an implementer, not a user.
+This contrasts with data structures, which are concrete representations of data, and are the point of view of an implementer, not a user.
 
 ## What is a data structure?
 A data organisation, management, and storage format that enables efficient access and modification. Is a collection of data values, the relationships among them, and the functions or operations that can be applied to the data.
@@ -61,7 +62,7 @@ access is O(1).
 2D arrays have their rows all of the same length. Some languages have this built in, such as C#.  
 Jagged arrays can have rows of different lengths.
 - Arrays are contiguous in memory, even 2d arrays, which have the rows after each other.
-- Java doesn't support true multi-dimensional arrays, even when you declare like so: `int[][] array3 = new int[32][32];` it is a jagged array.
+- Java doesn't support true multi-dimensional arrays, even when you declare like so: `int[][] array3 = new int[32][32];` it is a jagged array. This means that that the jagged array is stored in memory as a an array of arrays. Apparently in C# jagged arrays are faster than 2D arrays, but they aren't as space efficient.
 
 
 # Strings
@@ -78,7 +79,7 @@ In Java, String interally holds a string using a char array. Java's char type ha
 
 ## Problems
 .
-### First the First Nonrepeated Character
+### Find the First Nonrepeated Character
 **Problem:**  Write an efficient function to find the first nonrepeated character in a string. For instance, the first nonrepeated character in `total` is `o` and the first nonrepeated character in `teeter` is `r`. Discuss the efficiency of your algorithm.
 
 One solution is to go through the string, and then compare that character to the rest of the characters in the string. However the time complexity for this is O(n<sup>2</sup>).  
@@ -88,7 +89,7 @@ Another option is a hash table. The lookup is more expensive (worst case is O(n)
 
 ```java
 public static Character firstNonRepeated( String str ){
-	HashMap<Character,Integer> charHash = new HashMap<Character,Integer>();
+	HashMap<Character,Integer> charHash = new HashMap<>();
 	int i, length;
 	Character c;
  
@@ -119,7 +120,7 @@ As generics only works with reference types, it means that every time we increme
 As we only need to know about three values: zero times, one time, more than one time, we can create objects to represent these states.
 ```java
 public static String firstNonRepeated( String str ){
-	HashMap<Integer,Object> charHash = new HashMap<Integer,Object>();
+	HashMap<Integer,Object> charHash = new HashMap<>();
 	Object seenOnce = new Object(), seenMultiple = new Object();
 	Object seen;
 	int i;
@@ -404,31 +405,81 @@ public ListElement<Integer find(ListElement<Integer> head, int data) {
 ## Inserting and deleting elements
 If you're given the element to delete or before which to insert, this requires traversal of the list from the head. Special care must be taken when the element to be delete is the head of the list.
 
-To delete an element from a list:
-```cpp
-bool deleteElement(IntElement **head, IntElement * deleteMe) {
-    IntElement *elem;
-    if (!head || *head || !deleteMe) {
-        // check for null pointers
-        return false;
-    }
-    elem = *head;
-    if (deleteMe == *head) {
-        // special case for head
-        head = elem-> next;
-        free(deleteMe);
-        return true;
-    }
-    while(elem) {
-        if(elem -> next == deleteMe) {
-            elem->next = deleteMe->next;
-            free(deleteMe)
-            return true;
+```java
+public class LinkedList<T> {
+    private class Node {
+        public T data;
+        public Node next;
+
+        public Node(T data) {
+            this.data = data;
         }
-        elem = elem->next;
     }
-    // deleteMe not found
-    return false;
+
+    private Node head;
+    private Node tail;
+
+    public boolean isEmpty() {
+        return head == null;
+    }
+
+    public void addToBack(T value) {
+        Node newNode = new Node(value);
+        if(isEmpty()) {
+            head = newNode;
+            tail = newNode;
+        }
+        else {
+            tail.next = newNode;
+            tail = newNode;
+        }
+    }
+
+    public void addAtPosition(T value, int position) {
+        if(value == null) throw new RuntimeException("");
+        Node node = new Node(value);
+        if(isEmpty()) {
+            if(position != 0) throw new RuntimeException("");
+            head = node;
+            tail = node;
+        } else {
+            int index = 0;
+            Node curr = head;
+            while(index < position-1 && curr.next != null) {
+                curr = curr.next;
+                index++;
+            }
+            // if index isn't position-1, that means position is greater than size of list + 1
+            // so we throw an exception, as we can't insert at that position
+            if(index < position - 1) throw new RuntimeException("");
+            if(curr.next == null) tail = node;
+            node.next = curr.next;
+            curr.next = node;
+        }
+    }
+
+    public T removeFromFront() {
+        if(isEmpty()) return null;
+        T data = head.data;
+        if(head == tail) { //size = 1
+            head = null;
+            tail = null;
+        }
+        else head = head.next;
+        return data;
+    }
+
+    public void prettyPrintQueue() {
+        StringBuilder sb = new StringBuilder();
+        Node currentNode = head;
+        if(head == null) sb.append("EMPTY LIST");
+        while(currentNode != null) {
+            sb.append(currentNode.data);
+            currentNode = currentNode.next;
+            if(currentNode != null) sb.append(" -> ");
+        }
+        System.out.println(sb);
+    }
 }
 ```
 
@@ -684,12 +735,12 @@ typedef struct Node {
 ```
 
 There are two ways to interpret flattening:
-1. Each child list comes directly afer its parent
-2. Each child list is appeneded to the end of the list.
+1. Each child list comes directly after its parent
+2. Each child list is appended to the end of the list.
 
 The problem is much easier if we don't copy list to a new structure.
 
-You don't need to use recursion because when you append the elements they're next in the lsit so you just advance to them.
+You don't need to use recursion because when you append the elements they're next in the list so you just advance to them.
 
 The algorithm can be summarised as follows:
 - Start at the beginning of the first level 
@@ -796,78 +847,6 @@ bool determineTermination( Node *head ){
 	} 
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Vectors
 Need a backing array, can set the capacity to 10  at start.
 - need to keep track of the capacity and the size.
@@ -963,82 +942,12 @@ public class MyArrayList<T> {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Queues
-A **priority queue** allows you to assign a priority to elements. If you insert an element with a higher priority, it will move to its proper place in the queue. You'll usually need to define a comparator for comparing elements. Java has its own implementation, PriorityQueue. 
+A **priority queue** allows you to assign a priority to elements. If you insert an element with a higher priority, it will move to its proper place in the queue. You'll usually need to define a comparator for comparing elements. Java has its own implementation, PriorityQueue. Priority Queues are great to use for representing heaps.
+```java
+Queue<Integer> minHeap = new PriorityQueue<>(Comparator.comparingInt(i -> i));
+Queue<Integer> maxHeap = new PriorityQueue<>((i1, i2) -> i2 - i1);
+```
 
 A **Deque** is a double ended queue and works either like a stack or a queue. Can add and remove from both ends. Linked list implements deque.
 

@@ -17,7 +17,7 @@ date: "2020-04-07"
 ### Singleton
 Most used
 
-Only one instance creatred
+Only one instance created
 
 gurantees control of a resource
 
@@ -1185,12 +1185,16 @@ Any other maven module which depends on the engine only relies on the API.
 This is a benefit of splitting out your layers into mavem modules? You could change the underlying maven moduole, without recompiling everything.
 
 # KISS
+TBC
 
 # YAGNI
+TBC 
 
 # DRY
+TBC
 
 # DAMP
-
+TBC
+  
 Image by <a href="https://pixabay.com/users/Wounds_and_Cracks-218774/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Christos Giakkas</a> from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=3306859">Pixabay</a>
 
