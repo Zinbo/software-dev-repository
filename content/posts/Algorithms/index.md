@@ -6,8 +6,10 @@ published: true
 date: "2020-04-07"
 ---
 # Algorithm Basics
-.
+<br>
+
 ## Starting A Problem
+<br>
 There are a number of steps to follow to solve a problem:
 1. Make sure you understand the problem
 2. When you understand the question, try a simple example

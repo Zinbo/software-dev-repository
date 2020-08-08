@@ -7,28 +7,29 @@ date: "2020-04-07"
 ---
 
 # Generate Algorithms
+<br>
 
 ## Questions
+<br>
 
 ### What is Multithreading?
-a multithreaded program contains two or more parts that can run concurrently and each part can handle different tasks at the same time, making optimal use of the available resources specially when your computer has multiple CPUs.
+a multithreaded program contains two or more parts that can run concurrently and each part can handle different tasks at the same time, making optimal use of the available resources especially when your computer has multiple CPUs.
 In java, if your class is intended to be executed as a thread then you can achieve this by implementing the Runnable interface.
 You need to implement a run() method provided by the Runnable interface.
 Also need to create a new thread and pass the object, like so:
 ```java
-public void start ()
+public void start()
    {
       System.out.println("Starting " +  threadName );
       if (t == null)
       {
          t = new Thread (this, threadName);
-         t.start ();
+         t.start();
       }
    }
 ```
 
-You can also extend Thread. It is preferable to use runnable. implementing runnable 
-
+You can also extend Thread. It is preferable to use runnable.
 
 ### What are the different states of a thread?
 ![img](https://howtodoinjava.com/wp-content/uploads/2016/04/Java-Thraed-Life-Cycle-States.jpg)
@@ -38,7 +39,6 @@ Both processes and threads are independent sequences of execution. The typical d
 When you start a new application you start a new process. A thread is a path of execution within that process. As threads share the same address space they can read and write to the same data structures and variables, and they can also communicate. Communication between processes - also known as IPC is quite difficult and resource-intensive.
 The overhead between threads is very low relative to processes
 Threads are considered lightweight because they use far less resources than processes.
-
 
 ### What is the heap and stack?
 The stack is the memory set aside as scratch space for a thread. When a function is called, a block is reserved on the top of the stack for local variables and some bookkeeping data. When the function returns, the block becomes unused and can be used the next time a function is called.
@@ -79,8 +79,10 @@ Static type systems allow IDEs and compilers to spot programmer errors at the ea
   - The user or customer do this testing to determine whether to accept the appliction.
 
 # OOP
+<br>
 
 ## Questions
+<br>
 
 ### What is polymporphism?
 The ability to present the same interface for differing underlying forms.
@@ -102,8 +104,10 @@ Abstract classes are actually classes, but you cannot instantiate them. They are
 Upcasting is casting to a supertype, while downcasting is casting to a subtype. Upcasting is always allowed, but downcasting involves a type check and can throw a ClassCastException.
 
 # Java
+<br>
 
 ## Questions
+<br>
 
 ### What is a daemon thread?
 Daemon thread is a low priority thread (in context of JVM) that runs in background to perform tasks such as garbage collection (gc) etc., they do not prevent the JVM from exiting (even if the daemon thread itself is running) when all the user threads (non-daemon threads) finish their execution. JVM terminates itself when all user threads (non-daemon threads) finish their execution, JVM does not care whether Daemon thread is running or not, if JVM finds running daemon thread (upon completion of user threads), it terminates the thread and after that shutdown itself.
@@ -115,14 +119,16 @@ There are multiple ways to ensure thread safety:
 - Have immutable classes
 - Uses thread local fields by have a field on a class of type ThreadLocal.
 - Use the set of synchronisation wrappers included in the collections framework.These use intrinsic locking which means that their methods can only be accessed by one thread at a time.
-- Use the set of concurrent collection wrappers to create thread-safe collections. These achieve thread-safety by dividing their data into segments. In a ConcurrentHashMap, for instance, several threads can acquire locks on different map segments, so multiple threads can access the Map at the same time.
-- Atomic Objects. Atomic classes allow us to perform atomic operations, which are thread-safe, without using synchronization. An atomic operation is executed in one single machine level operation. YOu do incrementAndGet, in one execution, so its atomic.
+- **Use the set of concurrent collection wrappers to create thread-safe collections**: These achieve thread-safety by dividing their data into segments. In a ConcurrentHashMap, for instance, several threads can acquire locks on different map segments, so multiple threads can access the Map at the same time.
+- **Atomic Objects**: Atomic classes allow us to perform atomic operations, which are thread-safe, without using synchronization. An atomic operation is executed in one single machine level operation. YOu do incrementAndGet, in one execution, so its atomic.
 - Synchronised methods: only one thread cna access a synchronised method at a time. Other threads will remain blocked until the first thread finishes or the method throws an exception. Synchronized methods rely on the use of “intrinsic locks” or “monitor locks”. An intrinsic lock is an implicit internal entity associated with a particular class instance.
-- Synchronised statements:  synchronized(this)
-- Other objects as a lock. When using this for intrinsic locking, an attacker could cause a deadlock by acquiring the intrinsic lock and triggering a denial of service (DoS) condition. On the contrary, when using other objects, that private entity is not accessible from the outside. This makes it harder for an attacker to acquire the lock and cause a deadlock.
-- Volatile fields: The values of regular class fields may be cached by the CPU. Hence, consequent updates to a particular field, even if they're synchronized, might not be visible to other threads.TO prevent this situation, we can use volatile class fields. With the volatile keyword, we instruct the JVM and the compiler to store the counter variable in the main memory. Moreover, the use of a volatile variable ensures that all variables that are visible to a given thread will be read from the main memory as well.
-- Reentrant locks: With intrinsic locks, thereReentrantLock instances allow us to do exactly that, hence preventing queued threads from suffering some types of resource starvation. ReentrantLock instances allow us to do exactly that, hence preventing queued threads from suffering some types of resource starvation.
-- ReadWriteLock: A ReadWriteLock lock actually uses a pair of associated locks, one for read-only operations and other for writing operations. As a result, it's possible to have many threads reading a resource, as long as there's no thread writing to it. Moreover, the thread writing to the resource will prevent other threads from reading it.
+- **Synchronised statements:**  synchronized(this)
+- **Other objects as a lock**: When using this for intrinsic locking, an attacker could cause a deadlock by acquiring the intrinsic lock and triggering a denial of service (DoS) condition. On the contrary, when using other objects, that private entity is not accessible from the outside. This makes it harder for an attacker to acquire the lock and cause a deadlock.
+- **Volatile fields**: The values of regular class fields may be cached by the CPU. Hence, consequent updates to a particular field, even if they're synchronized, might not be visible to other threads. To prevent this situation, we can use volatile class fields. With the volatile keyword, we instruct the JVM and the compiler to store the counter variable in the main memory. Moreover, the use of a volatile variable ensures that all variables that are visible to a given thread will be read from the main memory as well.
+- **Reentrant locks**: With intrinsic locks, the lock acquisition model is rather rigid: one thread acquires the lock, then executes a method or code block, and finally releases the lock, so other threads can acquire it and access the method.  
+There's no underlying mechanism that checks the queued threads and gives priority access to the longest waiting threads.   
+ReentrantLock instances allow us to do exactly that, hence preventing queued threads from suffering some types of resource starvation.
+- **ReadWriteLock**: A ReadWriteLock lock actually uses a pair of associated locks, one for read-only operations and other for writing operations. As a result, it's possible to have many threads reading a resource, as long as there's no thread writing to it. Moreover, the thread writing to the resource will prevent other threads from reading it.
 
 ### How does java achieve High Performance?
 Java uses Just-In-Time compiler to enable high performance. Just-In-Time compiler is a program that turns Java bytecode, which is a program that contains instructions that must be interpreted into instructions that can be sent directly to the processor.
@@ -218,13 +224,13 @@ An instance of InnerClass can exist only within an instance of OuterClass and ha
 It has a number of "buckets" which it uses to store key-value pairs in. Each bucket has a unique number - that's what identifies the bucket. When you put a key-value pair into the map, the hashmap will look at the hash code of the key, and store the pair in the bucket of which the identifier is the hash code of the key. For example: The hash code of the key is 235 -> the pair is stored in bucket number 235. (Note that one bucket can store more then one key-value pair).
 When you lookup a value in the hashmap, by giving it a key, it will first look at the hash code of the key that you gave. The hashmap will then look into the corresponding bucket, and then it will compare the key that you gave with the keys of all pairs in the bucket, by comparing them with equals().
 
-### What is the difference between C# and Java?
-Properties
-CLR vs JVM
-NET, programs are not compiled into executable files; they are compiled into Microsoft Intermediate Language (MSIL) files, which the CLR then executes. Similar to byte code
-Type Erasure, generics in IL
-Has LINQ, similar to lambdas
-.NET core now for unix as well
+### What is the difference between C Sharp and Java?
+- Properties
+- CLR vs JVM
+- NET, programs are not compiled into executable files; they are compiled into Microsoft Intermediate Language (MSIL) files, which the CLR then executes. Similar to byte code
+- Type Erasure, generics in IL
+- Has LINQ, similar to lambdas
+.- NET core now for unix as well
 
 ### What’s the difference between a hashtable and a hashmap?
 Hashtable is synchronised, whereas HashMap is not. this makes HashMap better for non-threaded applications, as unsynchronised objects typically perform better than synchronised ones.
@@ -332,8 +338,10 @@ public static String readFileAsString(String fileName)throws Exception
 Merge sort for objects (stable) quick sort for primitives (faster),
 
 # SQL
+<br>
 
 ## Questions
+<br>
 
 ### What is the difference between an inner and an outer join?
 Joins are used to combine the data from two tables, with the result being a new, temporary table. The temporary table is created based on columns that the two tables share.
@@ -641,10 +649,12 @@ Quantifiers define quantities:
 An error has two properties: name and message.
 
 ### Scope
-Two different scopes:
+Three different scopes:
 - local scope
 - global scope
 - function scope
+
+`var` does not have block scope (can access outside of blocks).
 
 If you assign a value to a variable that has not been declared, it will automatically become a GLOBAL variable.
 ```js
@@ -675,7 +685,7 @@ ES6 Modules are strict by default.
 
 You cannot delete variables or functions in strict mode (but you can still delete properties).
 
-The this keyword refers to the object that called the function.
+The `this` keyword refers to the object that called the function.
 
 If the object is not specified, functions in strict mode will return undefined and functions in normal mode will return the global object (window):
 ```js
@@ -1096,10 +1106,11 @@ fetch('http://example.com/movies.json')
 ```
 
 ## Questions
+<br>
 
 ### What is the DOM?
-Document Object Model
-It is constructed as a  tree of objects
+Document Object Model  
+It is constructed as a  tree of objects  
 ![img](https://www.w3schools.com/js/pic_htmltree.gif)
 
 The HTML DOM is a standard object model and programming interface for HTML. It defines:
@@ -1116,15 +1127,14 @@ In the DOM, all HTML elements are defined as objects.
 
 
 ### WHat was new in HTML 5?
-
-
-
-Reduce DOM Size
-Keep the number of elements in the HTML DOM small.
+Reduce DOM Size  
+Keep the number of elements in the HTML DOM small.  
 
 This will always improve page loading, and speed up rendering (page display), especially on smaller devices.
 
 Every attempt to search the DOM (like getElementsByTagName) will benefit from a smaller DOM.
+
+The browser vendors dropped the version numbers after 5 and now use a living standard. Meaning that there won't be a version 6 from the.
 
 ## Automatic form validation?
 <form action="/action_page.php" method="post">

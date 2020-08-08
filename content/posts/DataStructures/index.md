@@ -2134,7 +2134,7 @@ Is empty or:
 - A 3-nde, with two keys (and assicated values) and their links, a left link to a 2-3 tree with smaller keys, a middle link to a 2-3 tree with keys between the nodes kets, and a right link to a 2-3 search tree with larger keys.
 
 # Heaps
-Heaps are trees (usually binary trees) where (in a max-heap) each child of a node has a value less than or rqual to the node's own value. The root node alwayus has the largest value in the tree.
+Heaps are trees (usually binary trees) where (in a max-heap) each child of a node has a value less than or equal to the node's own value. The root node always has the largest value in the tree.
 
 Is a specialized tree-based data structure.
 The heap is one maximally efficient implementation of an abstract data type called a priority queue, and in fact, priority queues are often referred to as "heaps", regardless of how they may be implemented.  
@@ -2160,7 +2160,7 @@ Balancing a heap is done by sift-up or sift-down operations (swapping elements w
 ## Operations
 To insert an element we insert it at the next available leaf (does it matter if we go left or right?). We then sift the element up to its rightful place by swapping values with parents. Inserting is therefore big O(h) where h is tree height.
 
-To extract the max element (whic his the root), we replace it with one of the leaves and then sift it down. We choose the child with the largest element, as then we will fix violations on both of the roots edges.
+To extract the max element (which is the root), we replace it with one of the leaves and then sift it down. We choose the child with the largest element, as then we will fix violations on both of the roots edges.
 
 To change the priority of an element, we need to change the value and then sift it up or down. O(tree height).  
 

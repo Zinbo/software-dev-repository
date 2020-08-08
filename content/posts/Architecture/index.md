@@ -500,7 +500,7 @@ Sessions need to be stored in a centralized data store which is accessible to al
 ## Data slowness
 Somewhere down the road your application gets slower and slower and finally breaks down. This is due to the database. You have two options:
 1. Hire a DBA, get them to do master-slave replication, and upgrade your master server by adding lots of RAM. Eventually your DBA will talk about sharding, denormalisation, and SQL tuning. At this point, every new action to keep your db running will be more expensive and time consuming than the previous one.
-2. Denormalise right from the beginning and include no more joins in any database query. You can stay with MySQL and use it like a NoSQL database, or you can switch t oa better and easier to scale NoSQL db like MongoDB or CouchDB. Eventually you'll need to introduce a cache though.
+2. Denormalise right from the beginning and include no more joins in any database query. You can stay with MySQL and use it like a NoSQL database, or you can switch to a better and easier to scale NoSQL db like MongoDB or CouchDB. Eventually you'll need to introduce a cache though.
 
 
 # Caching

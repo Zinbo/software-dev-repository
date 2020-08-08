@@ -746,6 +746,9 @@ int main() {
 ```
 You can try lock a unique lock. `try_lock()` will try to lock and return if it immediately can't. `try_lock_for(time)` will try and wait for `time` to get the lock. If it can't it will return.
 
+# LOOK AT THESE
+https://www.educative.io/blog/top-five-concurrency-interview-questions-for-software-engineers
+
 # CPU and Memory 
 Memory is:
 - main memory; billion 32 bit words, RAM
